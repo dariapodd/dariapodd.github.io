@@ -130,7 +130,7 @@
 
   /* ---------- Hero ---------- */
   .hero {
-    padding: 131px 0 0 var(--text-left);
+    padding: 131px 0 217px var(--text-left); /* bottom: same gap to the first project as before the hint was pinned */
     padding-right: var(--gutter);
   }
 
@@ -170,9 +170,17 @@
   .logos img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .logos img.wordmark { width: 48.75px; height: auto; object-fit: contain; }
 
+  /* Pinned 36px above the bottom edge, centred; fades out once the page is scrolled */
   .scroll-hint {
-    margin: 160px 0 38px calc(-1 * var(--text-left));
+    position: fixed;
+    z-index: 4;
+    left: 0;
+    right: 0;
+    bottom: 36px;
+    margin: 0;
     padding: 0 var(--gutter);
+    pointer-events: none;
+    transition: opacity 0.4s ease;
     color: var(--accent);
     font-size: var(--nav-fs);
     line-height: 1.2;
@@ -180,6 +188,7 @@
     text-transform: uppercase;
     text-align: center;
   }
+  .scroll-hint.is-hidden { opacity: 0; }
 
   /* ---------- Project ----------
      The block is 1920×960 in Figma and scales with the window at 2:1.
@@ -335,5 +344,13 @@
            alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
     </section>
   </main>
+
+<script>
+  // Hide the scroll hint as soon as the page is scrolled; bring it back at the top
+  const hint = document.querySelector(".scroll-hint");
+  const syncHint = () => hint.classList.toggle("is-hidden", scrollY > 8);
+  addEventListener("scroll", syncHint, { passive: true });
+  syncHint();
+</script>
 </body>
 </html>
