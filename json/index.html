@@ -60,7 +60,9 @@
 
   .frame {
     width: min(1726px, calc(100% - 2 * var(--gutter)));
-    margin: 0 auto;
+    /* Centred on the full window width (100vw includes any scrollbar), so the JSON view and
+       the pitch view share the same left edge whether or not the page scrolls */
+    margin-left: max(var(--gutter), calc((100vw - 1726px) / 2));
     padding: 131px 0 96px;
   }
 
