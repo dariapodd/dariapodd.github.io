@@ -28,7 +28,7 @@
     --accent-bg: rgba(0, 255, 204, 0.1);
     --body-black: #191613;    /* project body, black variant */
     --body-grey: #3a3938;     /* project body, grey variant */
-    --tab: rgba(217, 217, 217, 0.1);
+    --tab: rgba(217, 217, 217, 0.15);
     --rule: #3d414a;          /* margin line and ruled lines */
 
     --nav-fs: 16px;
@@ -222,7 +222,8 @@
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 4px 32px rgba(0, 0, 0, 0.35);
-    white-space: nowrap;
+    width: max-content;
+    max-width: min(260px, calc(100vw - 2 * var(--gutter) - 50px));   /* long descriptions wrap instead of running off screen */
     pointer-events: none;
     opacity: 0;
     transform: translateY(-4px);
@@ -477,7 +478,7 @@
     <ul class="logos" aria-label="Where I’ve worked">
       <li tabindex="0"><img src="assets/logo-ey.png" alt="Ernst &amp; Young, agency"><span class="tip" aria-hidden="true"><b>Ernst &amp; Young</b><span>Agency</span></span></li>
       <li tabindex="0"><img src="assets/logo-2.png" alt="EY Studio+, agency"><span class="tip" aria-hidden="true"><b>EY Studio+</b><span>Agency</span></span></li>
-      <li tabindex="0"><img src="assets/logo-3.svg" alt="The University of Sydney, teaching over 600 students"><span class="tip" aria-hidden="true"><b>The University of Sydney</b><span>Teaching &gt;600 students</span></span></li>
+      <li tabindex="0"><img src="assets/logo-3.svg" alt="The University of Sydney, teaching HCI and usability to engineers since 2019, over 600 students"><span class="tip" aria-hidden="true"><b>The University of Sydney</b><span>Teaching HCI and Usability to engineers since 2019, &gt; 600 students</span></span></li>
       <li tabindex="0"><img src="assets/logo-4.svg" alt="2GIS, vendor, B2B and B2C" class="wordmark"><span class="tip" aria-hidden="true"><b>2GIS</b><span>Vendor, B2B and B2C</span></span></li>
     </ul>
 
