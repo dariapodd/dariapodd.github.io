@@ -159,15 +159,52 @@
     list-style: none;
   }
   .logos li {
+    position: relative;
     width: 64px;
     height: 64px;
     border-radius: 2px;
-    overflow: hidden;
     background: #191613;
     display: grid;
     place-items: center;
+    outline-offset: 3px;
   }
-  .logos img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .logos img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
+
+  /* Hover / keyboard-focus hint under each logo: company + relationship */
+  .logos .tip {
+    position: absolute;
+    z-index: 6;
+    top: calc(100% + 10px);
+    left: 0;
+    display: grid;
+    gap: 2px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(25, 22, 19, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.35);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  .logos .tip b {
+    font: 400 14px/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .logos .tip span {
+    font: 300 14px/1.4 "Chakra Petch", system-ui, sans-serif;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .logos li:hover .tip,
+  .logos li:focus-visible .tip {
+    opacity: 1;
+    transform: none;
+  }
   .logos img.wordmark { width: 48.75px; height: auto; object-fit: contain; }
 
   /* Pinned 36px above the bottom edge, centred; fades out once the page is scrolled */
@@ -316,10 +353,10 @@
     <p class="intro">How I work? Talk to people. Find the real problem. Map the workflow, simplify it. Prototype it so stakeholders see it, understand it, and say yes.</p>
 
     <ul class="logos" aria-label="Where I’ve worked">
-      <li><img src="assets/logo-ey.png" alt="EY"></li>
-      <li><img src="assets/logo-2.png" alt=""></li>
-      <li><img src="assets/logo-3.svg" alt=""></li>
-      <li><img src="assets/logo-4.svg" alt="" class="wordmark"></li>
+      <li tabindex="0"><img src="assets/logo-ey.png" alt="Ernst &amp; Young, agency"><span class="tip" aria-hidden="true"><b>Ernst &amp; Young</b><span>Agency</span></span></li>
+      <li tabindex="0"><img src="assets/logo-2.png" alt="EY Studio+, agency"><span class="tip" aria-hidden="true"><b>EY Studio+</b><span>Agency</span></span></li>
+      <li tabindex="0"><img src="assets/logo-3.svg" alt="The University of Sydney, teaching over 600 students"><span class="tip" aria-hidden="true"><b>The University of Sydney</b><span>Teaching &gt;600 students</span></span></li>
+      <li tabindex="0"><img src="assets/logo-4.svg" alt="2GIS, vendor, B2B and B2C" class="wordmark"><span class="tip" aria-hidden="true"><b>2GIS</b><span>Vendor, B2B and B2C</span></span></li>
     </ul>
 
     <p class="scroll-hint">scroll down for projects ↓</p>
