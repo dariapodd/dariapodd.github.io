@@ -87,6 +87,21 @@
   }
   .pill-styles::-webkit-scrollbar { display: none; }
 
+  /* Fade the edge(s) where nav items are cut off on narrow screens (classes set by script) */
+  .pill-styles { --fade: 64px; }
+  .pill-styles.fade-right {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - var(--fade)), transparent);
+            mask-image: linear-gradient(to right, #000 calc(100% - var(--fade)), transparent);
+  }
+  .pill-styles.fade-left {
+    -webkit-mask-image: linear-gradient(to left, #000 calc(100% - var(--fade)), transparent);
+            mask-image: linear-gradient(to left, #000 calc(100% - var(--fade)), transparent);
+  }
+  .pill-styles.fade-left.fade-right {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+            mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+  }
+
   .links {
     display: flex;
     align-items: center;
@@ -279,6 +294,19 @@
   placeRules();
   addEventListener("resize", placeRules);
   document.fonts && document.fonts.ready.then(placeRules);
+
+  // ---- Nav edge fades: show which side has hidden items ----
+  const styleNav = document.querySelector(".pill-styles");
+  function updateNavFade() {
+    const hiddenLeft = styleNav.scrollLeft > 1;
+    const hiddenRight = styleNav.scrollLeft + styleNav.clientWidth < styleNav.scrollWidth - 1;
+    styleNav.classList.toggle("fade-left", hiddenLeft);
+    styleNav.classList.toggle("fade-right", hiddenRight);
+  }
+  updateNavFade();
+  styleNav.addEventListener("scroll", updateNavFade, { passive: true });
+  addEventListener("resize", updateNavFade);
+  document.fonts && document.fonts.ready.then(updateNavFade);
 
   // ---- Vertical centring of the text block (pitch + elevator line) ----
   const nav = document.querySelector(".nav");
