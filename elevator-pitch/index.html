@@ -16,6 +16,8 @@
     --ink: #403524;
     --rule: #c8bfb3;
     --pill-solid: #c8bfb3;
+    --nav-ink: #594d3c;
+    --accent: #9e3b02;
 
     /* Every size is the 1920px Figma value times --k. Sizes stay fixed at every width. */
     --k: 0.6;
@@ -49,103 +51,67 @@
     pointer-events: none;
   }
 
-  /* Nav + pitch share one centred column; the text lines up under the left nav bar. */
+  /* Selector, pitch and elevator line share one centred column */
   .frame {
-    width: fit-content;
-    max-width: calc(100% - 2 * var(--gutter));
+    width: min(calc(1279px * var(--k)), calc(100% - 2 * var(--gutter)));
     margin: 0 auto;
+    /* Centred vertically in the window (gap set by script), always clear of the resume button */
+    padding-top: max(110px, var(--center-gap, 0px));
   }
 
-  /* ---------- Nav ---------- */
-  .nav {
+  /* ---------- "View portfolio as" selector ---------- */
+  .view-select {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     align-items: center;
-    gap: calc(16px * var(--k)) calc(52px * var(--k));
-    padding-top: calc(60px * var(--k));
-  }
-
-  .pill {
-    display: flex;
-    align-items: center;
-    border-radius: 12px;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    gap: 0 16px;
+    padding: 16px 0;
+    margin-bottom: 64px; /* to the pitch text */
+    color: var(--nav-ink);
     font-size: var(--nav-fs);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     line-height: 1.2;
+  }
+  .view-select a {
+    color: var(--accent);
+    text-decoration: none;
     white-space: nowrap;
   }
+  .view-select a:hover { font-weight: 600; }
+  .view-select .arrow { margin-left: 5px; }
 
-  .pill-styles {
-    max-width: 100%;
-    min-width: 0; /* shrinks and scrolls sideways on narrow screens */
-    padding: 16px 0;
-    gap: 16px;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .pill-styles::-webkit-scrollbar { display: none; }
-
-  /* Fade the edge(s) where nav items are cut off on narrow screens (classes set by script) */
-  .pill-styles { --fade: 64px; }
-  .pill-styles.fade-right {
-    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - var(--fade)), transparent);
-            mask-image: linear-gradient(to right, #000 calc(100% - var(--fade)), transparent);
-  }
-  .pill-styles.fade-left {
-    -webkit-mask-image: linear-gradient(to left, #000 calc(100% - var(--fade)), transparent);
-            mask-image: linear-gradient(to left, #000 calc(100% - var(--fade)), transparent);
-  }
-  .pill-styles.fade-left.fade-right {
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
-            mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
-  }
-
-  .links {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .sep {
-    width: 1px;
-    height: 32px;
-    background: var(--rule);
-  }
-
-  .pill-contacts {
-    flex-shrink: 0;
-    padding: 13px 32px;
+  /* ---------- Resume button, top right ---------- */
+  .resume {
+    position: absolute;
+    top: 32px;
+    right: 32px;
+    padding: 12px 32px;
+    border-radius: 12px;
     background: var(--pill-solid);
+    color: var(--ink);
+    font: 600 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
   }
   /* Figma: 12px radius, 100% corner smoothing. Smoothing spreads the curve over
      2x the radius, so use 24px with a squircle corner where supported. */
   @supports (corner-shape: squircle) {
-    .pill-contacts {
+    .resume {
       border-radius: 24px;
       corner-shape: squircle;
     }
   }
 
-  .pill a {
-    color: var(--ink);
-    text-decoration: none;
-  }
-  .pill a:hover { font-weight: 600; }
-  .pill a[aria-current="page"] { font-weight: 700; }
   /* ---------- Pitch ---------- */
   .pitch-wrap {
     position: relative;
-    /* Column width comes from the nav only, so typing never resizes (and shifts) it */
+    /* Column width comes from .frame, so typing never resizes (and shifts) it */
     width: 0;
     min-width: 100%;
-    /* Centred vertically in the window (gap set by script), never closer to the nav than the design margin */
-    margin-top: max(calc(130px * var(--k)), var(--center-gap, 0px));
   }
-
   /* Ruled lines, full page width, aligned to the text baseline */
   .rules {
     position: absolute;
@@ -208,7 +174,8 @@
   }
 
   .elevator {
-    margin: calc(41px * var(--k)) 0 calc(60px * var(--k));
+    /* 64px below the last ruled line (which sits 0.23 line-heights above the pitch bottom) */
+    margin: calc(64px - 0.23 * var(--lh)) 0 calc(60px * var(--k));
     font-size: 16px;
     letter-spacing: 0.1em;
     line-height: 1.2;
@@ -222,27 +189,13 @@
 <body>
   <div class="margin-rule" aria-hidden="true"></div>
 
-  <div class="frame">
-  <nav class="nav" aria-label="Portfolio">
-    <div class="pill pill-styles">
-      <span class="label">portfolio style:</span>
-      <div class="links">
-        <a href="#">enterprise</a>
-        <span class="sep" aria-hidden="true"></span>
-        <a href="#">caveman</a>
-        <span class="sep" aria-hidden="true"></span>
-        <a href="#">startup</a>
-        <span class="sep" aria-hidden="true"></span>
-        <a href="#">json</a>
-        <span class="sep" aria-hidden="true"></span>
-        <a href="./" aria-current="page">elevator pitch</a>
-      </div>
-    </div>
-    <div class="pill pill-contacts">
-      <a href="../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
-    </div>
-  </nav>
+  <a class="resume" href="../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
 
+  <div class="frame">
+  <nav class="view-select" aria-label="Portfolio style">
+    <span>view portfolio as:</span>
+    <a href="../" title="Choose another portfolio style">elevator pitch simulator<span class="arrow" aria-hidden="true">↓</span></a>
+  </nav>
   <main class="pitch-wrap">
     <div class="rules" aria-hidden="true"></div>
     <div class="pitch">
@@ -311,33 +264,18 @@
   addEventListener("resize", placeRules);
   document.fonts && document.fonts.ready.then(placeRules);
 
-  // ---- Nav edge fades: show which side has hidden items ----
-  const styleNav = document.querySelector(".pill-styles");
-  function updateNavFade() {
-    const hiddenLeft = styleNav.scrollLeft > 1;
-    const hiddenRight = styleNav.scrollLeft + styleNav.clientWidth < styleNav.scrollWidth - 1;
-    styleNav.classList.toggle("fade-left", hiddenLeft);
-    styleNav.classList.toggle("fade-right", hiddenRight);
-  }
-  updateNavFade();
-  styleNav.addEventListener("scroll", updateNavFade, { passive: true });
-  addEventListener("resize", updateNavFade);
-  document.fonts && document.fonts.ready.then(updateNavFade);
-
-  // ---- Vertical centring of the text block (pitch + elevator line) ----
-  const nav = document.querySelector(".nav");
-  const wrap = document.querySelector(".pitch-wrap");
+  // ---- Vertical centring of the block (selector + pitch + elevator line) ----
+  const column = document.querySelector(".frame");
+  const viewSelect = document.querySelector(".view-select");
   const elevator = document.querySelector(".elevator");
   function centerBlock() {
-    const blockH = elevator.getBoundingClientRect().bottom - viewport.getBoundingClientRect().top;
-    const navBottom = nav.getBoundingClientRect().bottom + scrollY;
-    const gap = (document.documentElement.clientHeight - blockH) / 2 - navBottom;
-    wrap.style.setProperty("--center-gap", gap + "px");
+    const blockH = elevator.getBoundingClientRect().bottom - viewSelect.getBoundingClientRect().top;
+    const gap = (document.documentElement.clientHeight - blockH) / 2;
+    column.style.setProperty("--center-gap", gap + "px");
   }
   centerBlock();
   addEventListener("resize", centerBlock);
-  new ResizeObserver(centerBlock).observe(nav);
-  document.fonts && document.fonts.ready.then(centerBlock);
+  new ResizeObserver(centerBlock).observe(viewSelect);  document.fonts && document.fonts.ready.then(centerBlock);
 
   // ---- Elevator counter: G, 1, 2, 3 … every 2s ----
   let level = 0;
