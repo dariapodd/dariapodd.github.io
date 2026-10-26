@@ -3,32 +3,330 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GitHub Pages Test</title>
+<title>Endless Pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  body {
-    margin: 0;
-    min-height: 100vh;
-    display: grid;
-    place-items: center;
-    background: #dad9cf;
-    color: #594d3c;
-    font-family: ui-monospace, Consolas, monospace;
-    text-align: center;
-    padding: 16px;
+  :root {
+    --bg: #dad9cf;
+    --ink: #594d3c;
+    --accent: #ec6039;
+    --pill-bg: rgba(58, 57, 56, 0.2);
+    --pill-border: #656a75;
+    --rule: rgba(89, 77, 60, 0.13);
+    --rule-strong: rgba(89, 77, 60, 0.24);
+
+    /* Design is 1920px wide; scale down below that. */
+    --left: clamp(16px, 10.26vw, 197px);
+    --fs: clamp(20px, 2.54vw, 48.8px);
+    --lh: calc(var(--fs) * 1.2);
+    --rows: 9;
+    --nav-fs: clamp(11px, 1.04vw, 20px);
   }
-  h1 { font-size: clamp(28px, 6vw, 56px); margin: 0 0 12px; }
-  p { margin: 4px 0; }
-  .ok { color: #ec6039; }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; }
+
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Kode Mono", ui-monospace, monospace;
+    overflow-x: hidden;
+  }
+
+  /* Vertical margin rule */
+  .margin-rule {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: clamp(8px, 2.6vw, 50px);
+    width: 1px;
+    background: var(--rule-strong);
+    pointer-events: none;
+  }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(8px, 2.7vw, 52px);
+    padding: 60px 16px 0 var(--left);
+  }
+
+  .pill {
+    display: flex;
+    align-items: center;
+    height: clamp(40px, 2.9vw, 56px);
+    border: 1px solid var(--pill-border);
+    border-radius: 12px;
+    background: var(--pill-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 72px rgba(0, 0, 0, 0.25);
+    font-size: var(--nav-fs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .pill-styles {
+    width: min(1279px, calc(100vw - var(--left) - 16px));
+    padding: 0 clamp(12px, 5.5vw, 105px);
+    justify-content: space-between;
+    gap: 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .pill-styles::-webkit-scrollbar { display: none; }
+
+  .pill-styles .label { margin-right: auto; padding-right: clamp(8px, 4vw, 80px); }
+
+  .pill-contacts {
+    padding: 0 clamp(16px, 2vw, 38px);
+  }
+
+  .pill a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .pill a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .pill a[aria-current="page"] { color: var(--accent); }
+
+  /* ---------- Pitch ---------- */
+  .pitch-wrap {
+    position: relative;
+    margin-top: clamp(48px, 6.77vw, 130px);
+  }
+
+  /* Ruled lines, full page width, aligned to the text baseline */
+  .rules {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: calc(var(--lh) * var(--rows));
+    pointer-events: none;
+  }
+  .rules span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--rule);
+  }
+  .rules span.strong {
+    height: 2px;
+    background: var(--rule-strong);
+  }
+
+  .pitch {
+    position: relative;
+    margin-left: var(--left);
+    width: min(1279px, calc(100vw - var(--left) - 16px));
+    height: calc(var(--lh) * var(--rows));
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(var(--lh) * 3.5));
+            mask-image: linear-gradient(to bottom, transparent 0, #000 calc(var(--lh) * 3.5));
+  }
+
+  .pitch-text {
+    font-size: var(--fs);
+    line-height: var(--lh);
+    letter-spacing: 0.1em;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    will-change: transform;
+  }
+
+  .pitch-text p {
+    margin: 0 0 var(--lh);
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 0.6em;
+    height: 1em;
+    margin-left: 0.05em;
+    vertical-align: -0.12em;
+    background: var(--ink);
+    animation: blink 1s steps(1) infinite;
+  }
+  .typing .cursor { animation: none; }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  .elevator {
+    margin: clamp(20px, 2.1vw, 41px) 0 60px var(--left);
+    font-size: clamp(14px, 1.25vw, 24px);
+    letter-spacing: 0.1em;
+    line-height: 1.2;
+  }
+  .elevator output {
+    display: inline-block;
+    min-width: 3ch;
+  }
 </style>
 </head>
 <body>
-  <main>
-    <h1>Hello from GitHub Pages <span class="ok">✓</span></h1>
-    <p>If you can see this, hosting works.</p>
-    <p>Loaded: <span id="time"></span></p>
+  <div class="margin-rule" aria-hidden="true"></div>
+
+  <nav class="nav" aria-label="Portfolio">
+    <div class="pill pill-styles">
+      <span class="label">portfolio style:</span>
+      <a href="#">enterprise</a>
+      <a href="#">caveman</a>
+      <a href="#">startup</a>
+      <a href="#">json</a>
+      <a href="#" aria-current="page">endless pitch</a>
+    </div>
+    <div class="pill pill-contacts">
+      <a href="#">resume and contacts</a>
+    </div>
+  </nav>
+
+  <main class="pitch-wrap">
+    <div class="rules" aria-hidden="true"></div>
+    <div class="pitch">
+      <div class="pitch-text" id="pitch" aria-live="off"></div>
+    </div>
+    <p class="elevator">Elevator level: <output id="level">G</output></p>
   </main>
-  <script>
-    document.getElementById("time").textContent = new Date().toLocaleString();
-  </script>
+
+<script>
+(() => {
+  const PITCH = [
+    "Hi, I’m Daria,\nI’m a Product Designer mostly working with complex, regulated domains, Agentic AI & enterprise solutions. How I work? Talk to people. Find the real problem. Map the workflow, simplify it. Prototype it so stakeholders see it, understand it, and say yes.",
+    "Oh. We’re still in the elevator. Okay. Let me keep going.",
+    "Regulated domains first. Finance, health, compliance-heavy everything. Places where a button isn’t just a button, it’s an audit trail. Where “move fast and break things” gets you a very polite letter from legal. I like those places. The constraints are real, so the design has to be real too.",
+    "Here’s the thing about complex products: the complexity is rarely the problem. The problem is complexity that shows up at the wrong moment, for the wrong person, in the wrong order. My job is to put it back in line.",
+    "So I start with people. Not personas on a slide. Actual people, doing actual work, with actual workarounds. The spreadsheet that lives next to the official tool. The sticky note on the monitor. The “oh, I just ask someone in ops.” That’s where the truth is.",
+    "Then I map it. Every step, every handoff, every place someone waits for someone else. Once a workflow fits on one page, half the debates end on their own. People stop arguing about opinions and start pointing at boxes.",
+    "Then I simplify. Cut steps. Merge screens. Move decisions earlier. Make the default the right answer. Simplicity in enterprise isn’t minimalism. It’s fewer ways to get it wrong.",
+    "Agentic AI. Everyone wants an agent. Fewer people ask what the agent should do on its own, what it should ask about, and how a human takes the wheel back. That’s a design problem, not a model problem. I design for that.",
+    "Good agent UX is mostly trust UX. Show what the agent is doing. Show why. Make it easy to check, easy to correct, easy to undo. Let confidence be visible. Let the human stay accountable without having to babysit.",
+    "In regulated spaces that matters twice. An agent that drafts a report is helpful. An agent that files it without anyone noticing is a headline. I’d rather design the review step than the apology.",
+    "Prototypes. I prototype early and I prototype a lot. Clickable, realistic, a little rough if needed. A stakeholder who can click through a flow understands it in two minutes. The same flow in a forty-page spec takes two weeks and three meetings.",
+    "A prototype is also the fastest way to find out I’m wrong. I like finding out I’m wrong early. It’s cheap then.",
+    "Floor check. Still going up? Great.",
+    "On teams: I work closely with engineering. I’d rather hear “that’s hard” in week one than “that’s impossible” in week ten. I sit in on technical discussions, I ask about data models, I care where the API ends.",
+    "With product managers, I bring options and trade-offs, not one shiny screen. With leadership, I bring the story: what’s broken, what it costs, what changes if we fix it.",
+    "With users, I mostly listen. Then I come back with something they can touch.",
+    "Design systems: yes, please. Enterprise products live for years and get built by many hands. A good system keeps them consistent when nobody is looking. A great one makes the right pattern the easy one.",
+    "Accessibility isn’t a phase. It’s part of done. Same for error states, empty states, loading states, and the state where the session expired at 4:58 on a Friday.",
+    "Data-heavy screens are my comfort zone. Tables with forty columns. Filters on filters. Dashboards someone stares at for eight hours a day. Those deserve care, because that someone deserves a good day.",
+    "What I’m not: a decorator. Pretty is nice. Clear is better. Clear and pretty is the goal, in that order.",
+    "What I watch after launch: Did the task get faster? Did errors drop? Did support tickets go quiet? Did people stop keeping the side spreadsheet? That last one is my favourite metric.",
+    "Still here. Still pitching. The elevator, apparently, has no top floor.",
+    "Quick summary, in case you just got on: Talk to people. Find the real problem. Map the workflow. Simplify it. Prototype it. Get the yes. Ship it. Watch it get used. Repeat.",
+    "If this sounds like what your team needs, resume and contacts are right up there, top right. Press it anytime. I’ll keep talking either way.",
+    "…",
+    "Right. From the top, then."
+  ];
+
+  const ROWS = 9;
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const textEl = document.getElementById("pitch");
+  const viewport = textEl.parentElement;
+  const rulesEl = document.querySelector(".rules");
+  const levelEl = document.getElementById("level");
+
+  // ---- Ruled lines (every third one stronger, as in the design) ----
+  for (let i = 0; i < ROWS; i++) {
+    const s = document.createElement("span");
+    if (i % 3 === 2) s.className = "strong";
+    rulesEl.appendChild(s);
+  }
+  function placeRules() {
+    const lh = parseFloat(getComputedStyle(textEl).lineHeight);
+    [...rulesEl.children].forEach((s, i) => {
+      s.style.top = (i * lh + lh * 0.77) + "px";
+    });
+  }
+  placeRules();
+  addEventListener("resize", placeRules);
+  document.fonts && document.fonts.ready.then(placeRules);
+
+  // ---- Elevator counter: G, 1, 2, 3 … every 2s ----
+  let level = 0;
+  setInterval(() => {
+    level++;
+    levelEl.textContent = level;
+  }, 2000);
+
+  // ---- Typing ----
+  const cursor = document.createElement("span");
+  cursor.className = "cursor";
+
+  let pIndex = 0;
+  let charIndex = 0;
+  let currentNode = null;
+
+  function startParagraph() {
+    const p = document.createElement("p");
+    currentNode = document.createTextNode("");
+    p.append(currentNode, cursor);
+    textEl.appendChild(p);
+  }
+
+  function delayFor(ch, next) {
+    if (".?!…".includes(ch) && (next === " " || next === undefined || next === "\n")) return 380 + Math.random() * 220;
+    if (",:;".includes(ch)) return 160 + Math.random() * 100;
+    if (ch === "\n") return 300;
+    return 24 + Math.random() * 38;
+  }
+
+  function tick() {
+    const para = PITCH[pIndex];
+    if (charIndex === 0) startParagraph();
+
+    const ch = para[charIndex];
+    currentNode.appendData(ch);
+    charIndex++;
+
+    if (charIndex >= para.length) {
+      pIndex = (pIndex + 1) % PITCH.length;
+      charIndex = 0;
+      textEl.classList.remove("typing");
+      setTimeout(() => { textEl.classList.add("typing"); tick(); }, 900 + Math.random() * 500);
+      return;
+    }
+    setTimeout(tick, delayFor(ch, para[charIndex]));
+  }
+
+  // ---- Smooth scroll-up ----
+  let offset = 0;
+  let last = performance.now();
+
+  function frame(now) {
+    const dt = Math.min(0.1, (now - last) / 1000);
+    last = now;
+
+    const target = Math.max(0, textEl.scrollHeight - viewport.clientHeight);
+    offset = reduceMotion ? target : offset + (target - offset) * (1 - Math.exp(-dt * 7));
+    if (Math.abs(target - offset) < 0.1) offset = target;
+
+    // Drop paragraphs that have scrolled fully out of view
+    const first = textEl.firstElementChild;
+    const second = first && first.nextElementSibling;
+    if (second && second.offsetTop < offset - 4) {
+      const removed = second.offsetTop - first.offsetTop;
+      first.remove();
+      offset -= removed;
+    }
+
+    textEl.style.transform = `translateY(${-offset}px)`;
+    requestAnimationFrame(frame);
+  }
+
+  textEl.classList.add("typing");
+  requestAnimationFrame(frame);
+  setTimeout(tick, 600);
+})();
+</script>
 </body>
 </html>
