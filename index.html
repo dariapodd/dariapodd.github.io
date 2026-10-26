@@ -103,6 +103,14 @@
     padding: 13px 32px;
     background: var(--pill-solid);
   }
+  /* Figma: 12px radius, 100% corner smoothing. Smoothing spreads the curve over
+     2x the radius, so use 24px with a squircle corner where supported. */
+  @supports (corner-shape: squircle) {
+    .pill-contacts {
+      border-radius: 24px;
+      corner-shape: squircle;
+    }
+  }
 
   .pill a {
     color: var(--ink);
