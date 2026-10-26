@@ -237,6 +237,12 @@
     }
   });
 
+  // Opened from a portfolio page (?style=json etc.): pre-select that page's style
+  const from = new URLSearchParams(location.search).get("style");
+  const match = from && [...form.querySelectorAll("input[name=style]")]
+    .find(i => i.value === from || i.value === from + "/");
+  if (match) match.checked = true;
+
   update();
   addEventListener("pageshow", update); // Back button restores the last pick
 })();
