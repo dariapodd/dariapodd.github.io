@@ -64,7 +64,7 @@
     width: 1px;
     background: var(--rule);
     pointer-events: none;
-    z-index: 5;
+    z-index: 0;   /* first in the page, so the project cards paint over it */
   }
 
   /* ---------- Shared header bits (same as the other views) ---------- */
@@ -313,14 +313,16 @@
     font-weight: 700;
     letter-spacing: 0.1em;
   }
-  .project-num::after { /* small diamond on the tab's top-right corner */
+  /* Teal diamond on the margin line, at the top edge of each project */
+  .project::before {
     content: "";
     position: absolute;
+    z-index: 4;
     top: -3.5px;
-    right: -3.5px;
+    left: calc(var(--margin-line) + 0.5px - 3.5px);   /* centred on the 1px line */
     width: 7px;
     height: 7px;
-    background: #fff;
+    background: var(--accent);
     transform: rotate(45deg);
   }
 
