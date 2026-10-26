@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daria Podrezova: Product Designer, AI &amp; enterprise domains</title>
+<link rel="icon" href="../favicon-64.png" type="image/png" sizes="64x64">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preload" href="../fonts/KodeMono.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+  /* Kode Mono, self-hosted (full character set). License: fonts/OFL.txt */
+  @font-face {
+    font-family: "Kode Mono";
+    src: url("../fonts/KodeMono.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+  }
+
+  :root {
+    --bg: #060a01;
+    --punct: #71b531;   /* keys, numbers, brackets */
+    --string: #ccf79e;  /* string values */
+    --accent: #8ee140;  /* current style in the selector */
+    --rule: #23251f;    /* ruled lines, margin line, line numbers */
+    --button: rgba(113, 181, 49, 0.2); /* #71B531 at 20% */
+
+    --fs: 32px;
+    --lh: 37px;
+    --nav-fs: 16px;
+    --gutter: 53px;     /* 26px margin line + 1px line + 26px gap */
+    --num-w: 74px;      /* line-number column */
+    --num-gap: 36px;    /* line numbers to code */
+    --ch: 0.7em;        /* one Kode Mono character incl. letter-spacing (0.6em + 0.1em) */
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; }
+  html { overflow-x: clip; } /* full-width ruled lines must never cause sideways scrolling */
+
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--punct);
+    font-family: "Kode Mono", ui-monospace, monospace;
+    overflow-x: hidden;
+  }
+
+  /* Vertical margin rule */
+  .margin-rule {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 26px;
+    width: 1px;
+    background: var(--rule);
+    pointer-events: none;
+  }
+
+  .frame {
+    width: min(1726px, calc(100% - 2 * var(--gutter)));
+    margin: 0 auto;
+    padding: 131px 0 96px;
+  }
+
+  /* ---------- "View portfolio as" selector ---------- */
+  .view-select {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 16px;
+    padding: 16px 0 16px calc(var(--num-w) + var(--num-gap)); /* lines up with the code */
+    margin-bottom: 64px;
+    color: var(--string);
+    font-size: var(--nav-fs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+  .view-select a {
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .view-select a:hover { font-weight: 600; }
+  .view-select .arrow { margin-left: 5px; }
+
+  /* ---------- Resume button, top right ---------- */
+  .resume {
+    position: fixed; /* stays in the corner while scrolling */
+    z-index: 10;
+    top: 32px;
+    right: 32px;
+    padding: 12px 32px;
+    border-radius: 12px;
+    background: var(--button);
+    backdrop-filter: blur(16px); /* Figma background blur 32 */
+    -webkit-backdrop-filter: blur(16px);
+    color: var(--string);
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .resume:hover { font-weight: 600; }
+  /* Figma: 12px radius, 100% corner smoothing. Smoothing spreads the curve over
+     2x the radius, so use 24px with a squircle corner where supported. */
+  @supports (corner-shape: squircle) {
+    .resume {
+      border-radius: 24px;
+      corner-shape: squircle;
+    }
+  }
+
+  /* ---------- JSON ---------- */
+  .code {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--fs);
+    line-height: var(--lh);
+    letter-spacing: 0.1em;
+  }
+
+  /* Ruled lines under every visual line, full window width */
+  .code::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(var(--lh) - 8px),
+      var(--rule) calc(var(--lh) - 8px) calc(var(--lh) - 7px),
+      transparent calc(var(--lh) - 7px) var(--lh)
+    );
+    pointer-events: none;
+  }
+
+  .code li {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--num-w) 1fr;
+    column-gap: var(--num-gap);
+  }
+
+  .ln {
+    color: var(--rule);
+    text-align: right;
+    user-select: none;
+  }
+
+  /* Long lines wrap like an editor: continuation lines indent 2 more characters */
+  .line {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    padding-left: calc((var(--ind) + 2) * var(--ch));
+    text-indent: calc(-2 * var(--ch));
+  }
+
+  .k, .n { color: var(--punct); }
+  .s { color: var(--string); }
+
+  /* Phones: keep the 32px text and whole lines; the code scrolls sideways like an editor,
+     with line numbers pinned on the left */
+  @media (max-width: 700px) {
+    :root { --num-gap: 16px; }
+    .code {
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+    }
+    .code::-webkit-scrollbar { display: none; }
+    .code li {
+      width: max-content;
+      min-width: 100%;
+    }
+    .line {
+      white-space: pre;
+      padding-left: calc(var(--ind) * var(--ch));
+      padding-right: var(--gutter);
+      text-indent: 0;
+    }
+    .ln {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      background: var(--bg);
+      box-shadow: var(--num-gap) 0 0 var(--bg); /* covers code scrolling under the gap */
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="margin-rule" aria-hidden="true"></div>
+
+  <a class="resume" href="../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
+
+  <div class="frame">
+    <nav class="view-select" aria-label="Portfolio style">
+      <span>view portfolio as:</span>
+      <a href="../" title="Choose another portfolio style">json<span class="arrow" aria-hidden="true">►</span></a>
+    </nav>
+
+    <main>
+      <ol class="code" id="code" aria-label="Resume as JSON"></ol>
+    </main>
+  </div>
+
+<script>
+(() => {
+  const RESUME = {
+    name: "Daria Podrezova",
+    title: "Product Designer, AI & enterprise domains",
+    location: "Sydney, AU",
+    experienceYears: "12+",
+    contacts: {
+      email: "daria.v.podrezova@gmail.com",
+      linkedin: "linkedin.com/in/daria-podrezova",
+      github: "github.com/daripod",
+    },
+    howIWork: [
+      "Talk to people.",
+      "Find the real problem.",
+      "Map the workflow, simplify it.",
+      "Prototype it so stakeholders see it, understand it, and say yes.",
+    ],
+    skills: [
+      "Complex prototyping: design + code",
+      "User research",
+      "Workshop design and facilitation",
+      "Requirements, IA, process mapping",
+      "Project and team management",
+      "Design coaching and mentoring",
+    ],
+    toolset: [
+      "VS Code",
+      "Cursor",
+      "Figma + MCP",
+      "Miro + MCP",
+      "Adobe CC",
+      "Codex / Claude Code",
+    ],
+    experience: [
+      {
+        role: "Manager, UX/UI Design",
+        company: "EY Studio+",
+        years: "2025-2026",
+        highlights: [
+          "Education client: current state, workflow mapping, strategy",
+          "Agentic Delivery Accelerator: go-to-market packaging",
+          "Multi-level approval workflow with agentic automation",
+          "Government: AI transcription and metadata automation PoC",
+          "Figma & AI enablement: 68 APAC sessions + 1:1 help",
+        ],
+      },
+      {
+        role: "Manager, UX/UI Design",
+        company: "EY",
+        years: "2022-2025",
+        highlights: [
+          "4D spatial collaboration tool (ArcGIS), processing industry",
+          "Digital twin + AI-assisted planning platform, PoC web app",
+          "Healthcare approval workflow transformation (ServiceNow)",
+          "Business approvals PoC: Power Apps, Power Automate, Teams",
+          "GenAI voice assistant for call centres, reusable PoC",
+        ],
+      },
+      {
+        role: "Senior Consultant, UX/UI Design",
+        company: "EY",
+        years: "2021-2022",
+        highlights: [
+          "Superannuation fund: strategy workshops",
+          "SaaS marketplace: co-design, lo-fi prototyping",
+          "White-label banking platform: workshops, PoC, theming",
+          "Deaf community startup: research to iOS PoC, end to end",
+        ],
+      },
+      {
+        role: "Tutor / Teaching Assistant",
+        company: "University of Sydney",
+        years: "2019-2026",
+        highlights: [
+          "~600 students: workshops, prototyping, user testing",
+          "HCI, Usability Engineering, Usability & Security, PM",
+        ],
+      },
+      {
+        role: "UX/UI Generalist and BA",
+        company: "TSUM Luxury Fashion Retail",
+        years: "2016-2018",
+        highlights: [
+          "17 bespoke apps, incl. first iOS payment terminal in country",
+          "Loyalty apps, indoor department store navigation",
+          "Requirements, Microsoft Dynamics integration",
+        ],
+      },
+      {
+        role: "UI/UX Specialist",
+        company: "2GIS",
+        years: "2013-2015",
+        highlights: [
+          "Local search on web, iOS, Android (2.6M monthly visitors)",
+          "B2B SaaS dashboards, visual design",
+        ],
+      },
+      {
+        role: "Design Team Lead",
+        company: "1C-Rarus",
+        years: "2008-2012",
+        highlights: [
+          "450 hi-fi pages, 10 Axure prototypes, 150 visual assets",
+          "Led 6 designers: coaching, internships, hiring",
+        ],
+      },
+    ],
+    personalProjects: [
+      "Book translation workspace (agent skill)",
+      "Branded UJM builder (agent skill)",
+      "Android e-book reader with AI context popup",
+      "Research knowledge base on the Anthropic API",
+      "Endlessly evolving text editor",
+    ],
+    education: [
+      { degree: "Master of Interaction Design and Electronic Arts", school: "University of Sydney", year: 2020 },
+      { degree: "Master of Computer Science", year: 2009 },
+      { degree: "Bachelor, Information Systems", year: 2008 },
+    ],
+    awards: [
+      { year: 2024, title: "Creativity: Breakthrough Product", by: "EY Design Studio Global" },
+      { year: 2024, title: "Visionary Teaching Innovation", by: "USYD Computer Science" },
+      { year: 2021, title: "Retail Tech Award", by: "Intl. Digital Retail Forum" },
+      { year: 2020, title: "Featured product", by: "MCOM Marketplace and Ecosystems" },
+      { year: 2018, title: "Vice-Chancellor's Scholarship", by: "University of Sydney" },
+      { year: 2018, title: "Featured product", by: "Digital Technologies Forum" },
+    ],
+    community: [
+      "2026 speaker, Codex Community event",
+      "2026 guest lecture, USYD School of Computer Science",
+      "2025-2026 mentor, Dalyell Professional Mentoring Program",
+      "2025 panellist, USYD Experience Design Society x EY",
+      "2025 co-facilitator, EY x Microsoft AI Skills Passport",
+      "2024 presenter, AI by Design, Microsoft Sydney",
+      "2022-2023 grad showcase jury, USYD Architecture, Design",
+      "2019 mentor, IxDA Sydney",
+    ],
+    training: [
+      "2026 Copilot Studio Agent Academy, Global AI Community",
+      "2025 Monetizing AI-Driven Value, EY",
+      "2025 Adobe GenStudio for Performance Marketing",
+      "2025 Flow Designer, ServiceNow micro-certification",
+      "2024 Human-Centered AI, Stanford HAI",
+      "2023 Project Management, EY",
+      "2021 AFHEA Associate Fellowship, AdvanceHE",
+      "2017 Brand Strategy Development, Strelka Institute",
+      "2014 An Exploration of Symmetry, NTU Singapore",
+      "2014 Human-Computer Interaction, UC San Diego",
+      "2014 Gamification, University of Pennsylvania",
+    ],
+    studyAndResearch: [
+      "Screen motion sickness in Outlook, Google Slides, Canva",
+      "Tim Tam Index: suburb attractiveness metric, GIS",
+      "Free time variation: quantitative GIS analysis",
+    ],
+    status: "200 OK, let's talk. 220 even better.",
+  };
+
+  // ---- Render as pretty-printed, colour-coded JSON with line numbers ----
+  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const TOKEN = /("(?:[^"\\]|\\.)*")(\s*:)?|(-?\b\d+(?:\.\d+)?\b)/g;
+
+  const lines = JSON.stringify(RESUME, null, 2).split("\n");
+  document.getElementById("code").innerHTML = lines.map((line, i) => {
+    const ind = line.match(/^ */)[0].length;
+    const body = line.slice(ind).replace(TOKEN, (m, str, colon, num) =>
+      str ? (colon ? `<span class="k">${esc(str)}</span>${colon}` : `<span class="s">${esc(str)}</span>`)
+          : `<span class="n">${num}</span>`);
+    return `<li><span class="ln" aria-hidden="true">${i + 1}</span><span class="line" style="--ind:${ind}">${body}</span></li>`;
+  }).join("");
+})();
+</script>
+</body>
+</html>

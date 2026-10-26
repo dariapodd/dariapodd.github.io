@@ -38,6 +38,7 @@
   * { box-sizing: border-box; }
 
   html, body { margin: 0; }
+  html { overflow-x: clip; } /* full-width ruled lines must never cause sideways scrolling */
 
   body {
     min-height: 100vh;
@@ -90,12 +91,15 @@
 
   /* ---------- Resume button, top right ---------- */
   .resume {
-    position: absolute;
+    position: fixed; /* stays in the corner while scrolling */
+    z-index: 10;
     top: 32px;
     right: 32px;
     padding: 12px 32px;
     border-radius: 12px;
     background: var(--pill-solid);
+    backdrop-filter: blur(16px); /* Figma background blur 32 */
+    -webkit-backdrop-filter: blur(16px);
     color: var(--ink);
     font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
     letter-spacing: 0.1em;
