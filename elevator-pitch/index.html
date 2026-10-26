@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daria Podrezova: Product Designer, AI &amp; enterprise domains</title>
+<link rel="icon" href="../favicon-64.png" type="image/png" sizes="64x64">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #dad9cf;
+    --ink: #403524;
+    --rule: #c8bfb3;
+    --pill-solid: #c8bfb3;
+
+    /* Every size is the 1920px Figma value times --k. Sizes stay fixed at every width. */
+    --k: 0.6;
+    --fs: 32px;
+    --lh: 36px;
+    --rows: 8;
+    --nav-fs: 16px;
+    --gutter: 53px; /* 26px margin line + 1px line + 26px gap */ /* min space left and right of the content on narrow screens */
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; }
+
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Kode Mono", ui-monospace, monospace;
+    overflow-x: hidden;
+  }
+
+  /* Vertical margin rule */
+  .margin-rule {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 26px;
+    width: 1px;
+    background: var(--rule);
+    pointer-events: none;
+  }
+
+  /* Nav + pitch share one centred column; the text lines up under the left nav bar. */
+  .frame {
+    width: fit-content;
+    max-width: calc(100% - 2 * var(--gutter));
+    margin: 0 auto;
+  }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: calc(16px * var(--k)) calc(52px * var(--k));
+    padding-top: calc(60px * var(--k));
+  }
+
+  .pill {
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    font-size: var(--nav-fs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .pill-styles {
+    max-width: 100%;
+    min-width: 0; /* shrinks and scrolls sideways on narrow screens */
+    padding: 16px 0;
+    gap: 16px;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .pill-styles::-webkit-scrollbar { display: none; }
+
+  /* Fade the edge(s) where nav items are cut off on narrow screens (classes set by script) */
+  .pill-styles { --fade: 64px; }
+  .pill-styles.fade-right {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - var(--fade)), transparent);
+            mask-image: linear-gradient(to right, #000 calc(100% - var(--fade)), transparent);
+  }
+  .pill-styles.fade-left {
+    -webkit-mask-image: linear-gradient(to left, #000 calc(100% - var(--fade)), transparent);
+            mask-image: linear-gradient(to left, #000 calc(100% - var(--fade)), transparent);
+  }
+  .pill-styles.fade-left.fade-right {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+            mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+  }
+
+  .links {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .sep {
+    width: 1px;
+    height: 32px;
+    background: var(--rule);
+  }
+
+  .pill-contacts {
+    flex-shrink: 0;
+    padding: 13px 32px;
+    background: var(--pill-solid);
+  }
+  /* Figma: 12px radius, 100% corner smoothing. Smoothing spreads the curve over
+     2x the radius, so use 24px with a squircle corner where supported. */
+  @supports (corner-shape: squircle) {
+    .pill-contacts {
+      border-radius: 24px;
+      corner-shape: squircle;
+    }
+  }
+
+  .pill a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .pill a:hover { font-weight: 600; }
+  .pill a[aria-current="page"] { font-weight: 700; }
+  /* ---------- Pitch ---------- */
+  .pitch-wrap {
+    position: relative;
+    /* Column width comes from the nav only, so typing never resizes (and shifts) it */
+    width: 0;
+    min-width: 100%;
+    /* Centred vertically in the window (gap set by script), never closer to the nav than the design margin */
+    margin-top: max(calc(130px * var(--k)), var(--center-gap, 0px));
+  }
+
+  /* Ruled lines, full page width, aligned to the text baseline */
+  .rules {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+    height: calc(var(--lh) * var(--rows));
+    pointer-events: none;
+  }
+  .rules span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .pitch {
+    position: relative;
+    width: min(calc(1279px * var(--k)), 100%);
+    height: calc(var(--lh) * var(--rows));
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(var(--lh) * 3.5));
+            mask-image: linear-gradient(to bottom, transparent 0, #000 calc(var(--lh) * 3.5));
+  }
+
+  .pitch-text {
+    font-size: var(--fs);
+    line-height: var(--lh);
+    letter-spacing: 0.1em;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    will-change: transform;
+  }
+
+  .pitch-text p {
+    margin: 0 0 var(--lh);
+  }
+  .pitch-text p.ding {
+    margin-bottom: calc(var(--lh) * 2); /* two empty lines after the opener */
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 0.6em;
+    height: 1em;
+    margin-left: 0.05em;
+    vertical-align: -0.12em;
+    background: var(--ink);
+    animation: blink 1s steps(1) infinite;
+  }
+  .typing .cursor { animation: none; }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  .elevator {
+    margin: calc(41px * var(--k)) 0 calc(60px * var(--k));
+    font-size: 16px;
+    letter-spacing: 0.1em;
+    line-height: 1.2;
+  }
+  .elevator output {
+    display: inline-block;
+    min-width: 3ch;
+  }
+</style>
+</head>
+<body>
+  <div class="margin-rule" aria-hidden="true"></div>
+
+  <div class="frame">
+  <nav class="nav" aria-label="Portfolio">
+    <div class="pill pill-styles">
+      <span class="label">portfolio style:</span>
+      <div class="links">
+        <a href="#">enterprise</a>
+        <span class="sep" aria-hidden="true"></span>
+        <a href="#">caveman</a>
+        <span class="sep" aria-hidden="true"></span>
+        <a href="#">startup</a>
+        <span class="sep" aria-hidden="true"></span>
+        <a href="#">json</a>
+        <span class="sep" aria-hidden="true"></span>
+        <a href="./" aria-current="page">elevator pitch</a>
+      </div>
+    </div>
+    <div class="pill pill-contacts">
+      <a href="../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
+    </div>
+  </nav>
+
+  <main class="pitch-wrap">
+    <div class="rules" aria-hidden="true"></div>
+    <div class="pitch">
+      <div class="pitch-text" id="pitch" aria-live="off"></div>
+    </div>
+    <p class="elevator">Elevator level: <output id="level">G</output></p>
+  </main>
+  </div>
+
+<script>
+(() => {
+  const DING = "*ding-dong*";
+  const PITCH = [
+    DING,
+    "Hi, I’m Daria,\nI’m a Product Designer mostly working with complex, regulated domains, Agentic AI & enterprise solutions. How I work? Talk to people. Find the real problem. Map the workflow, simplify it. Prototype it so stakeholders see it, understand it, and say yes.",
+    "Oh. We’re still in the elevator. Okay. Let me keep going.",
+    "Regulated domains first. Finance, health, compliance-heavy everything. Places where a button isn’t just a button, it’s an audit trail. Where “move fast and break things” gets you a very polite letter from legal. I like those places. The constraints are real, so the design has to be real too.",
+    "Here’s the thing about complex products: the complexity is rarely the problem. The problem is complexity that shows up at the wrong moment, for the wrong person, in the wrong order. My job is to put it back in line.",
+    "So I start with people. Not personas on a slide. Actual people, doing actual work, with actual workarounds. The spreadsheet that lives next to the official tool. The sticky note on the monitor. The “oh, I just ask someone in ops.” That’s where the truth is.",
+    "Then I map it. Every step, every handoff, every place someone waits for someone else. Once a workflow fits on one page, half the debates end on their own. People stop arguing about opinions and start pointing at boxes.",
+    "Then I simplify. Cut steps. Merge screens. Move decisions earlier. Make the default the right answer. Simplicity in enterprise isn’t minimalism. It’s fewer ways to get it wrong.",
+    "Agentic AI. Everyone wants an agent. Fewer people ask what the agent should do on its own, what it should ask about, and how a human takes the wheel back. That’s a design problem, not a model problem. I design for that.",
+    "Good agent UX is mostly trust UX. Show what the agent is doing. Show why. Make it easy to check, easy to correct, easy to undo. Let confidence be visible. Let the human stay accountable without having to babysit.",
+    "In regulated spaces that matters twice. An agent that drafts a report is helpful. An agent that files it without anyone noticing is a headline. I’d rather design the review step than the apology.",
+    "Prototypes. I prototype early and I prototype a lot. Clickable, realistic, a little rough if needed. A stakeholder who can click through a flow understands it in two minutes. The same flow in a forty-page spec takes two weeks and three meetings.",
+    "A prototype is also the fastest way to find out I’m wrong. I like finding out I’m wrong early. It’s cheap then.",
+    "Floor check. Still going up? Great.",
+    "On teams: I work closely with engineering. I’d rather hear “that’s hard” in week one than “that’s impossible” in week ten. I sit in on technical discussions, I ask about data models, I care where the API ends.",
+    "With product managers, I bring options and trade-offs, not one shiny screen. With leadership, I bring the story: what’s broken, what it costs, what changes if we fix it.",
+    "With users, I mostly listen. Then I come back with something they can touch.",
+    "Design systems: yes, please. Enterprise products live for years and get built by many hands. A good system keeps them consistent when nobody is looking. A great one makes the right pattern the easy one.",
+    "Accessibility isn’t a phase. It’s part of done. Same for error states, empty states, loading states, and the state where the session expired at 4:58 on a Friday.",
+    "Data-heavy screens are my comfort zone. Tables with forty columns. Filters on filters. Dashboards someone stares at for eight hours a day. Those deserve care, because that someone deserves a good day.",
+    "What I’m not: a decorator. Pretty is nice. Clear is better. Clear and pretty is the goal, in that order.",
+    "What I watch after launch: Did the task get faster? Did errors drop? Did support tickets go quiet? Did people stop keeping the side spreadsheet? That last one is my favourite metric.",
+    "Still here. Still pitching. The elevator, apparently, has no top floor.",
+    "Quick summary, in case you just got on: Talk to people. Find the real problem. Map the workflow. Simplify it. Prototype it. Get the yes. Ship it. Watch it get used. Repeat.",
+    "If this sounds like what your team needs, resume and contacts are right up there, top right. Press it anytime. I’ll keep talking either way.",
+    "…",
+    "Right. From the top, then."
+  ];
+
+  // Pacing: raise to slow down, lower to speed up
+  const TYPE_SLOWDOWN = 1.5;  // multiplies every typing delay and pause
+  const LEVEL_MS = 3000;      // elevator level changes every 3s
+
+  const ROWS = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--rows"), 10);
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const textEl = document.getElementById("pitch");
+  const viewport = textEl.parentElement;
+  const rulesEl = document.querySelector(".rules");
+  const levelEl = document.getElementById("level");
+
+  // ---- Ruled lines ----
+  for (let i = 0; i < ROWS; i++) {
+    rulesEl.appendChild(document.createElement("span"));
+  }
+  function placeRules() {
+    const lh = parseFloat(getComputedStyle(textEl).lineHeight);
+    [...rulesEl.children].forEach((s, i) => {
+      s.style.top = (i * lh + lh * 0.77 - 1) + "px";
+    });
+  }
+  placeRules();
+  addEventListener("resize", placeRules);
+  document.fonts && document.fonts.ready.then(placeRules);
+
+  // ---- Nav edge fades: show which side has hidden items ----
+  const styleNav = document.querySelector(".pill-styles");
+  function updateNavFade() {
+    const hiddenLeft = styleNav.scrollLeft > 1;
+    const hiddenRight = styleNav.scrollLeft + styleNav.clientWidth < styleNav.scrollWidth - 1;
+    styleNav.classList.toggle("fade-left", hiddenLeft);
+    styleNav.classList.toggle("fade-right", hiddenRight);
+  }
+  updateNavFade();
+  styleNav.addEventListener("scroll", updateNavFade, { passive: true });
+  addEventListener("resize", updateNavFade);
+  document.fonts && document.fonts.ready.then(updateNavFade);
+
+  // ---- Vertical centring of the text block (pitch + elevator line) ----
+  const nav = document.querySelector(".nav");
+  const wrap = document.querySelector(".pitch-wrap");
+  const elevator = document.querySelector(".elevator");
+  function centerBlock() {
+    const blockH = elevator.getBoundingClientRect().bottom - viewport.getBoundingClientRect().top;
+    const navBottom = nav.getBoundingClientRect().bottom + scrollY;
+    const gap = (document.documentElement.clientHeight - blockH) / 2 - navBottom;
+    wrap.style.setProperty("--center-gap", gap + "px");
+  }
+  centerBlock();
+  addEventListener("resize", centerBlock);
+  new ResizeObserver(centerBlock).observe(nav);
+  document.fonts && document.fonts.ready.then(centerBlock);
+
+  // ---- Elevator counter: G, 1, 2, 3 … every 2s ----
+  let level = 0;
+  setInterval(() => {
+    level++;
+    levelEl.textContent = level;
+  }, LEVEL_MS);
+
+  // ---- Typing ----
+  const cursor = document.createElement("span");
+  cursor.className = "cursor";
+
+  let pIndex = 0;
+  let charIndex = 0;
+  let currentNode = null;
+
+  function startParagraph() {
+    const p = document.createElement("p");
+    if (PITCH[pIndex] === DING) p.className = "ding";
+    currentNode = document.createTextNode("");
+    p.append(currentNode, cursor);
+    textEl.appendChild(p);
+  }
+
+  function delayFor(ch, next) {
+    return TYPE_SLOWDOWN * baseDelay(ch, next);
+  }
+  function baseDelay(ch, next) {
+    if (".?!…".includes(ch) && (next === " " || next === undefined || next === "\n")) return 380 + Math.random() * 220;
+    if (",:;".includes(ch)) return 160 + Math.random() * 100;
+    if (ch === "\n") return 300;
+    return 24 + Math.random() * 38;
+  }
+
+  function tick() {
+    const para = PITCH[pIndex];
+    if (charIndex === 0 && currentNode.length > 0) startParagraph();
+
+    const ch = para[charIndex];
+    currentNode.appendData(ch);
+    charIndex++;
+
+    if (charIndex >= para.length) {
+      pIndex = (pIndex + 1) % PITCH.length;
+      charIndex = 0;
+      textEl.classList.remove("typing");
+      setTimeout(() => { textEl.classList.add("typing"); tick(); }, TYPE_SLOWDOWN * (900 + Math.random() * 500));
+      return;
+    }
+    setTimeout(tick, delayFor(ch, para[charIndex]));
+  }
+
+  // ---- Smooth scroll-up ----
+  // The last line of text always sits on the bottom row, so typing happens at
+  // the bottom from the very first character (offset is negative until the box fills).
+  let offset = null;
+  let last = performance.now();
+
+  function frame(now) {
+    const dt = Math.min(0.1, (now - last) / 1000);
+    last = now;
+
+    const target = textEl.scrollHeight - viewport.clientHeight;
+    if (offset === null) offset = target;
+    offset = reduceMotion ? target : offset + (target - offset) * (1 - Math.exp(-dt * 7));
+    if (Math.abs(target - offset) < 0.1) offset = target;
+
+    // Drop paragraphs that have scrolled fully out of view
+    const first = textEl.firstElementChild;
+    const second = first && first.nextElementSibling;
+    if (second && second.offsetTop < offset - 4) {
+      const removed = second.offsetTop - first.offsetTop;
+      first.remove();
+      offset -= removed;
+    }
+
+    textEl.style.transform = `translateY(${-offset}px)`;
+    requestAnimationFrame(frame);
+  }
+
+  textEl.classList.add("typing");
+  startParagraph();
+  requestAnimationFrame(frame);
+  setTimeout(tick, TYPE_SLOWDOWN * 600);
+})();
+</script>
+</body>
+</html>
