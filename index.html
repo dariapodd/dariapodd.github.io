@@ -26,8 +26,6 @@
     --ink: #dddcc8;
     --panel: rgba(58, 57, 56, 0.2);
     --border: #4c4c4a;
-    --button: #c8bfb3;
-    --button-ink: #403524;
     --shadow: 0 4px 72px rgba(0, 0, 0, 0.25);
   }
 
@@ -62,9 +60,7 @@
   }
 
   .title {
-    width: 100%;
-    margin: 0 0 32px; /* legend isn't a flex item, so it sets its own gap */
-    padding: 0;
+    margin: 0;
     font-size: 16px;
     line-height: 1.2;
     letter-spacing: 0.1em;
@@ -79,38 +75,29 @@
     gap: 8px;
     margin: 0;
     padding: 0;
-    border: 0;
+    list-style: none;
   }
 
+  /* Each option is a link: clicking (or Enter) opens that style straight away */
   .option {
     display: flex;
     flex-direction: column;
     gap: 4px;
     padding: 12px 24px;
-    border: 1px solid transparent; /* keeps size stable when selected */
     border-radius: 12px;
-    cursor: pointer;
+    color: inherit;
+    text-decoration: none;
   }
-  .option:hover { background: rgba(58, 57, 56, 0.12); }
-  .option:hover .name { font-weight: 600; } /* title only, not the description */
-  .option:has(input:checked) {
-    background: var(--panel);
-    border-color: var(--border);
-    box-shadow: var(--shadow);
+  a.option:hover,
+  a.option:focus-visible {
+    background: rgba(58, 57, 56, 0.12);
+    outline: none;
   }
-  .option:has(input:focus-visible) {
-    outline: 2px solid var(--ink);
-    outline-offset: 2px;
-  }
+  a.option:hover .name,
+  a.option:focus-visible .name { font-weight: 600; } /* title only, not the description */
 
-  /* Native radios stay for keyboard + screen readers, visually hidden */
-  .option input {
-    position: absolute;
-    opacity: 0;
-    width: 1px;
-    height: 1px;
-    pointer-events: none;
-  }
+  /* Styles without a page yet */
+  .option.is-soon { opacity: 0.45; cursor: default; }
 
   .name {
     font-size: 16px;
@@ -127,141 +114,81 @@
   }
   .desc a { color: inherit; }
 
-  .go {
-    width: 100%;
-    padding: 12px 32px;
-    border: 0;
-    border-radius: 12px;
-    background: var(--button);
-    color: var(--button-ink);
-    font: 400 16px/1.2 "Kode Mono", ui-monospace, monospace;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-  .go:hover:not(:disabled) { font-weight: 600; }
-  .go:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-  }
   /* Figma-style 100% corner smoothing: 12px radius spread over 24px as a squircle */
   @supports (corner-shape: squircle) {
     .card,
-    .option,
-    .go {
+    .option {
       border-radius: 24px;
       corner-shape: squircle;
     }
-  }
-  .go:focus-visible {
-    outline: 2px solid var(--ink);
-    outline-offset: 2px;
-  }
-</style>
+  }</style>
 </head>
 <body>
-  <form class="card" id="selector">
-    <fieldset class="options">
-      <legend class="title">select portfolio style:</legend>
+  <nav class="card" aria-labelledby="menu-title">
+    <h1 class="title" id="menu-title">select portfolio style:</h1>
 
-      <label class="option">
-        <input type="radio" name="style" value="enterprise/">
-        <span class="name">enterprise</span>
-        <span class="desc">Normal, recommended</span>
-      </label>
-
-      <label class="option">
-        <input type="radio" name="style" value="caveman">
-        <span class="name">caveman</span>
-        <span class="desc">Very succinct, inspired by <a href="https://dev.to/onsen/caveman-claude-the-token-cutting-skill-thats-changing-ai-workflows-4hmc" target="_blank" rel="noopener">this skill</a></span>
-      </label>
-
-      <label class="option">
-        <input type="radio" name="style" value="startup">
-        <span class="name">startup</span>
-        <span class="desc">The one with emojis</span>
-      </label>
-
-      <label class="option">
-        <input type="radio" name="style" value="elevator-pitch/" checked>
-        <span class="name">eternal elevator pitch</span>
-        <span class="desc">Imagine yourself in a lift in an endlessly tall building...</span>
-      </label>
-
-      <label class="option">
-        <input type="radio" name="style" value="json/">
-        <span class="name">json</span>
-        <span class="desc">Works best if you’re a robot</span>
-      </label>
-
-      <label class="option">
-        <input type="radio" name="style" value="resume-daria-podrezova.pdf">
-        <span class="name">go straight to resume</span>
-        <span class="desc">View and download PDF</span>
-      </label>
-    </fieldset>
-
-    <button class="go" type="submit">Go →</button>
-  </form>
+    <ul class="options">
+      <li>
+        <a class="option" href="enterprise/">
+          <span class="name">enterprise</span>
+          <span class="desc">Normal, recommended</span>
+        </a>
+      </li>
+      <li>
+        <div class="option is-soon" aria-disabled="true" title="Coming soon">
+          <span class="name">caveman</span>
+          <span class="desc">Very succinct, inspired by <a href="https://dev.to/onsen/caveman-claude-the-token-cutting-skill-thats-changing-ai-workflows-4hmc" target="_blank" rel="noopener">this skill</a></span>
+        </div>
+      </li>
+      <li>
+        <div class="option is-soon" aria-disabled="true" title="Coming soon">
+          <span class="name">startup</span>
+          <span class="desc">The one with emojis</span>
+        </div>
+      </li>
+      <li>
+        <a class="option" href="elevator-pitch/">
+          <span class="name">eternal elevator pitch</span>
+          <span class="desc">Imagine yourself in a lift in an endlessly tall building...</span>
+        </a>
+      </li>
+      <li>
+        <a class="option" href="json/">
+          <span class="name">json</span>
+          <span class="desc">Works best if you’re a robot</span>
+        </a>
+      </li>
+      <li>
+        <a class="option" href="resume-daria-podrezova.pdf" target="_blank" rel="noopener">
+          <span class="name">go straight to resume</span>
+          <span class="desc">View and download PDF</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
 
 <script>
 (() => {
-  // Styles that have a page so far; the rest show "Coming soon" on the button.
-  const READY = new Set(["enterprise/", "elevator-pitch/", "json/", "resume-daria-podrezova.pdf"]);
-  // These open in a new tab, so the selector stays open behind them.
-  const NEW_TAB = new Set(["resume-daria-podrezova.pdf"]);
+  // Keyboard: ↑/↓ move between styles (wrapping, skipping ones without a page yet),
+  // Enter opens the focused one, Esc returns to the page the menu was opened from.
+  const options = [...document.querySelectorAll("a.option")];
+  const from = new URLSearchParams(location.search).get("style"); // e.g. ?style=json
+  const fromLink = from && options.find(a => a.getAttribute("href") === from + "/");
 
-  const form = document.getElementById("selector");
-  const go = form.querySelector(".go");
-  const selected = () => form.querySelector("input[name=style]:checked");
-
-  function update() {
-    const ready = READY.has(selected().value);
-    go.disabled = !ready;
-    go.textContent = ready ? "Go →" : "Coming soon";
-  }
-
-  form.addEventListener("change", update);
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const target = selected().value;
-    if (!READY.has(target)) return;
-    if (NEW_TAB.has(target)) window.open(target, "_blank", "noopener");
-    else location.href = target;
-  });
-  // Keyboard: ↑/↓ move the selection (wrapping), Enter opens it, Esc returns to the page
-  // the menu was opened from. Works without clicking into the menu first.
-  const options = [...form.querySelectorAll("input[name=style]")];
   document.addEventListener("keydown", (e) => {
     if (e.altKey || e.ctrlKey || e.metaKey) return;
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       e.preventDefault();
-      const step = e.key === "ArrowDown" ? 1 : -1;
-      const next = options[(options.indexOf(selected()) + step + options.length) % options.length];
-      next.checked = true;
-      next.focus({ preventScroll: true });
-      update();
-    } else if (e.key === "Enter") {
-      if (e.target.closest("a")) return; // e.g. the "this skill" link opens normally
-      e.preventDefault();
-      form.requestSubmit();
+      const current = options.indexOf(document.activeElement);
+      let next;
+      if (current === -1) next = fromLink || options[0]; // first press: start at the page you came from
+      else next = options[(current + (e.key === "ArrowDown" ? 1 : -1) + options.length) % options.length];
+      next.focus();
     } else if (e.key === "Escape") {
-      const from = new URLSearchParams(location.search).get("style");
-      const back = from && options.find(i => i.value === from || i.value === from + "/");
-      if (back && READY.has(back.value)) location.href = back.value;
+      if (fromLink) location.href = fromLink.getAttribute("href");
       else if (document.referrer.startsWith(location.origin)) history.back();
     }
   });
-
-  // Opened from a portfolio page (?style=json etc.): pre-select that page's style
-  const from = new URLSearchParams(location.search).get("style");
-  const match = from && [...form.querySelectorAll("input[name=style]")]
-    .find(i => i.value === from || i.value === from + "/");
-  if (match) match.checked = true;
-
-  update();
-  addEventListener("pageshow", update); // Back button restores the last pick
 })();
 </script>
-</body>
-</html>
+</body></html>
