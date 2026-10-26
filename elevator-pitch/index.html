@@ -35,6 +35,7 @@
     --gutter: 53px; /* 26px margin line + 1px line + 26px gap; min space left and right of the content */
     /* Left edge matches the JSON view: its frame + line-number column (74px) + gap (36px) */
     --align-left: 110px;
+    --frame-left: max(var(--gutter), calc((100vw - 1726px) / 2)); /* column's left margin */
   }
 
   * { box-sizing: border-box; }
@@ -71,7 +72,7 @@
     padding-left: var(--align-left);
     /* Centred on the full window width (100vw includes any scrollbar), so the JSON view and
        the pitch view share the same left edge whether or not the page scrolls */
-    margin-left: max(var(--gutter), calc((100vw - 1726px) / 2));
+    margin-left: var(--frame-left);
     padding-top: 131px; /* selector sits at a fixed spot from the top, as in the JSON view */
   }
 
@@ -137,9 +138,9 @@
   .rules {
     position: absolute;
     top: 0;
-    left: 50%;
+    /* from the window's left edge to its right edge, wherever the column sits */
+    left: calc(-1 * (var(--frame-left) + var(--align-left)));
     width: 100vw;
-    transform: translateX(-50%);
     height: calc(var(--lh) * var(--rows));
     pointer-events: none;
   }
