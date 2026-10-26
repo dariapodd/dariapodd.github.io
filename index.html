@@ -16,11 +16,12 @@
     --pill-border: #656a75;
     --rule: rgba(89, 77, 60, 0.13);
 
-    /* Half of the 1920px Figma design. Sizes stay fixed at every width. */
-    --fs: 24.4px;
+    /* Every size is the 1920px Figma value times --k. Sizes stay fixed at every width. */
+    --k: 0.6;
+    --fs: calc(48.8px * var(--k));
     --lh: calc(var(--fs) * 1.2);
-    --rows: 9;
-    --nav-fs: 10px;
+    --rows: 8;
+    --nav-fs: calc(20px * var(--k));
   }
 
   * { box-sizing: border-box; }
@@ -40,7 +41,7 @@
     position: fixed;
     top: 0;
     bottom: 0;
-    left: clamp(8px, 1.3vw, 25px);
+    left: clamp(8px, calc(2.6vw * var(--k)), calc(50px * var(--k)));
     width: 1px;
     background: var(--rule);
     pointer-events: none;
@@ -57,20 +58,20 @@
   .nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 26px;
-    padding-top: 30px;
+    gap: calc(16px * var(--k)) calc(52px * var(--k));
+    padding-top: calc(60px * var(--k));
   }
 
   .pill {
     display: flex;
     align-items: center;
-    height: 28px;
+    height: calc(56px * var(--k));
     border: 1px solid var(--pill-border);
-    border-radius: 6px;
+    border-radius: calc(12px * var(--k));
     background: var(--pill-bg);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 2px 36px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(calc(16px * var(--k)));
+    -webkit-backdrop-filter: blur(calc(16px * var(--k)));
+    box-shadow: 0 calc(4px * var(--k)) calc(72px * var(--k)) rgba(0, 0, 0, 0.25);
     font-size: var(--nav-fs);
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -79,26 +80,26 @@
   }
 
   .pill-styles {
-    width: min(639.5px, calc(100vw - 32px));
-    padding: 0 52.5px;
+    width: min(calc(1279px * var(--k)), calc(100vw - 32px));
+    padding: 0 calc(105px * var(--k));
     justify-content: space-between;
-    gap: 8px;
+    gap: calc(16px * var(--k));
     overflow-x: auto;
     scrollbar-width: none;
   }
   .pill-styles::-webkit-scrollbar { display: none; }
 
-  .pill-styles .label { margin-right: auto; padding-right: 40px; }
+  .pill-styles .label { margin-right: auto; padding-right: calc(80px * var(--k)); }
 
   .pill-contacts {
-    padding: 0 19px;
+    padding: 0 calc(38px * var(--k));
   }
 
   .pill a {
     color: var(--ink);
     text-decoration: none;
   }
-  .pill a:hover { text-decoration: underline; text-underline-offset: 2px; }
+  .pill a:hover { text-decoration: underline; text-underline-offset: calc(4px * var(--k)); }
   .pill a[aria-current="page"] { color: var(--accent); }
 
   /* ---------- Pitch ---------- */
@@ -107,7 +108,7 @@
     /* Column width comes from the nav only, so typing never resizes (and shifts) it */
     width: 0;
     min-width: 100%;
-    margin-top: 65px;
+    margin-top: calc(130px * var(--k));
   }
 
   /* Ruled lines, full page width, aligned to the text baseline */
@@ -130,7 +131,7 @@
 
   .pitch {
     position: relative;
-    width: min(639.5px, 100%);
+    width: min(calc(1279px * var(--k)), 100%);
     height: calc(var(--lh) * var(--rows));
     overflow: hidden;
     -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(var(--lh) * 3.5));
@@ -166,8 +167,8 @@
   }
 
   .elevator {
-    margin: 20.5px 0 30px;
-    font-size: 12px;
+    margin: calc(41px * var(--k)) 0 calc(60px * var(--k));
+    font-size: calc(24px * var(--k));
     letter-spacing: 0.1em;
     line-height: 1.2;
   }
@@ -235,7 +236,7 @@
     "Right. From the top, then."
   ];
 
-  const ROWS = 9;
+  const ROWS = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--rows"), 10);
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const textEl = document.getElementById("pitch");
@@ -250,7 +251,7 @@
   function placeRules() {
     const lh = parseFloat(getComputedStyle(textEl).lineHeight);
     [...rulesEl.children].forEach((s, i) => {
-      s.style.top = (i * lh + lh * 0.77) + "px";
+      s.style.top = (i * lh + lh * 0.77 - 1) + "px";
     });
   }
   placeRules();
