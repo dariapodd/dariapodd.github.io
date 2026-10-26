@@ -17,7 +17,6 @@
     --rule: rgba(89, 77, 60, 0.13);
 
     /* Half of the 1920px Figma design. Sizes stay fixed at every width. */
-    --left: clamp(16px, 5.13vw, 98.5px);
     --fs: 24.4px;
     --lh: calc(var(--fs) * 1.2);
     --rows: 9;
@@ -47,12 +46,19 @@
     pointer-events: none;
   }
 
+  /* Nav + pitch share one centred column; the text lines up under the left nav bar. */
+  .frame {
+    width: fit-content;
+    max-width: calc(100% - 32px);
+    margin: 0 auto;
+  }
+
   /* ---------- Nav ---------- */
   .nav {
     display: flex;
     flex-wrap: wrap;
     gap: 8px 26px;
-    padding: 30px 16px 0 var(--left);
+    padding-top: 30px;
   }
 
   .pill {
@@ -73,7 +79,7 @@
   }
 
   .pill-styles {
-    width: min(639.5px, calc(100vw - var(--left) - 16px));
+    width: min(639.5px, calc(100vw - 32px));
     padding: 0 52.5px;
     justify-content: space-between;
     gap: 8px;
@@ -98,13 +104,17 @@
   /* ---------- Pitch ---------- */
   .pitch-wrap {
     position: relative;
+    contain: inline-size; /* column width comes from the nav, not the long text */
     margin-top: 65px;
   }
 
   /* Ruled lines, full page width, aligned to the text baseline */
   .rules {
     position: absolute;
-    inset: 0 0 auto 0;
+    top: 0;
+    left: 50%;
+    width: 100vw;
+    transform: translateX(-50%);
     height: calc(var(--lh) * var(--rows));
     pointer-events: none;
   }
@@ -118,8 +128,7 @@
 
   .pitch {
     position: relative;
-    margin-left: var(--left);
-    width: min(639.5px, calc(100vw - var(--left) - 16px));
+    width: min(639.5px, 100%);
     height: calc(var(--lh) * var(--rows));
     overflow: hidden;
     -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(var(--lh) * 3.5));
@@ -155,7 +164,7 @@
   }
 
   .elevator {
-    margin: 20.5px 0 30px var(--left);
+    margin: 20.5px 0 30px;
     font-size: 12px;
     letter-spacing: 0.1em;
     line-height: 1.2;
@@ -169,6 +178,7 @@
 <body>
   <div class="margin-rule" aria-hidden="true"></div>
 
+  <div class="frame">
   <nav class="nav" aria-label="Portfolio">
     <div class="pill pill-styles">
       <span class="label">portfolio style:</span>
@@ -190,6 +200,7 @@
     </div>
     <p class="elevator">Elevator level: <output id="level">G</output></p>
   </main>
+  </div>
 
 <script>
 (() => {
