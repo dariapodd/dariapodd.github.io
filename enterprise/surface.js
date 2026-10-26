@@ -84,7 +84,16 @@
   })();
 
   const project = cameraFor(YAW0 + VIEW_TURN, PITCH0 + VIEW_TILT);
-  const toView = (p) => [FIT_T.ox + p[0] * FIT_T.s, FIT_T.oy + p[1] * FIT_T.s, p[2]];
+
+  // At this angle the hilltop rises above the 330px Figma box: add headroom at the top
+  // (the canvas grows upwards by the same amount, so nothing else moves on the page)
+  const HEADROOM = (() => {
+    let minY = Infinity;
+    for (const pts of polylines(project)) for (const p of pts) minY = Math.min(minY, FIT_T.oy + p[1] * FIT_T.s);
+    return Math.max(0, Math.ceil(8 - minY));   // keep 8 units clear above the highest point
+  })();
+  const DRAW_H = VIEW_H + HEADROOM;
+  const toView = (p) => [FIT_T.ox + p[0] * FIT_T.s, FIT_T.oy + p[1] * FIT_T.s + HEADROOM, p[2]];
 
   // Wireframe lines (view-box units)
   const LINES = (() => {
@@ -190,7 +199,7 @@
     const aPos = gl.getAttribLocation(prog, "a_pos");
     const aLevel = gl.getAttribLocation(prog, "a_level");
     const uColor = gl.getUniformLocation(prog, "u_color");
-    gl.uniform2f(gl.getUniformLocation(prog, "u_view"), VIEW_W, VIEW_H);
+    gl.uniform2f(gl.getUniformLocation(prog, "u_view"), VIEW_W, DRAW_H);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
@@ -231,8 +240,8 @@
   function setup2D(canvas) {
     const ctx = canvas.getContext("2d");
     return (levels) => {
-      ctx.setTransform(canvas.width / VIEW_W, 0, 0, canvas.height / VIEW_H, 0, 0);
-      ctx.clearRect(0, 0, VIEW_W, VIEW_H);
+      ctx.setTransform(canvas.width / VIEW_W, 0, 0, canvas.height / DRAW_H, 0, 0);
+      ctx.clearRect(0, 0, VIEW_W, DRAW_H);
       levels.forEach((level, k) => {
         if (level <= 0) return;
         ctx.fillStyle = `rgba(${TEAL.join(",")},${TEAL_ALPHA * level})`;
@@ -255,6 +264,10 @@
   }
 
   for (const host of document.querySelectorAll(".micro--surface")) {
+    // Grow the box upwards by the headroom; % margins resolve against the project's width,
+    // and the box is 34.53% of it, so this keeps the Figma position of the original 330px box
+    host.style.aspectRatio = `${VIEW_W} / ${DRAW_H}`;
+    host.style.marginTop = `calc(${-HEADROOM / VIEW_W} * 34.53%)`;
     const canvas = document.createElement("canvas");
     host.append(canvas);
 
@@ -295,7 +308,7 @@
     // ---- Hover ----
     canvas.addEventListener("pointermove", (e) => {
       const r = canvas.getBoundingClientRect();
-      const cell = cellAt((e.clientX - r.left) / r.width * VIEW_W, (e.clientY - r.top) / r.height * VIEW_H);
+      const cell = cellAt((e.clientX - r.left) / r.width * VIEW_W, (e.clientY - r.top) / r.height * DRAW_H);
       if (cell !== hovered) { hovered = cell; animate(); }
     });
     canvas.addEventListener("pointerleave", () => { hovered = -1; animate(); });
