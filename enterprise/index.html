@@ -413,8 +413,30 @@
     height: auto;
   }
 
+  /* ---------- Micrographics ----------
+     Positioned in % of the 1920×960 project block (Figma values), so they scale with it.
+     Decorative only: no pointer events, hidden when the project stacks on small screens. */
+  .micro {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .micro canvas,
+  .micro svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .micro--surface {          /* wireframe graph, hangs over the block's bottom edge */
+    left: -11.3%;            /* -217 / 1920: starts beyond the left edge, as in Figma */
+    top: var(--micro-top, 78.65%);
+    width: 34.53%;           /* 663 / 1920 */
+    aspect-ratio: 663 / 330;
+  }
   /* Phones and small tablets: stack text, logo and screenshot */
   @media (max-width: 900px) {
+    .micro { display: none; }
     .project { aspect-ratio: auto; padding-bottom: 48px; }
     .project-content { width: auto; padding: 160px var(--gutter) 0 var(--text-left); }
     .project-logo {
@@ -476,6 +498,7 @@
       <img class="project-logo" src="assets/logo-esri.svg" alt="Esri">
       <img class="project-shot" src="assets/project-1-spatial-digital-twin.png" width="2218" height="1474"
            alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
+      <div class="micro micro--surface" style="--micro-top: 78.65%" aria-hidden="true"></div>
     </section>
 
     <section class="project project--grey" aria-labelledby="project-2">
@@ -498,8 +521,11 @@
       <img class="project-logo" src="assets/logo-esri.svg" alt="Esri">
       <img class="project-shot" src="assets/project-1-spatial-digital-twin.png" width="2218" height="1474"
            alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
+      <div class="micro micro--surface" style="--micro-top: 81.15%" aria-hidden="true"></div>
     </section>
   </main>
+
+<script src="surface.js" defer></script>
 
 <script>
   // Hide the scroll hint as soon as the page is scrolled; bring it back at the top
