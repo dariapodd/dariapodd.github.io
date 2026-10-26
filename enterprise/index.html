@@ -445,6 +445,18 @@
       margin: 40px 0 0 var(--text-left);
     }
   }
+  /* Centre capitals exactly in buttons: the line box normally reserves room for accents
+     above and descenders below, which leaves caps ~1px high. Trimming the box to the cap
+     height lets equal padding centre them; older browsers get a 0.5px nudge instead.
+     Button height stays 43.2px either way. */
+  .resume, .button, .scroll-hint { padding-top: 12.5px; padding-bottom: 11.5px; }
+  @supports (text-box: trim-both cap alphabetic) {
+    .resume, .button, .scroll-hint {
+      text-box: trim-both cap alphabetic;
+      padding-top: 15.6px;
+      padding-bottom: 15.6px;
+    }
+  }
 </style>
 </head>
 <body>
