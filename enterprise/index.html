@@ -21,8 +21,8 @@
   }
 
   :root {
-    --bg: #21201d;
-    --bg-glow: #2e2e2c;
+    --bg: #1e1d19;
+    --bg-glow: #393938;
     --ink: #dddcc8;
     --accent: #00ffcc;
     --accent-bg: rgba(0, 255, 204, 0.1);
@@ -45,7 +45,8 @@
 
   body {
     min-height: 100vh;
-    background: radial-gradient(960px 1378px at 50% 1188px, var(--bg-glow), var(--bg)) var(--bg);
+    /* Figma: radial glow centred 977px down, 1920 wide × 2268 tall */
+    background: radial-gradient(960px 1134px at 50% 977px, var(--bg-glow), var(--bg)) var(--bg);
     color: var(--ink);
     font-family: "Kode Mono", ui-monospace, monospace;
   }
