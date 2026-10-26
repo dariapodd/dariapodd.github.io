@@ -323,8 +323,8 @@
   .project-content {
     position: relative;
     padding: 123.5px 0 195px var(--text-left);
-    /* never runs under the screenshot, which starts at 48.75% of the block */
-    width: max(calc(var(--text-left) + 260px), calc(48.75% - 32px));
+    /* left half of the block, at least 64px clear of the screenshot at 50% */
+    width: max(calc(var(--text-left) + 260px), calc(50% - 64px));
   }
 
   .project h2 {
@@ -391,9 +391,9 @@
 
   .project-shot {
     position: absolute;
-    /* Twice the original gap after the text column (which ends at text-left + 499px and
-       sat 48.75% − that away from the screenshot); 64px minimum when the text is squeezed */
-    left: max(calc(48.75% + 32px), calc(2 * 48.75% - var(--text-left) - 499px));
+    /* Screenshot takes the right half of the block (and runs off the edge, as in Figma);
+       on narrow desktops it keeps 64px clear of the text's 260px minimum width */
+    left: max(50%, calc(var(--text-left) + 260px + 64px));
     top: 14.22%;           /* 136.5 / 960 */
     width: 57.76%;         /* 1109 / 1920 — runs past the right edge, as in Figma */
     height: auto;
