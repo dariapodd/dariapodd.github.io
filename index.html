@@ -12,7 +12,6 @@
     --bg: #dad9cf;
     --ink: #403524;
     --rule: #c8bfb3;
-    --pill-bg: rgba(218, 217, 207, 0.2);
     --pill-solid: #c8bfb3;
 
     /* Every size is the 1920px Figma value times --k. Sizes stay fixed at every width. */
@@ -56,7 +55,7 @@
   /* ---------- Nav ---------- */
   .nav {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     gap: calc(16px * var(--k)) calc(52px * var(--k));
     padding-top: calc(60px * var(--k));
@@ -77,9 +76,11 @@
 
   .pill-styles {
     max-width: calc(100vw - 32px);
+    min-width: 0; /* shrinks and scrolls sideways on narrow screens */
     padding: 16px 0;
     gap: 48px;
-    background: var(--pill-bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     overflow-x: auto;
     scrollbar-width: none;
   }
@@ -97,6 +98,7 @@
   }
 
   .pill-contacts {
+    flex-shrink: 0;
     padding: 13px 32px;
     background: var(--pill-solid);
   }
