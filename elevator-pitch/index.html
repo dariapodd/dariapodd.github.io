@@ -63,8 +63,7 @@
   .frame {
     width: min(calc(1279px * var(--k)), calc(100% - 2 * var(--gutter)));
     margin: 0 auto;
-    /* Centred vertically in the window (gap set by script), always clear of the resume button */
-    padding-top: max(110px, var(--center-gap, 0px));
+    padding-top: 131px; /* selector sits at a fixed spot from the top, as in the JSON view */
   }
 
   /* ---------- "View portfolio as" selector ---------- */
@@ -74,7 +73,8 @@
     align-items: center;
     gap: 0 16px;
     padding: 16px 0;
-    margin-bottom: 64px; /* to the pitch text */
+    /* Pitch + elevator line are centred in the window (gap set by script), at least 64px below */
+    margin-bottom: max(64px, var(--center-gap, 0px));
     color: var(--nav-ink);
     font-size: var(--nav-fs);
     letter-spacing: 0.1em;
@@ -285,18 +285,19 @@
   addEventListener("resize", placeRules);
   document.fonts && document.fonts.ready.then(placeRules);
 
-  // ---- Vertical centring of the block (selector + pitch + elevator line) ----
-  const column = document.querySelector(".frame");
+  // ---- Vertical centring of the pitch + elevator line (selector stays at the top) ----
   const viewSelect = document.querySelector(".view-select");
   const elevator = document.querySelector(".elevator");
   function centerBlock() {
-    const blockH = elevator.getBoundingClientRect().bottom - viewSelect.getBoundingClientRect().top;
-    const gap = (document.documentElement.clientHeight - blockH) / 2;
-    column.style.setProperty("--center-gap", gap + "px");
+    const blockH = elevator.getBoundingClientRect().bottom - viewport.getBoundingClientRect().top;
+    const selectorBottom = viewSelect.getBoundingClientRect().bottom + scrollY;
+    const gap = (document.documentElement.clientHeight - blockH) / 2 - selectorBottom;
+    viewSelect.style.setProperty("--center-gap", gap + "px");
   }
   centerBlock();
   addEventListener("resize", centerBlock);
-  new ResizeObserver(centerBlock).observe(viewSelect);  document.fonts && document.fonts.ready.then(centerBlock);
+  new ResizeObserver(centerBlock).observe(viewSelect);
+  document.fonts && document.fonts.ready.then(centerBlock);
 
   // ---- Elevator counter: G, 1, 2, 3 … every 2s ----
   let level = 0;
