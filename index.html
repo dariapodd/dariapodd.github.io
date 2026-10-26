@@ -208,6 +208,8 @@
 (() => {
   // Styles that have a page so far; the rest show "Coming soon" on the button.
   const READY = new Set(["elevator-pitch/", "resume-daria-podrezova.pdf"]);
+  // These open in a new tab, so the selector stays open behind them.
+  const NEW_TAB = new Set(["resume-daria-podrezova.pdf"]);
 
   const form = document.getElementById("selector");
   const go = form.querySelector(".go");
@@ -222,7 +224,10 @@
   form.addEventListener("change", update);
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    if (READY.has(selected().value)) location.href = selected().value;
+    const target = selected().value;
+    if (!READY.has(target)) return;
+    if (NEW_TAB.has(target)) window.open(target, "_blank", "noopener");
+    else location.href = target;
   });
   // Enter on a focused option goes too
   form.addEventListener("keydown", (e) => {
