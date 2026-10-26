@@ -152,6 +152,12 @@
     column-gap: var(--num-gap);
   }
 
+  /* Nudge text down so letters sit on the ruled line (baseline ~2px past the line, as in the pitch view) */
+  .ln, .line {
+    position: relative;
+    top: 4px;
+  }
+
   .ln {
     color: var(--rule);
     text-align: right;
