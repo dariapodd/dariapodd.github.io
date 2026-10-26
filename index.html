@@ -18,10 +18,10 @@
 
     /* Every size is the 1920px Figma value times --k. Sizes stay fixed at every width. */
     --k: 0.6;
-    --fs: calc(48.8px * var(--k));
-    --lh: calc(var(--fs) * 1.2);
+    --fs: 32px;
+    --lh: 36px;
     --rows: 8;
-    --nav-fs: calc(20px * var(--k));
+    --nav-fs: 16px;
   }
 
   * { box-sizing: border-box; }
@@ -80,7 +80,10 @@
   }
 
   .pill-styles {
-    width: min(calc(1279px * var(--k)), calc(100vw - 32px));
+    /* At least the text column's width; grows if the labels need more room */
+    width: max-content;
+    min-width: min(calc(1279px * var(--k)), calc(100vw - 32px));
+    max-width: calc(100vw - 32px);
     padding: 0 calc(105px * var(--k));
     justify-content: space-between;
     gap: calc(16px * var(--k));
@@ -169,7 +172,7 @@
 
   .elevator {
     margin: calc(41px * var(--k)) 0 calc(60px * var(--k));
-    font-size: calc(24px * var(--k));
+    font-size: 16px;
     letter-spacing: 0.1em;
     line-height: 1.2;
   }
