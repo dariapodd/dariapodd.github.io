@@ -185,6 +185,9 @@
   .pitch-text p {
     margin: 0 0 var(--lh);
   }
+  .pitch-text p.ding {
+    margin-bottom: calc(var(--lh) * 2); /* two empty lines after the opener */
+  }
 
   .cursor {
     display: inline-block;
@@ -248,7 +251,9 @@
 
 <script>
 (() => {
+  const DING = "*ding-dong*";
   const PITCH = [
+    DING,
     "Hi, I’m Daria,\nI’m a Product Designer mostly working with complex, regulated domains, Agentic AI & enterprise solutions. How I work? Talk to people. Find the real problem. Map the workflow, simplify it. Prototype it so stakeholders see it, understand it, and say yes.",
     "Oh. We’re still in the elevator. Okay. Let me keep going.",
     "Regulated domains first. Finance, health, compliance-heavy everything. Places where a button isn’t just a button, it’s an audit trail. Where “move fast and break things” gets you a very polite letter from legal. I like those places. The constraints are real, so the design has to be real too.",
@@ -276,6 +281,10 @@
     "…",
     "Right. From the top, then."
   ];
+
+  // Pacing: raise to slow down, lower to speed up
+  const TYPE_SLOWDOWN = 1.5;  // multiplies every typing delay and pause
+  const LEVEL_MS = 3000;      // elevator level changes every 3s
 
   const ROWS = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--rows"), 10);
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -332,7 +341,7 @@
   setInterval(() => {
     level++;
     levelEl.textContent = level;
-  }, 2000);
+  }, LEVEL_MS);
 
   // ---- Typing ----
   const cursor = document.createElement("span");
@@ -344,12 +353,16 @@
 
   function startParagraph() {
     const p = document.createElement("p");
+    if (PITCH[pIndex] === DING) p.className = "ding";
     currentNode = document.createTextNode("");
     p.append(currentNode, cursor);
     textEl.appendChild(p);
   }
 
   function delayFor(ch, next) {
+    return TYPE_SLOWDOWN * baseDelay(ch, next);
+  }
+  function baseDelay(ch, next) {
     if (".?!…".includes(ch) && (next === " " || next === undefined || next === "\n")) return 380 + Math.random() * 220;
     if (",:;".includes(ch)) return 160 + Math.random() * 100;
     if (ch === "\n") return 300;
@@ -368,7 +381,7 @@
       pIndex = (pIndex + 1) % PITCH.length;
       charIndex = 0;
       textEl.classList.remove("typing");
-      setTimeout(() => { textEl.classList.add("typing"); tick(); }, 900 + Math.random() * 500);
+      setTimeout(() => { textEl.classList.add("typing"); tick(); }, TYPE_SLOWDOWN * (900 + Math.random() * 500));
       return;
     }
     setTimeout(tick, delayFor(ch, para[charIndex]));
@@ -405,7 +418,7 @@
   textEl.classList.add("typing");
   startParagraph();
   requestAnimationFrame(frame);
-  setTimeout(tick, 600);
+  setTimeout(tick, TYPE_SLOWDOWN * 600);
 })();
 </script>
 </body>
