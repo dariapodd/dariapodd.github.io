@@ -180,9 +180,13 @@
     letter-spacing: 0.1em;
     line-height: 1.2;
   }
-  .elevator output {
-    display: inline-block;
-    min-width: 3ch;
+  /* Arrow pulses from background to text colour once per level change (duration set by script) */
+  .elevator .up {
+    animation: pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { color: var(--ink); }
+    50% { color: var(--bg); }
   }
 </style>
 </head>
@@ -201,13 +205,13 @@
     <div class="pitch">
       <div class="pitch-text" id="pitch" aria-live="off"></div>
     </div>
-    <p class="elevator">Elevator level: <output id="level">G</output></p>
+    <p class="elevator">Elevator level: <output id="level">G</output><span class="up" aria-hidden="true">▲</span></p>
   </main>
   </div>
 
 <script>
 (() => {
-  const DING = "*ding-dong*";
+  const DING = "*ding-dong*\n░░░░▌▐░░░░";
   const PITCH = [
     DING,
     "Hi, I’m Daria,\nI’m a Product Designer mostly working with complex, regulated domains, Agentic AI & enterprise solutions. How I work? Talk to people. Find the real problem. Map the workflow, simplify it. Prototype it so stakeholders see it, understand it, and say yes.",
@@ -249,6 +253,10 @@
   const viewport = textEl.parentElement;
   const rulesEl = document.querySelector(".rules");
   const levelEl = document.getElementById("level");
+  const upArrow = document.querySelector(".elevator .up");
+  upArrow.style.animationDuration = LEVEL_MS + "ms";
+  // Restart the pulse on each level change so the arrow is brightest as the number changes
+  const restartPulse = () => upArrow.getAnimations().forEach(a => { a.currentTime = 0; });
 
   // ---- Ruled lines ----
   for (let i = 0; i < ROWS; i++) {
@@ -282,6 +290,7 @@
   setInterval(() => {
     level++;
     levelEl.textContent = level;
+    restartPulse();
   }, LEVEL_MS);
 
   // ---- Typing ----
