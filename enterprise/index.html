@@ -326,7 +326,8 @@
 
   .project-content {
     position: relative;
-    padding: 123.5px 0 195px var(--text-left);
+    z-index: 3;               /* text and buttons stay clickable above the micrographic */
+    padding: 123.5px 0 96px var(--text-left);
     /* left half of the block, at least 64px clear of the screenshot at 50% */
     width: max(calc(var(--text-left) + 260px), calc(50% - 64px));
   }
@@ -395,14 +396,6 @@
   .project-content .button { margin-top: 44px; }
 
   /* Positions below are the Figma frame's, as % of the 1920×960 block */
-  .project-logo {
-    position: absolute;
-    left: var(--text-left);
-    top: 83.02%;           /* 797 / 960 */
-    width: 4.48%;          /* 86 / 1920 */
-    height: auto;
-  }
-
   .project-shot {
     position: absolute;
     /* Screenshot takes the right half of the block (and runs off the edge, as in Figma);
@@ -428,29 +421,18 @@
     height: 100%;
   }
   /* The wireframe surface can be dragged to rotate it */
-  .micro--surface canvas {
-    pointer-events: auto;
-    cursor: grab;
-    touch-action: pan-y;      /* vertical swipes still scroll the page on touch screens */
-  }
-  .micro--surface.is-dragging canvas { cursor: grabbing; }
+  .micro--surface canvas { pointer-events: auto; }   /* hovering lights up surface cells */
   .micro--surface {          /* wireframe graph, hangs over the block's bottom edge */
     left: -11.3%;            /* -217 / 1920: starts beyond the left edge, as in Figma */
     top: var(--micro-top, 78.65%);
     width: 34.53%;           /* 663 / 1920 */
     aspect-ratio: 663 / 330;
   }
-  /* Phones and small tablets: stack text, logo and screenshot */
+  /* Phones and small tablets: stack text and screenshot */
   @media (max-width: 900px) {
     .micro { display: none; }
     .project { aspect-ratio: auto; padding-bottom: 48px; }
     .project-content { width: auto; padding: 160px var(--gutter) 0 var(--text-left); }
-    .project-logo {
-      position: static;
-      display: block;
-      width: 86px;
-      margin: 40px 0 0 var(--text-left);
-    }
     .project-shot {
       position: relative;
       display: block;
@@ -501,7 +483,6 @@
         <a class="button" href="#">learn more →</a>
       </div>
 
-      <img class="project-logo" src="assets/logo-esri.svg" alt="Esri">
       <img class="project-shot" src="assets/project-1-spatial-digital-twin.png" width="2218" height="1474"
            alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
       <div class="micro micro--surface" style="--micro-top: 78.65%" aria-hidden="true"></div>
@@ -524,7 +505,6 @@
         <a class="button" href="#">learn more →</a>
       </div>
 
-      <img class="project-logo" src="assets/logo-esri.svg" alt="Esri">
       <img class="project-shot" src="assets/project-1-spatial-digital-twin.png" width="2218" height="1474"
            alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
       <div class="micro micro--surface" style="--micro-top: 81.15%" aria-hidden="true"></div>
