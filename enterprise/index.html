@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daria Podrezova: Product Designer, AI &amp; enterprise domains</title>
+<link rel="icon" href="../favicon-64.png" type="image/png" sizes="64x64">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;700&display=swap" rel="stylesheet">
+<link rel="preload" href="../fonts/KodeMono.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+  /* Kode Mono, self-hosted (full character set). License: fonts/OFL.txt */
+  @font-face {
+    font-family: "Kode Mono";
+    src: url("../fonts/KodeMono.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+  }
+
+  :root {
+    --bg: #21201d;
+    --bg-glow: #2e2e2c;
+    --ink: #dddcc8;
+    --accent: #00ffcc;
+    --accent-bg: rgba(0, 255, 204, 0.1);
+    --body: #3a3938;          /* light-coloured project body */
+    --tab: rgba(217, 217, 217, 0.1);
+
+    --nav-fs: 16px;
+    --gutter: 53px;           /* 26px margin line + 1px line + 26px gap */
+    --align-left: 110px;      /* same left edge as the JSON and pitch views */
+    --frame-left: max(var(--gutter), calc((100vw - 1726px) / 2));
+    --text-left: calc(var(--frame-left) + var(--align-left));
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; }
+  html { overflow-x: clip; } /* project screenshots run off the right edge by design */
+
+  body {
+    min-height: 100vh;
+    background: radial-gradient(960px 1378px at 50% 1188px, var(--bg-glow), var(--bg)) var(--bg);
+    color: var(--ink);
+    font-family: "Kode Mono", ui-monospace, monospace;
+  }
+
+  @media (max-width: 700px) {
+    :root { --align-left: 0px; }
+  }
+
+  /* Vertical margin rule */
+  .margin-rule {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 26px;
+    width: 1px;
+    background: var(--accent);
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* ---------- Shared header bits (same as the other views) ---------- */
+  .view-select {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 16px;
+    padding: 16px 0;
+    font-size: var(--nav-fs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+  .view-select a {
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .view-select a:hover { font-weight: 600; }
+  .view-select .arrow { margin-left: 5px; }
+
+  .resume {
+    position: fixed;
+    z-index: 10;
+    top: 32px;
+    right: 32px;
+    padding: 12px 32px;
+    border-radius: 12px;
+    background: var(--accent-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .resume:hover { font-weight: 600; }
+
+  .button {
+    display: inline-block;
+    padding: 12px 32px;
+    border-radius: 12px;
+    background: var(--accent-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .button:hover { font-weight: 600; }
+
+  /* Figma: 12px radius, 100% corner smoothing → 24px squircle where supported */
+  @supports (corner-shape: squircle) {
+    .resume, .button {
+      border-radius: 24px;
+      corner-shape: squircle;
+    }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 131px 0 0 var(--text-left);
+    padding-right: var(--gutter);
+  }
+
+  .hero h1 {
+    max-width: 1409px;
+    margin: 108px 0 0;
+    font-size: 60px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .intro {
+    max-width: 513px;
+    margin: 64px 0 0;
+    color: #fff;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+
+  .logos {
+    display: flex;
+    gap: 16px;
+    margin: 36px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .logos li {
+    width: 64px;
+    height: 64px;
+    border-radius: 2px;
+    overflow: hidden;
+    background: #191613;
+    display: grid;
+    place-items: center;
+  }
+  .logos img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .logos img.wordmark { width: 48.75px; height: auto; object-fit: contain; }
+
+  .scroll-hint {
+    margin: 160px 0 38px calc(-1 * var(--text-left));
+    padding: 0 var(--gutter);
+    color: var(--accent);
+    font-size: var(--nav-fs);
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  /* ---------- Project ----------
+     The block is 1920×960 in Figma and scales with the window at 2:1.
+     Graphics (screenshot, client logo) scale with it; text, buttons and the
+     number tab keep their sizes. If the text needs more room than 2:1 gives,
+     the block grows taller instead of cutting it off. */
+  .project {
+    position: relative;
+    aspect-ratio: 2 / 1;
+    margin-bottom: 120px;
+    overflow-x: clip; /* screenshot runs off the right edge without making the page scroll sideways */
+  }
+
+  .project-body {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 90%;
+    background: var(--body);
+  }
+
+  .project-num {
+    position: absolute;
+    top: 0;
+    left: 26px; /* hangs off the margin line */
+    width: 147px;
+    height: 130px;
+    display: grid;
+    place-items: center;
+    background: var(--tab);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  .project-num::after { /* small diamond on the tab's top-right corner */
+    content: "";
+    position: absolute;
+    top: -3.5px;
+    right: -3.5px;
+    width: 7px;
+    height: 7px;
+    background: #fff;
+    transform: rotate(45deg);
+  }
+
+  .project-content {
+    position: relative;
+    padding: 123.5px 0 195px var(--text-left);
+    /* never runs under the screenshot, which starts at 48.75% of the block */
+    width: max(calc(var(--text-left) + 260px), calc(48.75% - 32px));
+  }
+
+  .project h2 {
+    max-width: 499px;
+    margin: 0;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .project-desc {
+    max-width: 392px;
+    margin-top: 44px;
+    color: #fff;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .project-desc p { margin: 0 0 12px; }
+  .project-desc p:last-child { margin-bottom: 0; }
+  .project-desc strong { font-weight: 700; }
+
+  .project-content .button { margin-top: 44px; }
+
+  /* Positions below are the Figma frame's, as % of the 1920×960 block */
+  .project-logo {
+    position: absolute;
+    left: var(--text-left);
+    top: 83.02%;           /* 797 / 960 */
+    width: 4.48%;          /* 86 / 1920 */
+    height: auto;
+  }
+
+  .project-shot {
+    position: absolute;
+    left: 48.75%;          /* 936 / 1920 */
+    top: 14.22%;           /* 136.5 / 960 */
+    width: 57.76%;         /* 1109 / 1920 — runs past the right edge, as in Figma */
+    height: auto;
+  }
+
+  /* Phones and small tablets: stack text, logo and screenshot */
+  @media (max-width: 900px) {
+    .project { aspect-ratio: auto; padding-bottom: 48px; }
+    .project-content { width: auto; padding: 160px var(--gutter) 0 var(--text-left); }
+    .project-logo {
+      position: static;
+      display: block;
+      width: 86px;
+      margin: 40px 0 0 var(--text-left);
+    }
+    .project-shot {
+      position: relative;
+      display: block;
+      left: auto;
+      top: auto;
+      width: calc(100% - var(--text-left));
+      margin: 40px 0 0 var(--text-left);
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="margin-rule" aria-hidden="true"></div>
+
+  <a class="resume" href="../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
+
+  <header class="hero">
+    <nav class="view-select" aria-label="Portfolio style">
+      <span>view portfolio as:</span>
+      <a href="../?style=enterprise" title="Choose another portfolio style">enterprise portfolio<span class="arrow" aria-hidden="true">▼</span></a>
+    </nav>
+
+    <h1>Hi, I’m Daria,<br>Product Designer,<br>Agentic AI &amp; enterprise</h1>
+
+    <p class="intro">How I work? Talk to people. Find the real problem. Map the workflow, simplify it. Prototype it so stakeholders see it, understand it, and say yes.</p>
+
+    <ul class="logos" aria-label="Where I’ve worked">
+      <li><img src="assets/logo-ey.png" alt="EY"></li>
+      <li><img src="assets/logo-2.png" alt=""></li>
+      <li><img src="assets/logo-3.svg" alt=""></li>
+      <li><img src="assets/logo-4.svg" alt="" class="wordmark"></li>
+    </ul>
+
+    <p class="scroll-hint">scroll down for projects ↓</p>
+  </header>
+
+  <main>
+    <section class="project" aria-labelledby="project-1">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true">1</div>
+
+      <div class="project-content">
+        <h2 id="project-1">Spatial digital twin</h2>
+        <div class="project-desc">
+          <p>Processing company. 4-dimensional immersive Spatial Collaboration Tool (ArcGIS). Led complex prototyping and design system development; collaborated on user research, workshops and delivery support.</p>
+          <p><strong>Result:</strong> faster asset inspections and planning, and less time/cost spent on field visits.</p>
+        </div>
+        <a class="button" href="#">learn more →</a>
+      </div>
+
+      <img class="project-logo" src="assets/logo-esri.svg" alt="Esri">
+      <img class="project-shot" src="assets/project-1-spatial-digital-twin.png" width="2218" height="1474"
+           alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
+    </section>
+  </main>
+</body>
+</html>
