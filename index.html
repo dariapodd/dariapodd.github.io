@@ -229,11 +229,27 @@
     if (NEW_TAB.has(target)) window.open(target, "_blank", "noopener");
     else location.href = target;
   });
-  // Enter on a focused option goes too
-  form.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && e.target.matches("input[name=style]")) {
+  // Keyboard: ↑/↓ move the selection (wrapping), Enter opens it, Esc returns to the page
+  // the menu was opened from. Works without clicking into the menu first.
+  const options = [...form.querySelectorAll("input[name=style]")];
+  document.addEventListener("keydown", (e) => {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      const step = e.key === "ArrowDown" ? 1 : -1;
+      const next = options[(options.indexOf(selected()) + step + options.length) % options.length];
+      next.checked = true;
+      next.focus({ preventScroll: true });
+      update();
+    } else if (e.key === "Enter") {
+      if (e.target.closest("a")) return; // e.g. the "this skill" link opens normally
       e.preventDefault();
       form.requestSubmit();
+    } else if (e.key === "Escape") {
+      const from = new URLSearchParams(location.search).get("style");
+      const back = from && options.find(i => i.value === from || i.value === from + "/");
+      if (back && READY.has(back.value)) location.href = back.value;
+      else if (document.referrer.startsWith(location.origin)) history.back();
     }
   });
 
