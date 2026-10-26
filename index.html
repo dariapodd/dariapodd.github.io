@@ -20,6 +20,7 @@
     --lh: 36px;
     --rows: 8;
     --nav-fs: 16px;
+    --gutter: 64px; /* min space left and right of the content on narrow screens */
   }
 
   * { box-sizing: border-box; }
@@ -39,7 +40,7 @@
     position: fixed;
     top: 0;
     bottom: 0;
-    left: clamp(8px, calc(2.6vw * var(--k)), calc(50px * var(--k)));
+    left: 30px;
     width: 1px;
     background: var(--rule);
     pointer-events: none;
@@ -48,7 +49,7 @@
   /* Nav + pitch share one centred column; the text lines up under the left nav bar. */
   .frame {
     width: fit-content;
-    max-width: calc(100% - 32px);
+    max-width: calc(100% - 2 * var(--gutter));
     margin: 0 auto;
   }
 
@@ -75,7 +76,7 @@
   }
 
   .pill-styles {
-    max-width: calc(100vw - 32px);
+    max-width: 100%;
     min-width: 0; /* shrinks and scrolls sideways on narrow screens */
     padding: 16px 0;
     gap: 48px;
