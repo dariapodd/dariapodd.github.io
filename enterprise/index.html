@@ -415,19 +415,25 @@
 
   /* ---------- Micrographics ----------
      Positioned in % of the 1920×960 project block (Figma values), so they scale with it.
-     Decorative only: no pointer events, hidden when the project stacks on small screens. */
+     Decorative (hidden from screen readers), hidden when the project stacks on small screens. */
   .micro {
     position: absolute;
     z-index: 2;
     pointer-events: none;
   }
-  .micro canvas,
-  .micro svg {
+  .micro canvas {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
   }
+  /* The wireframe surface can be dragged to rotate it */
+  .micro--surface canvas {
+    pointer-events: auto;
+    cursor: grab;
+    touch-action: pan-y;      /* vertical swipes still scroll the page on touch screens */
+  }
+  .micro--surface.is-dragging canvas { cursor: grabbing; }
   .micro--surface {          /* wireframe graph, hangs over the block's bottom edge */
     left: -11.3%;            /* -217 / 1920: starts beyond the left edge, as in Figma */
     top: var(--micro-top, 78.65%);
