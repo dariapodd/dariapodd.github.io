@@ -108,7 +108,8 @@
     /* Column width comes from the nav only, so typing never resizes (and shifts) it */
     width: 0;
     min-width: 100%;
-    margin-top: calc(130px * var(--k));
+    /* Centred vertically in the window (gap set by script), never closer to the nav than the design margin */
+    margin-top: max(calc(130px * var(--k)), var(--center-gap, 0px));
   }
 
   /* Ruled lines, full page width, aligned to the text baseline */
@@ -257,6 +258,21 @@
   placeRules();
   addEventListener("resize", placeRules);
   document.fonts && document.fonts.ready.then(placeRules);
+
+  // ---- Vertical centring of the text block (pitch + elevator line) ----
+  const nav = document.querySelector(".nav");
+  const wrap = document.querySelector(".pitch-wrap");
+  const elevator = document.querySelector(".elevator");
+  function centerBlock() {
+    const blockH = elevator.getBoundingClientRect().bottom - viewport.getBoundingClientRect().top;
+    const navBottom = nav.getBoundingClientRect().bottom + scrollY;
+    const gap = (document.documentElement.clientHeight - blockH) / 2 - navBottom;
+    wrap.style.setProperty("--center-gap", gap + "px");
+  }
+  centerBlock();
+  addEventListener("resize", centerBlock);
+  new ResizeObserver(centerBlock).observe(nav);
+  document.fonts && document.fonts.ready.then(centerBlock);
 
   // ---- Elevator counter: G, 1, 2, 3 … every 2s ----
   let level = 0;
