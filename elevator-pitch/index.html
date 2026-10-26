@@ -200,6 +200,9 @@
   }
   .typing .cursor { animation: none; }
 
+  .word { white-space: nowrap; }
+  .ghost { visibility: hidden; }
+
   @keyframes blink {
     50% { opacity: 0; }
   }
@@ -347,16 +350,29 @@
   const cursor = document.createElement("span");
   cursor.className = "cursor";
 
+  // The untyped rest of the current word sits invisibly after the cursor, and the
+  // word (typed part + cursor + rest) can't break, so the browser wraps the whole
+  // word before its first letter is typed instead of jumping mid-word.
+  const ghost = document.createElement("span");
+  ghost.className = "ghost";
+  const restOfWord = (para, i) => para.slice(i).match(/^\S*/)[0];
+
   let pIndex = 0;
   let charIndex = 0;
-  let currentNode = null;
+  let doneNode = null;  // finished words of the current paragraph
+  let wordNode = null;  // typed part of the current word
 
   function startParagraph() {
     const p = document.createElement("p");
     if (PITCH[pIndex] === DING) p.className = "ding";
-    currentNode = document.createTextNode("");
-    p.append(currentNode, cursor);
+    doneNode = document.createTextNode("");
+    wordNode = document.createTextNode("");
+    const word = document.createElement("span");
+    word.className = "word";
+    word.append(wordNode, cursor, ghost);
+    p.append(doneNode, word);
     textEl.appendChild(p);
+    ghost.textContent = restOfWord(PITCH[pIndex], 0);
   }
 
   function delayFor(ch, next) {
@@ -371,11 +387,17 @@
 
   function tick() {
     const para = PITCH[pIndex];
-    if (charIndex === 0 && currentNode.length > 0) startParagraph();
+    if (charIndex === 0 && doneNode.length + wordNode.length > 0) startParagraph();
 
     const ch = para[charIndex];
-    currentNode.appendData(ch);
+    if (/\s/.test(ch)) {
+      doneNode.appendData(wordNode.data + ch);
+      wordNode.data = "";
+    } else {
+      wordNode.appendData(ch);
+    }
     charIndex++;
+    ghost.textContent = restOfWord(para, charIndex);
 
     if (charIndex >= para.length) {
       pIndex = (pIndex + 1) % PITCH.length;
