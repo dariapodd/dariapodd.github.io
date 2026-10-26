@@ -282,7 +282,7 @@
 
   function tick() {
     const para = PITCH[pIndex];
-    if (charIndex === 0) startParagraph();
+    if (charIndex === 0 && currentNode.length > 0) startParagraph();
 
     const ch = para[charIndex];
     currentNode.appendData(ch);
@@ -299,14 +299,17 @@
   }
 
   // ---- Smooth scroll-up ----
-  let offset = 0;
+  // The last line of text always sits on the bottom row, so typing happens at
+  // the bottom from the very first character (offset is negative until the box fills).
+  let offset = null;
   let last = performance.now();
 
   function frame(now) {
     const dt = Math.min(0.1, (now - last) / 1000);
     last = now;
 
-    const target = Math.max(0, textEl.scrollHeight - viewport.clientHeight);
+    const target = textEl.scrollHeight - viewport.clientHeight;
+    if (offset === null) offset = target;
     offset = reduceMotion ? target : offset + (target - offset) * (1 - Math.exp(-dt * 7));
     if (Math.abs(target - offset) < 0.1) offset = target;
 
@@ -324,6 +327,7 @@
   }
 
   textEl.classList.add("typing");
+  startParagraph();
   requestAnimationFrame(frame);
   setTimeout(tick, 600);
 })();
