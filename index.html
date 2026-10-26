@@ -124,11 +124,12 @@
     border-radius: 12px;
     background: var(--button);
     color: var(--button-ink);
-    font: 600 16px/1.2 "Kode Mono", ui-monospace, monospace;
+    font: 400 16px/1.2 "Kode Mono", ui-monospace, monospace;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     cursor: pointer;
   }
+  .go:hover:not(:disabled) { font-weight: 600; }
   .go:disabled {
     opacity: 0.45;
     cursor: not-allowed;
