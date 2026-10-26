@@ -18,10 +18,10 @@
 
     /* Design is 1920px wide; scale down below that. */
     --left: clamp(16px, 10.26vw, 197px);
-    --fs: clamp(20px, 2.54vw, 48.8px);
+    --fs: 48.8px;
     --lh: calc(var(--fs) * 1.2);
     --rows: 9;
-    --nav-fs: clamp(11px, 1.04vw, 20px);
+    --nav-fs: 20px;
   }
 
   * { box-sizing: border-box; }
@@ -51,14 +51,14 @@
   .nav {
     display: flex;
     flex-wrap: wrap;
-    gap: clamp(8px, 2.7vw, 52px);
+    gap: 16px 52px;
     padding: 60px 16px 0 var(--left);
   }
 
   .pill {
     display: flex;
     align-items: center;
-    height: clamp(40px, 2.9vw, 56px);
+    height: 56px;
     border: 1px solid var(--pill-border);
     border-radius: 12px;
     background: var(--pill-bg);
@@ -74,7 +74,7 @@
 
   .pill-styles {
     width: min(1279px, calc(100vw - var(--left) - 16px));
-    padding: 0 clamp(12px, 5.5vw, 105px);
+    padding: 0 105px;
     justify-content: space-between;
     gap: 16px;
     overflow-x: auto;
@@ -82,10 +82,10 @@
   }
   .pill-styles::-webkit-scrollbar { display: none; }
 
-  .pill-styles .label { margin-right: auto; padding-right: clamp(8px, 4vw, 80px); }
+  .pill-styles .label { margin-right: auto; padding-right: 80px; }
 
   .pill-contacts {
-    padding: 0 clamp(16px, 2vw, 38px);
+    padding: 0 38px;
   }
 
   .pill a {
@@ -98,7 +98,7 @@
   /* ---------- Pitch ---------- */
   .pitch-wrap {
     position: relative;
-    margin-top: clamp(48px, 6.77vw, 130px);
+    margin-top: 130px;
   }
 
   /* Ruled lines, full page width, aligned to the text baseline */
@@ -155,8 +155,8 @@
   }
 
   .elevator {
-    margin: clamp(20px, 2.1vw, 41px) 0 60px var(--left);
-    font-size: clamp(14px, 1.25vw, 24px);
+    margin: 41px 0 60px var(--left);
+    font-size: 24px;
     letter-spacing: 0.1em;
     line-height: 1.2;
   }
