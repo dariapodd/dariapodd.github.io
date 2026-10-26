@@ -10,11 +10,10 @@
 <style>
   :root {
     --bg: #dad9cf;
-    --ink: #594d3c;
-    --accent: #ec6039;
-    --pill-bg: rgba(58, 57, 56, 0.2);
-    --pill-border: #656a75;
-    --rule: rgba(89, 77, 60, 0.13);
+    --ink: #403524;
+    --rule: #c8bfb3;
+    --pill-bg: rgba(218, 217, 207, 0.2);
+    --pill-solid: #c8bfb3;
 
     /* Every size is the 1920px Figma value times --k. Sizes stay fixed at every width. */
     --k: 0.6;
@@ -58,6 +57,7 @@
   .nav {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: calc(16px * var(--k)) calc(52px * var(--k));
     padding-top: calc(60px * var(--k));
   }
@@ -65,13 +65,9 @@
   .pill {
     display: flex;
     align-items: center;
-    height: calc(56px * var(--k));
-    border: 1px solid var(--pill-border);
-    border-radius: calc(12px * var(--k));
-    background: var(--pill-bg);
-    backdrop-filter: blur(calc(16px * var(--k)));
-    -webkit-backdrop-filter: blur(calc(16px * var(--k)));
-    box-shadow: 0 calc(4px * var(--k)) calc(72px * var(--k)) rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     font-size: var(--nav-fs);
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -80,31 +76,36 @@
   }
 
   .pill-styles {
-    /* At least the text column's width; grows if the labels need more room */
-    width: max-content;
-    min-width: min(calc(1279px * var(--k)), calc(100vw - 32px));
     max-width: calc(100vw - 32px);
-    padding: 0 calc(105px * var(--k));
-    justify-content: space-between;
-    gap: calc(16px * var(--k));
+    padding: 16px 0;
+    gap: 48px;
+    background: var(--pill-bg);
     overflow-x: auto;
     scrollbar-width: none;
   }
   .pill-styles::-webkit-scrollbar { display: none; }
 
-  .pill-styles .label { margin-right: auto; padding-right: calc(80px * var(--k)); }
+  .links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .sep {
+    width: 1px;
+    height: 32px;
+    background: var(--rule);
+  }
 
   .pill-contacts {
-    padding: 0 calc(38px * var(--k));
+    padding: 13px 32px;
+    background: var(--pill-solid);
   }
 
   .pill a {
     color: var(--ink);
     text-decoration: none;
   }
-  .pill a:hover { text-decoration: underline; text-underline-offset: calc(4px * var(--k)); }
-  .pill a[aria-current="page"] { color: var(--accent); }
-
+  .pill a:hover { text-decoration: underline; text-underline-offset: 4px; }
   /* ---------- Pitch ---------- */
   .pitch-wrap {
     position: relative;
@@ -189,11 +190,17 @@
   <nav class="nav" aria-label="Portfolio">
     <div class="pill pill-styles">
       <span class="label">portfolio style:</span>
-      <a href="#">enterprise</a>
-      <a href="#">caveman</a>
-      <a href="#">startup</a>
-      <a href="#">json</a>
-      <a href="#" aria-current="page">endless pitch</a>
+      <div class="links">
+        <a href="#">enterprise</a>
+        <span class="sep" aria-hidden="true"></span>
+        <a href="#">caveman</a>
+        <span class="sep" aria-hidden="true"></span>
+        <a href="#">startup</a>
+        <span class="sep" aria-hidden="true"></span>
+        <a href="#">json</a>
+        <span class="sep" aria-hidden="true"></span>
+        <a href="#" aria-current="page">endless pitch</a>
+      </div>
     </div>
     <div class="pill pill-contacts">
       <a href="#">resume and contacts</a>
