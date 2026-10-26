@@ -26,7 +26,8 @@
     --ink: #dddcc8;
     --accent: #00ffcc;
     --accent-bg: rgba(0, 255, 204, 0.1);
-    --body: #3a3938;          /* light-coloured project body */
+    --body-black: #191613;    /* project body, black variant */
+    --body-grey: #3a3938;     /* project body, grey variant */
     --tab: rgba(217, 217, 217, 0.1);
     --rule: #3d414a;          /* margin line and ruled lines */
 
@@ -292,8 +293,10 @@
     position: absolute;
     inset: 0;
     width: 100%;
-    background: var(--body);
+    background: var(--body-grey);
   }
+  .project--black .project-body { background: var(--body-black); }
+  .project--grey .project-body { background: var(--body-grey); }
 
   .project-num {
     position: absolute;
@@ -378,6 +381,16 @@
   .project-desc p:last-child { margin-bottom: 0; }
   .project-desc strong { font-weight: 700; }
 
+  /* Client quote with attribution */
+  .project-quote {
+    max-width: 400px;
+    margin: 44px 0 0;
+    color: #fff;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .project-quote blockquote { margin: 0 0 12px; }
+  .project-quote figcaption { font-weight: 700; }
+
   .project-content .button { margin-top: 44px; }
 
   /* Positions below are the Figma frame's, as % of the 1920×960 block */
@@ -446,7 +459,7 @@
   </header>
 
   <main>
-    <section class="project" aria-labelledby="project-1">
+    <section class="project project--black" aria-labelledby="project-1">
       <div class="project-body" aria-hidden="true"></div>
       <div class="project-num" aria-hidden="true">1</div>
 
@@ -456,6 +469,28 @@
           <p>Processing company. 4-dimensional immersive Spatial Collaboration Tool (ArcGIS). Led complex prototyping and design system development; collaborated on user research, workshops and delivery support.</p>
           <p><strong>Result:</strong> faster asset inspections and planning, and less time/cost spent on field visits.</p>
         </div>
+        <a class="button" href="#">learn more →</a>
+      </div>
+
+      <img class="project-logo" src="assets/logo-esri.svg" alt="Esri">
+      <img class="project-shot" src="assets/project-1-spatial-digital-twin.png" width="2218" height="1474"
+           alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
+    </section>
+
+    <section class="project project--grey" aria-labelledby="project-2">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true">2</div>
+
+      <div class="project-content">
+        <h2 id="project-2">Spatial digital twin</h2>
+        <div class="project-desc">
+          <p>Processing company. 4-dimensional immersive Spatial Collaboration Tool (ArcGIS). Led complex prototyping and design system development; collaborated on user research, workshops and delivery support.</p>
+          <p><strong>Result: faster asset inspections and planning, and less time/cost spent on field visits.</strong></p>
+        </div>
+        <figure class="project-quote">
+          <blockquote>“Faster asset inspections and planning, and less time/cost spent on field visits.”</blockquote>
+          <figcaption>Project Manager</figcaption>
+        </figure>
         <a class="button" href="#">learn more →</a>
       </div>
 
