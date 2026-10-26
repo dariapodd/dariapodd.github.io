@@ -15,7 +15,6 @@
     --pill-bg: rgba(58, 57, 56, 0.2);
     --pill-border: #656a75;
     --rule: rgba(89, 77, 60, 0.13);
-    --rule-strong: rgba(89, 77, 60, 0.24);
 
     /* Design is 1920px wide; scale down below that. */
     --left: clamp(16px, 10.26vw, 197px);
@@ -44,7 +43,7 @@
     bottom: 0;
     left: clamp(8px, 2.6vw, 50px);
     width: 1px;
-    background: var(--rule-strong);
+    background: var(--rule);
     pointer-events: none;
   }
 
@@ -115,10 +114,6 @@
     right: 0;
     height: 1px;
     background: var(--rule);
-  }
-  .rules span.strong {
-    height: 2px;
-    background: var(--rule-strong);
   }
 
   .pitch {
@@ -235,11 +230,9 @@
   const rulesEl = document.querySelector(".rules");
   const levelEl = document.getElementById("level");
 
-  // ---- Ruled lines (every third one stronger, as in the design) ----
+  // ---- Ruled lines ----
   for (let i = 0; i < ROWS; i++) {
-    const s = document.createElement("span");
-    if (i % 3 === 2) s.className = "strong";
-    rulesEl.appendChild(s);
+    rulesEl.appendChild(document.createElement("span"));
   }
   function placeRules() {
     const lh = parseFloat(getComputedStyle(textEl).lineHeight);
