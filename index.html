@@ -16,12 +16,12 @@
     --pill-border: #656a75;
     --rule: rgba(89, 77, 60, 0.13);
 
-    /* Design is 1920px wide; scale down below that. */
-    --left: clamp(16px, 10.26vw, 197px);
-    --fs: 48.8px;
+    /* Half of the 1920px Figma design. Sizes stay fixed at every width. */
+    --left: clamp(16px, 5.13vw, 98.5px);
+    --fs: 24.4px;
     --lh: calc(var(--fs) * 1.2);
     --rows: 9;
-    --nav-fs: 20px;
+    --nav-fs: 10px;
   }
 
   * { box-sizing: border-box; }
@@ -41,7 +41,7 @@
     position: fixed;
     top: 0;
     bottom: 0;
-    left: clamp(8px, 2.6vw, 50px);
+    left: clamp(8px, 1.3vw, 25px);
     width: 1px;
     background: var(--rule);
     pointer-events: none;
@@ -51,20 +51,20 @@
   .nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px 52px;
-    padding: 60px 16px 0 var(--left);
+    gap: 8px 26px;
+    padding: 30px 16px 0 var(--left);
   }
 
   .pill {
     display: flex;
     align-items: center;
-    height: 56px;
+    height: 28px;
     border: 1px solid var(--pill-border);
-    border-radius: 12px;
+    border-radius: 6px;
     background: var(--pill-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 4px 72px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 2px 36px rgba(0, 0, 0, 0.25);
     font-size: var(--nav-fs);
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -73,32 +73,32 @@
   }
 
   .pill-styles {
-    width: min(1279px, calc(100vw - var(--left) - 16px));
-    padding: 0 105px;
+    width: min(639.5px, calc(100vw - var(--left) - 16px));
+    padding: 0 52.5px;
     justify-content: space-between;
-    gap: 16px;
+    gap: 8px;
     overflow-x: auto;
     scrollbar-width: none;
   }
   .pill-styles::-webkit-scrollbar { display: none; }
 
-  .pill-styles .label { margin-right: auto; padding-right: 80px; }
+  .pill-styles .label { margin-right: auto; padding-right: 40px; }
 
   .pill-contacts {
-    padding: 0 38px;
+    padding: 0 19px;
   }
 
   .pill a {
     color: var(--ink);
     text-decoration: none;
   }
-  .pill a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .pill a:hover { text-decoration: underline; text-underline-offset: 2px; }
   .pill a[aria-current="page"] { color: var(--accent); }
 
   /* ---------- Pitch ---------- */
   .pitch-wrap {
     position: relative;
-    margin-top: 130px;
+    margin-top: 65px;
   }
 
   /* Ruled lines, full page width, aligned to the text baseline */
@@ -119,7 +119,7 @@
   .pitch {
     position: relative;
     margin-left: var(--left);
-    width: min(1279px, calc(100vw - var(--left) - 16px));
+    width: min(639.5px, calc(100vw - var(--left) - 16px));
     height: calc(var(--lh) * var(--rows));
     overflow: hidden;
     -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(var(--lh) * 3.5));
@@ -155,8 +155,8 @@
   }
 
   .elevator {
-    margin: 41px 0 60px var(--left);
-    font-size: 24px;
+    margin: 20.5px 0 30px var(--left);
+    font-size: 12px;
     letter-spacing: 0.1em;
     line-height: 1.2;
   }
