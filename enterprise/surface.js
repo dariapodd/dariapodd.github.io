@@ -10,7 +10,7 @@
   const TEAL = [0, 255, 204];      // #00ffcc, hover fill
   const TEAL_ALPHA = 0.5;          // fully lit cell
   const FADE_IN = 0.6;             // seconds to light up
-  const FADE_OUT = 1.0;            // seconds to fade back
+  const FADE_OUT = 2.0;            // seconds to fade back
 
   // ---- Surface geometry ----
   // A height field over a unit square (u: left → right, v: back → front).
@@ -267,7 +267,7 @@
     // Grow the box upwards by the headroom; % margins resolve against the project's width,
     // and the box is 34.53% of it, so this keeps the Figma position of the original 330px box
     host.style.aspectRatio = `${VIEW_W} / ${DRAW_H}`;
-    host.style.marginTop = `calc(${-HEADROOM / VIEW_W} * 34.53%)`;
+    host.style.marginTop = `calc(${-HEADROOM / VIEW_W} * 34.53% + var(--micro-nudge, 0px))`;
     const canvas = document.createElement("canvas");
     host.append(canvas);
 
