@@ -28,9 +28,14 @@
     --fs: 24px;
     --lh: 37px;
     --nav-fs: 16px;
-    --gutter: 53px;     /* 26px margin line + 1px line + 26px gap */
-    --num-w: 74px;      /* line-number column */
+    /* Left margin, shared by all views: content starts 160px after the vertical margin line */
+    --margin-line: 26px;      /* vertical margin line, from the window's left edge */
+    --content-left: 160px;    /* margin line → content (also the project number block's width) */
+    --text-left: calc(var(--margin-line) + 1px + var(--content-left));
+    --gutter: 53px;           /* right margin; also the left margin on phones */    --num-w: 74px;      /* line-number column */
     --num-gap: 36px;    /* line numbers to code */
+    /* Line numbers sit inside the left margin, so the code itself starts at --text-left */
+    --frame-left: max(var(--gutter), calc(var(--text-left) - var(--num-w) - var(--num-gap)));
     --ch: 0.7em;        /* one Kode Mono character incl. letter-spacing (0.6em + 0.1em) */
   }
 
@@ -52,17 +57,15 @@
     position: fixed;
     top: 0;
     bottom: 0;
-    left: 26px;
+    left: var(--margin-line);
     width: 1px;
     background: var(--rule);
     pointer-events: none;
   }
 
   .frame {
-    width: min(1726px, calc(100% - 2 * var(--gutter)));
-    /* Centred on the full window width (100vw includes any scrollbar), so the JSON view and
-       the pitch view share the same left edge whether or not the page scrolls */
-    margin-left: max(var(--gutter), calc((100vw - 1726px) / 2));
+    width: calc(100% - var(--frame-left) - var(--gutter));
+    margin-left: var(--frame-left);
     padding: 131px 0 96px;
   }
 
@@ -178,7 +181,7 @@
   /* Phones: keep the 32px text and whole lines; the code scrolls sideways like an editor,
      with line numbers pinned on the left */
   @media (max-width: 700px) {
-    :root { --num-gap: 16px; }
+    :root { --num-gap: 16px; --content-left: 26px; }
     .code {
       overflow-x: auto;
       overscroll-behavior-x: contain;

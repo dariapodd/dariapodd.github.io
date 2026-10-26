@@ -32,16 +32,16 @@
     --lh: 36px;
     --rows: 8;
     --nav-fs: 16px;
-    --gutter: 53px; /* 26px margin line + 1px line + 26px gap; min space left and right of the content */
-    /* Left edge matches the JSON view: its frame + line-number column (74px) + gap (36px) */
-    --align-left: 110px;
-    --frame-left: max(var(--gutter), calc((100vw - 1726px) / 2)); /* column's left margin */
-  }
+    /* Left margin, shared by all views: content starts 160px after the vertical margin line */
+    --margin-line: 26px;      /* vertical margin line, from the window's left edge */
+    --content-left: 160px;    /* margin line → content (also the project number block's width) */
+    --text-left: calc(var(--margin-line) + 1px + var(--content-left));
+    --gutter: 53px;           /* right margin; also the left margin on phones */  }
 
   * { box-sizing: border-box; }
 
   @media (max-width: 700px) {
-    :root { --align-left: 0px; } /* phones: use the full width for the text */
+    :root { --content-left: 26px; } /* phones: text 53px from the edge */
   }
 
   html, body { margin: 0; }
@@ -60,19 +60,16 @@
     position: fixed;
     top: 0;
     bottom: 0;
-    left: 26px;
+    left: var(--margin-line);
     width: 1px;
     background: var(--rule);
     pointer-events: none;
   }
 
-  /* Selector, pitch and elevator line share one left-aligned column, same left edge as the JSON view */
+  /* Selector, pitch and elevator line share one column starting at the shared left margin */
   .frame {
-    width: min(1726px, calc(100% - 2 * var(--gutter)));
-    padding-left: var(--align-left);
-    /* Centred on the full window width (100vw includes any scrollbar), so the JSON view and
-       the pitch view share the same left edge whether or not the page scrolls */
-    margin-left: var(--frame-left);
+    width: calc(100% - var(--text-left) - var(--gutter));
+    margin-left: var(--text-left);
     padding-top: 131px; /* selector sits at a fixed spot from the top, as in the JSON view */
   }
 
@@ -139,7 +136,7 @@
     position: absolute;
     top: 0;
     /* from the window's left edge to its right edge, wherever the column sits */
-    left: calc(-1 * (var(--frame-left) + var(--align-left)));
+    left: calc(-1 * var(--text-left));
     width: 100vw;
     height: calc(var(--lh) * var(--rows));
     pointer-events: none;

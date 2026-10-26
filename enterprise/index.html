@@ -31,11 +31,11 @@
     --rule: #3d414a;          /* margin line and ruled lines */
 
     --nav-fs: 16px;
-    --gutter: 53px;           /* 26px margin line + 1px line + 26px gap */
-    --align-left: 110px;      /* same left edge as the JSON and pitch views */
-    --frame-left: max(var(--gutter), calc((100vw - 1726px) / 2));
-    --text-left: calc(var(--frame-left) + var(--align-left));
-  }
+    /* Left margin, shared by all views: content starts 160px after the vertical margin line */
+    --margin-line: 26px;      /* vertical margin line, from the window's left edge */
+    --content-left: 160px;    /* margin line → content (also the project number block's width) */
+    --text-left: calc(var(--margin-line) + 1px + var(--content-left));
+    --gutter: 53px;           /* right margin; also the left margin on phones */  }
 
   * { box-sizing: border-box; }
 
@@ -50,7 +50,7 @@
   }
 
   @media (max-width: 700px) {
-    :root { --align-left: 0px; }
+    :root { --content-left: 26px; } /* phones: text 53px from the edge */
   }
 
   /* Vertical margin rule */
@@ -58,7 +58,7 @@
     position: fixed;
     top: 0;
     bottom: 0;
-    left: 26px;
+    left: var(--margin-line);
     width: 1px;
     background: var(--rule);
     pointer-events: none;
@@ -298,8 +298,9 @@
   .project-num {
     position: absolute;
     top: 0;
-    left: 26px; /* hangs off the margin line */
-    width: 147px;
+    /* spans exactly the left margin: from the margin line to where the text starts */
+    left: calc(var(--margin-line) + 1px);
+    width: max(var(--content-left), 96px);
     height: 130px;
     display: grid;
     place-items: center;
