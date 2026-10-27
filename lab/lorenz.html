@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lorenz attractor lab</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../favicon-64.png" type="image/png" sizes="64x64">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: "Kode Mono";
+    src: url("../fonts/KodeMono.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+  }
+  :root {
+    --bg: #191613;          /* project body, black variant */
+    --panel: #21211d;
+    --ink: #dddcc8;
+    --muted: rgba(221, 220, 200, 0.55);
+    --accent: #00ffcc;
+    --rule: #3d414a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    background: var(--bg);
+    color: var(--ink);
+    font: 300 13px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .stage { position: relative; min-height: 0; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+  canvas.is-dragging { cursor: grabbing; }
+  .hint {
+    position: absolute; left: 16px; bottom: 12px; margin: 0;
+    color: var(--muted); pointer-events: none;
+  }
+
+  .panel {
+    overflow-y: auto;
+    padding: 20px 20px 32px;
+    border-left: 1px solid var(--rule);
+    background: var(--panel);
+  }
+  h1, h2 {
+    margin: 0;
+    font: 400 13px/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  h1 { color: var(--accent); margin-bottom: 4px; }
+  h2 { margin: 24px 0 10px; color: var(--muted); }
+  .control { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; margin-bottom: 10px; }
+  .control label { color: var(--ink); }
+  .control output { font: 400 12px/1.4 "Kode Mono", ui-monospace, monospace; color: var(--accent); }
+  .control input[type="range"] { grid-column: 1 / -1; width: 100%; margin: 0; accent-color: var(--accent); }
+  .control.is-check { grid-template-columns: auto 1fr; align-items: center; }
+  .control.is-check input { margin: 0; accent-color: var(--accent); }
+  .buttons { display: flex; gap: 8px; margin-top: 24px; }
+  button {
+    flex: 1;
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 12px;
+    background: rgba(0, 255, 204, 0.1);
+    color: var(--accent);
+    font: 400 12px/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  button:hover { font-weight: 600; }
+  pre {
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--muted);
+    font: 400 11px/1.4 "Kode Mono", ui-monospace, monospace;
+    white-space: pre-wrap;
+  }
+  .stats { color: var(--muted); }
+
+  @media (max-width: 760px) {
+    body { grid-template-columns: 1fr; grid-template-rows: 60vh auto; height: auto; }
+    .panel { border-left: 0; border-top: 1px solid var(--rule); }
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <canvas id="view"></canvas>
+    <p class="hint">Drag to rotate · scroll to zoom · shift-drag to pan</p>
+  </div>
+
+  <aside class="panel" id="panel">
+    <h1>Lorenz attractor</h1>
+    <div class="stats" id="stats"></div>
+    <!-- controls are generated from GROUPS below -->
+  </aside>
+
+<script>
+(() => {
+  // ---------- Parameters ----------
+  // "attractor" changes rebuild the point cloud; everything else only redraws.
+  const GROUPS = [
+    { title: "Attractor", rebuild: true, items: [
+      { key: "sigma",  label: "σ (sigma)",              min: 0,     max: 30,     step: 0.1,   value: 10 },
+      { key: "rho",    label: "ρ (rho)",                min: 0,     max: 60,     step: 0.1,   value: 28 },
+      { key: "beta",   label: "β (beta)",               min: 0,     max: 6,      step: 0.01,  value: 2.67 },
+      { key: "dt",     label: "Time step",              min: 0.001, max: 0.02,   step: 0.001, value: 0.005 },
+      { key: "points", label: "Points",                 min: 1000,  max: 100000, step: 1000,  value: 9000 },
+      { key: "every",  label: "Keep every Nth step",    min: 1,     max: 20,     step: 1,     value: 4 },
+      { key: "skip",   label: "Skip first steps",       min: 0,     max: 5000,   step: 50,    value: 0 },
+      { key: "x0",     label: "Start x",                min: -40,   max: 40,     step: 0.1,   value: 0.1 },
+      { key: "z0",     label: "Start z",                min: -40,   max: 80,     step: 0.1,   value: 0 },
+      { key: "jitter", label: "Scatter",                min: 0,     max: 5,      step: 0.05,  value: 0.15 },
+      { key: "stray",  label: "Stray points (%)",       min: 0,     max: 30,     step: 0.5,   value: 8 },
+      { key: "seed",   label: "Random seed",            min: 1,     max: 99,     step: 1,     value: 7 },
+    ]},
+    { title: "Camera", items: [
+      { key: "yaw",    label: "Yaw (°)",                min: -180,  max: 180,    step: 0.5,   value: -165 },
+      { key: "pitch",  label: "Pitch (°)",              min: -90,   max: 90,     step: 0.5,   value: 30 },
+      { key: "roll",   label: "Roll (°)",               min: -180,  max: 180,    step: 0.5,   value: -12 },
+      { key: "dist",   label: "Distance",               min: 20,    max: 300,    step: 1,     value: 70 },
+      { key: "fov",    label: "Field of view (°)",      min: 5,     max: 120,    step: 1,     value: 70 },
+      { key: "panX",   label: "Pan x",                  min: -1,    max: 1,      step: 0.01,  value: 0 },
+      { key: "panY",   label: "Pan y",                  min: -1,    max: 1,      step: 0.01,  value: 0 },
+      { key: "spin",   label: "Auto-rotate (°/s)",      min: -30,   max: 30,     step: 0.5,   value: 0 },
+    ]},
+    { title: "Points", items: [
+      { key: "size",   label: "Point size (px)",        min: 0.5,   max: 6,      step: 0.1,   value: 1.6 },
+      { key: "alpha",  label: "Opacity",                min: 0.05,  max: 1,      step: 0.01,  value: 0.75 },
+      { key: "fade",   label: "Depth fade",             min: 0,     max: 1,      step: 0.01,  value: 0.6 },
+      { key: "persp",  label: "Size by distance",       type: "check",                        value: true },
+    ]},
+  ];
+
+  const P = {};
+  const DEFAULTS = {};
+  const inputs = {};
+  const outputs = {};
+  const rebuildKeys = new Set();
+  for (const g of GROUPS) for (const it of g.items) {
+    P[it.key] = DEFAULTS[it.key] = it.value;
+    if (g.rebuild) rebuildKeys.add(it.key);
+  }
+
+  // ---------- Panel ----------
+  const panel = document.getElementById("panel");
+  const decimals = (step) => (String(step).split(".")[1] || "").length;
+  for (const g of GROUPS) {
+    const h = document.createElement("h2");
+    h.textContent = g.title;
+    panel.append(h);
+    for (const it of g.items) {
+      const row = document.createElement("div");
+      const id = "p-" + it.key;
+      if (it.type === "check") {
+        row.className = "control is-check";
+        row.innerHTML = `<input type="checkbox" id="${id}"><label for="${id}">${it.label}</label>`;
+        const input = row.querySelector("input");
+        input.checked = it.value;
+        input.addEventListener("change", () => set(it.key, input.checked));
+        inputs[it.key] = input;
+      } else {
+        row.className = "control";
+        row.innerHTML = `<label for="${id}">${it.label}</label><output for="${id}"></output>
+          <input type="range" id="${id}" min="${it.min}" max="${it.max}" step="${it.step}">`;
+        const input = row.querySelector("input");
+        const out = row.querySelector("output");
+        input.value = it.value;
+        out.textContent = (+it.value).toFixed(decimals(it.step));
+        input.addEventListener("input", () => set(it.key, +input.value));
+        inputs[it.key] = input;
+        outputs[it.key] = { el: out, digits: decimals(it.step) };
+      }
+      panel.append(row);
+    }
+  }
+  panel.insertAdjacentHTML("beforeend", `
+    <div class="buttons"><button id="reset">Reset</button><button id="copy">Copy settings</button></div>
+    <pre id="json"></pre>`);
+
+  let needsRebuild = true;
+  function set(key, value, fromUI = true) {
+    P[key] = value;
+    if (!fromUI) {
+      if (typeof value === "boolean") inputs[key].checked = value;
+      else inputs[key].value = value;
+    }
+    if (outputs[key]) outputs[key].el.textContent = (+value).toFixed(outputs[key].digits);
+    if (rebuildKeys.has(key)) needsRebuild = true;
+    showJSON();
+  }
+  function showJSON() {
+    const round = (v) => typeof v === "number" ? +v.toFixed(4) : v;
+    document.getElementById("json").textContent =
+      JSON.stringify(Object.fromEntries(Object.entries(P).map(([k, v]) => [k, round(v)])), null, 1);
+  }
+  document.getElementById("reset").addEventListener("click", () => {
+    for (const k in DEFAULTS) set(k, DEFAULTS[k], false);
+  });
+  document.getElementById("copy").addEventListener("click", async (e) => {
+    try {
+      await navigator.clipboard.writeText(document.getElementById("json").textContent);
+      e.target.textContent = "Copied";
+    } catch { e.target.textContent = "Select the text below"; }
+    setTimeout(() => (e.target.textContent = "Copy settings"), 1200);
+  });
+  showJSON();
+
+  // ---------- Attractor ----------
+  // Seeded random, so the scatter doesn't reshuffle on every slider move
+  function rng(seed) {
+    let s = seed >>> 0 || 1;
+    return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
+  }
+  function gauss(rand) {
+    return Math.sqrt(-2 * Math.log(rand() || 1e-9)) * Math.cos(2 * Math.PI * rand());
+  }
+
+  let cloud = new Float32Array(0), count = 0, radius = 30;
+  function build() {
+    const { sigma, rho, beta, dt, every, skip, jitter } = P;
+    const n = P.points | 0;
+    const strays = Math.round(n * P.stray / 100);
+    const traced = n - strays;
+    const rand = rng(P.seed);
+    const f = (x, y, z) => [sigma * (y - x), x * (rho - z) - y, x * y - beta * z];
+
+    let x = P.x0, y = 0, z = P.z0;
+    const out = new Float32Array(n * 3);
+    let k = 0, ok = true;
+    for (let i = 0; k < traced * 3; i++) {
+      // RK4
+      const a = f(x, y, z);
+      const b = f(x + a[0] * dt / 2, y + a[1] * dt / 2, z + a[2] * dt / 2);
+      const c = f(x + b[0] * dt / 2, y + b[1] * dt / 2, z + b[2] * dt / 2);
+      const d = f(x + c[0] * dt, y + c[1] * dt, z + c[2] * dt);
+      x += dt / 6 * (a[0] + 2 * b[0] + 2 * c[0] + d[0]);
+      y += dt / 6 * (a[1] + 2 * b[1] + 2 * c[1] + d[1]);
+      z += dt / 6 * (a[2] + 2 * b[2] + 2 * c[2] + d[2]);
+      if (!isFinite(x + y + z) || Math.abs(x) + Math.abs(y) + Math.abs(z) > 1e4) { ok = false; break; }
+      if (i < skip || i % every) continue;
+      out[k++] = x + gauss(rand) * jitter;
+      out[k++] = y + gauss(rand) * jitter;
+      out[k++] = z + gauss(rand) * jitter;
+    }
+    const tracedCount = k / 3;
+
+    // Centre the cloud and measure it
+    let cx = 0, cy = 0, cz = 0;
+    for (let i = 0; i < k; i += 3) { cx += out[i]; cy += out[i + 1]; cz += out[i + 2]; }
+    cx /= tracedCount || 1; cy /= tracedCount || 1; cz /= tracedCount || 1;
+    let r = 0;
+    for (let i = 0; i < k; i += 3) {
+      out[i] -= cx; out[i + 1] -= cy; out[i + 2] -= cz;
+      r = Math.max(r, Math.hypot(out[i], out[i + 1], out[i + 2]));
+    }
+    radius = r || 30;
+
+    // Stray points: a loose haze around the attractor, denser near it
+    for (let s = 0; s < strays && ok; s++) {
+      const src = (rand() * tracedCount | 0) * 3;
+      const spread = radius * 0.35 * Math.pow(rand(), 2);
+      out[k++] = out[src]     + gauss(rand) * spread;
+      out[k++] = out[src + 1] + gauss(rand) * spread;
+      out[k++] = out[src + 2] + gauss(rand) * spread;
+    }
+
+    cloud = out;
+    count = k / 3;
+    document.getElementById("stats").textContent = ok
+      ? `${count.toLocaleString()} points`
+      : `Diverged after ${tracedCount.toLocaleString()} points: try a smaller time step`;
+    upload();
+  }
+
+  // ---------- WebGL ----------
+  const canvas = document.getElementById("view");
+  const gl = canvas.getContext("webgl", { antialias: true, premultipliedAlpha: false });
+  if (!gl) { document.getElementById("stats").textContent = "WebGL isn't available in this browser."; return; }
+
+  const VS = `
+    attribute vec3 a_pos;
+    uniform mat3 u_rot;
+    uniform float u_dist, u_focal, u_aspect, u_size, u_radius, u_persp;
+    uniform vec2 u_pan;
+    varying float v_depth;
+    void main() {
+      // Lorenz z is up: (x, y, z) → right, forward, up, then the camera rotation
+      vec3 p = u_rot * vec3(a_pos.x, a_pos.z, a_pos.y);
+      float z = p.z + u_dist;
+      if (z < 0.1) { gl_Position = vec4(2.0, 2.0, 2.0, 1.0); return; }
+      gl_Position = vec4(p.x * u_focal / z / u_aspect + u_pan.x, p.y * u_focal / z + u_pan.y, 0.0, 1.0);
+      gl_PointSize = u_size * mix(1.0, u_dist / z, u_persp);
+      v_depth = clamp((p.z / u_radius) * 0.5 + 0.5, 0.0, 1.0);   // 0 nearest, 1 farthest
+    }`;
+  const FS = `
+    precision mediump float;
+    uniform vec3 u_ink;
+    uniform float u_alpha, u_fade;
+    varying float v_depth;
+    void main() {
+      vec2 c = gl_PointCoord - 0.5;
+      if (dot(c, c) > 0.25) discard;   // round points
+      gl_FragColor = vec4(u_ink, u_alpha * (1.0 - u_fade * v_depth));
+    }`;
+
+  function compile(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const U = (name) => gl.getUniformLocation(prog, name);
+  const u = Object.fromEntries(["u_rot", "u_dist", "u_focal", "u_aspect", "u_size", "u_radius", "u_persp", "u_pan", "u_ink", "u_alpha", "u_fade"].map(n => [n, U(n)]));
+
+  const buf = gl.createBuffer();
+  const aPos = gl.getAttribLocation(prog, "a_pos");
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
+  function upload() {
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, cloud.subarray(0, count * 3), gl.STATIC_DRAW);
+  }
+
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.clearColor(0x19 / 255, 0x16 / 255, 0x13 / 255, 1);   // #191613
+  const INK = [221 / 255, 220 / 255, 200 / 255];          // #dddcc8, as the wireframe
+
+  // Yaw about the up axis, then pitch about the right axis, then roll about the view axis
+  function rotation(yawDeg, pitchDeg, rollDeg) {
+    const r = Math.PI / 180;
+    const cy = Math.cos(yawDeg * r), sy = Math.sin(yawDeg * r);
+    const cp = Math.cos(pitchDeg * r), sp = Math.sin(pitchDeg * r);
+    const cr = Math.cos(rollDeg * r), sr = Math.sin(rollDeg * r);
+    // Basis vectors: x right, y up, z forward (into the screen)
+    const Ry = [cy, 0, -sy, 0, 1, 0, sy, 0, cy];
+    const Rp = [1, 0, 0, 0, cp, sp, 0, -sp, cp];
+    const Rr = [cr, sr, 0, -sr, cr, 0, 0, 0, 1];
+    const mul = (A, B) => {   // column-major 3×3: (A·B)
+      const C = new Array(9);
+      for (let c = 0; c < 3; c++) for (let rr = 0; rr < 3; rr++)
+        C[c * 3 + rr] = A[rr] * B[c * 3] + A[3 + rr] * B[c * 3 + 1] + A[6 + rr] * B[c * 3 + 2];
+      return C;
+    };
+    return new Float32Array(mul(Rr, mul(Rp, Ry)));
+  }
+
+  function resize() {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    gl.viewport(0, 0, w, h);
+    return dpr;
+  }
+
+  let last = 0;
+  function frame(now) {
+    const dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
+    last = now;
+    if (P.spin && !dragging) {
+      let yaw = P.yaw + P.spin * dt;
+      if (yaw > 180) yaw -= 360;
+      if (yaw < -180) yaw += 360;
+      set("yaw", yaw, false);
+    }
+    if (needsRebuild) { needsRebuild = false; build(); }
+
+    const dpr = resize();
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.uniformMatrix3fv(u.u_rot, false, rotation(P.yaw, P.pitch, P.roll));
+    gl.uniform1f(u.u_dist, P.dist);
+    gl.uniform1f(u.u_focal, 1 / Math.tan(P.fov * Math.PI / 360));
+    gl.uniform1f(u.u_aspect, canvas.width / canvas.height);
+    gl.uniform1f(u.u_size, P.size * dpr);
+    gl.uniform1f(u.u_radius, radius);
+    gl.uniform1f(u.u_persp, P.persp ? 1 : 0);
+    gl.uniform2f(u.u_pan, P.panX, P.panY);
+    gl.uniform3fv(u.u_ink, INK);
+    gl.uniform1f(u.u_alpha, P.alpha);
+    gl.uniform1f(u.u_fade, P.fade);
+    gl.drawArrays(gl.POINTS, 0, count);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // ---------- Mouse: drag to rotate, shift-drag to pan, wheel to zoom ----------
+  let dragging = null;
+  canvas.addEventListener("pointerdown", (e) => {
+    dragging = { x: e.clientX, y: e.clientY, pan: e.shiftKey };
+    canvas.setPointerCapture(e.pointerId);
+    canvas.classList.add("is-dragging");
+  });
+  canvas.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - dragging.x, dy = e.clientY - dragging.y;
+    dragging.x = e.clientX; dragging.y = e.clientY;
+    if (dragging.pan) {
+      set("panX", Math.max(-1, Math.min(1, P.panX + dx * 2 / canvas.clientWidth)), false);
+      set("panY", Math.max(-1, Math.min(1, P.panY - dy * 2 / canvas.clientHeight)), false);
+    } else {
+      let yaw = P.yaw - dx * 0.3;
+      if (yaw > 180) yaw -= 360;
+      if (yaw < -180) yaw += 360;
+      set("yaw", yaw, false);
+      set("pitch", Math.max(-90, Math.min(90, P.pitch + dy * 0.3)), false);
+    }
+  });
+  const endDrag = () => { dragging = null; canvas.classList.remove("is-dragging"); };
+  canvas.addEventListener("pointerup", endDrag);
+  canvas.addEventListener("pointercancel", endDrag);
+  canvas.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    set("dist", Math.max(20, Math.min(300, P.dist * Math.exp(e.deltaY * 0.001))), false);
+  }, { passive: false });
+})();
+</script>
+</body>
+</html>
