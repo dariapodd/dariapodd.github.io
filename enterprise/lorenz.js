@@ -11,7 +11,8 @@
 
   // Attractor
   const SIGMA = 8.8, RHO = 25.4, BETA = 1.07, DT = 0.006;
-  const POINTS = 40000, STRAY = 0.04, SEED = 7;
+  const POINTS = 40000, STRAY = 0.215, SEED = 2;
+  const SCATTER = 0;   // jitter on the path itself; drawn like the lab, so a seed matches it there
   const X0 = -1.8, Z0 = 3.2;
   // Camera
   const YAW = 107.4, PITCH = 43.1, ROLL = -43, DIST = 70, FOV = 70;
@@ -19,7 +20,7 @@
   const SHIFT = 0.1;   // centre sits this share of the page width right of the box's centre   // scales with the box width: the attractor fills about ¾ of it
   const DRAG_DEG_PER_PX = 0.3;
   // Points
-  const SIZE = 1, ALPHA = 0.46, FADE = 0.47, RADIUS = 30;
+  const SIZE = 1, ALPHA = 0.38, FADE = 1, RADIUS = 30;
   const INK = [221 / 255, 220 / 255, 200 / 255];   // #dddcc8, as the wireframe
   const TEAL = [0, 1, 204 / 255];                   // #00ffcc
   // Dot
@@ -49,13 +50,13 @@
       y += DT / 6 * (a[1] + 2 * b[1] + 2 * c[1] + d[1]);
       z += DT / 6 * (a[2] + 2 * b[2] + 2 * c[2] + d[2]);
       // Centred between the two wings, at (0, 0, ρ − 1)
-      cloud[k++] = x; cloud[k++] = y; cloud[k++] = z - (RHO - 1);
+      cloud[k++] = x + gauss() * SCATTER;
+      cloud[k++] = y + gauss() * SCATTER;
+      cloud[k++] = z - (RHO - 1) + gauss() * SCATTER;
     }
-    let r = 0;
-    for (let k = 0; k < traced * 3; k += 3) r = Math.max(r, Math.hypot(cloud[k], cloud[k + 1], cloud[k + 2]));
     for (let s = 0, k = traced * 3; s < strays; s++) {
       const src = (rand() * traced | 0) * 3;
-      const spread = r * 0.35 * Math.pow(rand(), 2);
+      const spread = RADIUS * 0.35 * Math.pow(rand(), 2);
       cloud[k++] = cloud[src] + gauss() * spread;
       cloud[k++] = cloud[src + 1] + gauss() * spread;
       cloud[k++] = cloud[src + 2] + gauss() * spread;
