@@ -126,10 +126,13 @@
     padding-right: var(--gutter);
   }
 
-  /* Vertical margin line: from the top of the page down to the first project only */
-  .hero::after {
+  /* Vertical margin line: the full height of the page, over the project blocks
+     but under their diamonds (z-index 4) */
+  body { position: relative; }
+  body::before {
     content: "";
     position: absolute;
+    z-index: 3;
     top: 0;
     bottom: 0;
     left: var(--margin-line);
