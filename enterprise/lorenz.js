@@ -1,6 +1,7 @@
 // Lorenz attractor point cloud for the hero (settings tuned in /lab/lorenz.html).
 // A teal dot with a fading tail travels the path; drag to rotate.
-// Transparent background, pauses off-screen, and the dot stands still with reduced motion.
+// Transparent background; pauses only while off-screen. The dot is slow and small enough
+// to keep moving even with reduced motion on.
 (() => {
   const host = document.querySelector(".micro--lorenz");
   if (!host) return;
@@ -135,12 +136,11 @@
 
   let yaw = YAW, pitch = PITCH;
   let phase = 0, last = 0, visible = true, running = false;
-  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
 
   function frame(now) {
     const dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
     last = now;
-    if (!reduceMotion.matches) phase = (phase + dt / DOT_TIME) % 1;
+    phase = (phase + dt / DOT_TIME) % 1;
 
     const dpr = Math.min(devicePixelRatio || 1, 2);
     const w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
