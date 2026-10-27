@@ -191,6 +191,7 @@
 
   .logos {
     display: flex;
+    flex-wrap: wrap;          /* six logos wrap onto two rows on phones instead of squashing */
     gap: 16px;
     margin: 36px 0 0;
     padding: 0;
@@ -198,6 +199,7 @@
   }
   .logos li {
     position: relative;
+    flex-shrink: 0;
     width: 64px;
     height: 64px;
     border-radius: 2px;
@@ -239,8 +241,6 @@
     font: 300 14px/1.4 "Chakra Petch", system-ui, sans-serif;
     color: rgba(255, 255, 255, 0.8);
   }
-  /* Last two hints open leftwards so they never stick out past the right edge */
-  .logos li:nth-last-child(-n+2) .tip { left: auto; right: 0; }
   .logos li:hover .tip,
   .logos li:focus-visible .tip {
     opacity: 1;
@@ -479,7 +479,9 @@
       <li tabindex="0"><img src="assets/logo-ey.png" alt="Ernst &amp; Young, agency"><span class="tip" aria-hidden="true"><b>Ernst &amp; Young</b><span>Agency</span></span></li>
       <li tabindex="0"><img src="assets/logo-2.png" alt="EY Studio+, agency"><span class="tip" aria-hidden="true"><b>EY Studio+</b><span>Agency</span></span></li>
       <li tabindex="0"><img src="assets/logo-3.svg" alt="The University of Sydney, teaching HCI and usability to engineers since 2019, over 600 students"><span class="tip" aria-hidden="true"><b>The University of Sydney</b><span>Teaching HCI and Usability to engineers since 2019, &gt; 600 students</span></span></li>
-      <li tabindex="0"><img src="assets/logo-4.svg" alt="2GIS, vendor, B2B and B2C" class="wordmark"><span class="tip" aria-hidden="true"><b>2GIS</b><span>Vendor, B2B and B2C</span></span></li>
+      <li tabindex="0"><img src="assets/logo-4.svg" alt="2GIS, vendor, B2B and B2C" class="wordmark" style="width: 44px"><span class="tip" aria-hidden="true"><b>2GIS</b><span>Vendor, B2B and B2C</span></span></li>
+      <li tabindex="0"><img src="assets/logo-tsum.svg" alt="TSUM, luxury fashion retail: department store automation" class="wordmark" style="width: 38.67px"><span class="tip" aria-hidden="true"><b>TSUM</b><span>Luxury Fashion Retail – Department store automation</span></span></li>
+      <li tabindex="0"><img src="assets/logo-1c-rarus.svg" alt="1C-Rarus, major ERP vendor and consultancy in Europe"><span class="tip" aria-hidden="true"><b>1C-Rarus</b><span>Major ERP vendor and consultancy in Europe</span></span></li>
     </ul>
 
     <p class="scroll-hint">scroll down for projects ↓</p>
@@ -530,6 +532,25 @@
 <script src="surface.js" defer></script>
 
 <script>
+  // Keep every logo hint inside the window: start under its logo, then shift sideways
+  // just enough to clear the side margins (hidden hints still count towards page width)
+  const tips = [...document.querySelectorAll(".logos .tip")];
+  function placeTips() {
+    const vw = document.documentElement.clientWidth;
+    const gutter = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gutter")) || 0;
+    for (const tip of tips) {
+      tip.style.left = "0px";
+      const r = tip.getBoundingClientRect();
+      let shift = 0;
+      if (r.right > vw - gutter) shift = (vw - gutter) - r.right;
+      if (r.left + shift < gutter) shift = gutter - r.left;
+      tip.style.left = shift + "px";
+    }
+  }
+  placeTips();
+  addEventListener("resize", placeTips);
+  document.fonts && document.fonts.ready.then(placeTips);
+
   // Hide the scroll hint as soon as the page is scrolled; bring it back at the top
   const hint = document.querySelector(".scroll-hint");
   const syncHint = () => hint.classList.toggle("is-hidden", scrollY > 8);
