@@ -11,7 +11,7 @@
 
   // Attractor
   const SIGMA = 8.8, RHO = 25.4, BETA = 1.07, DT = 0.006;
-  const POINTS = 40000, STRAY = 0.215, SEED = 2;
+  const POINTS = 40000, STRAY = 0.3, SEED = 2;
   const SCATTER = 0;   // jitter on the path itself; drawn like the lab, so a seed matches it there
   const X0 = -1.8, Z0 = 3.2;
   // Camera
