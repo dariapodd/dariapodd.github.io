@@ -1,5 +1,7 @@
 // Lorenz attractor point cloud for the hero (settings tuned in /lab/lorenz.html).
 // A teal dot with a fading tail travels the path; drag to rotate.
+// The .micro--lorenz box only sets the attractor's centre and size: the canvas covers the
+// whole hero, behind the text, so the attractor isn't cut off when rotated.
 // Transparent background; pauses only while off-screen. The dot is slow and small enough
 // to keep moving even with reduced motion on.
 (() => {
@@ -12,7 +14,7 @@
   const X0 = -1.8, Z0 = 3.2;
   // Camera
   const YAW = 107.4, PITCH = 43.1, ROLL = -43, DIST = 70, FOV = 70;
-  const ZOOM = 3.5;   // scales with the canvas width: the attractor fills about ¾ of it
+  const ZOOM = 3.5;   // scales with the box width: the attractor fills about ¾ of it
   const DRAG_DEG_PER_PX = 0.3;
   // Points
   const SIZE = 1, ALPHA = 0.46, FADE = 0.47, RADIUS = 30;
@@ -59,22 +61,26 @@
   }
 
   // ---- WebGL ----
+  const hero = host.parentElement;
   const canvas = document.createElement("canvas");
-  host.append(canvas);
+  canvas.className = "lorenz-canvas";
+  canvas.setAttribute("aria-hidden", "true");
+  hero.prepend(canvas);   // first, so the headline's ruled lines still draw over it
   const gl = canvas.getContext("webgl", { antialias: true, premultipliedAlpha: false, alpha: true });
-  if (!gl) { host.remove(); return; }
+  if (!gl) { canvas.remove(); return; }
 
   const VS = `
     attribute vec3 a_pos;
     uniform mat3 u_rot;
-    uniform float u_dist, u_focal, u_aspect, u_size, u_radius;
+    uniform float u_dist, u_focal, u_size, u_radius;
+    uniform vec2 u_scale, u_centre;   // the box's size and centre in the canvas
     varying float v_depth;
     void main() {
       // Lorenz z is up: (x, y, z) → right, forward, up, then the camera rotation
       vec3 p = u_rot * vec3(a_pos.x, a_pos.z, a_pos.y);
       float z = p.z + u_dist;
       if (z < 0.1) { gl_Position = vec4(2.0, 2.0, 2.0, 1.0); return; }
-      gl_Position = vec4(p.x * u_focal / z, p.y * u_focal / z * u_aspect, 0.0, 1.0);
+      gl_Position = vec4(vec2(p.x, p.y) * u_focal / z * u_scale + u_centre, 0.0, 1.0);
       gl_PointSize = u_size * u_dist / z;
       v_depth = clamp((p.z / u_radius) * 0.5 + 0.5, 0.0, 1.0);   // 0 nearest, 1 farthest
     }`;
@@ -98,9 +104,9 @@
   gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS));
   gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS));
   gl.linkProgram(prog);
-  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { host.remove(); return; }
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { canvas.remove(); return; }
   gl.useProgram(prog);
-  const u = Object.fromEntries(["u_rot", "u_dist", "u_focal", "u_aspect", "u_size", "u_radius", "u_ink", "u_alpha", "u_fade"]
+  const u = Object.fromEntries(["u_rot", "u_dist", "u_focal", "u_scale", "u_centre", "u_size", "u_radius", "u_ink", "u_alpha", "u_fade"]
     .map(n => [n, gl.getUniformLocation(prog, n)]));
 
   const aPos = gl.getAttribLocation(prog, "a_pos");
@@ -144,7 +150,8 @@
 
     const dpr = Math.min(devicePixelRatio || 1, 2);
     const w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
-    if (!w || !h) { running = false; return; }
+    const box = host.getBoundingClientRect(), area = canvas.getBoundingClientRect();
+    if (!w || !h || !box.width) { running = false; return; }   // hidden on narrow screens
     if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
     gl.viewport(0, 0, w, h);
     gl.clear(gl.COLOR_BUFFER_BIT);
@@ -152,7 +159,10 @@
     gl.uniformMatrix3fv(u.u_rot, false, rotation(yaw, pitch, ROLL));
     gl.uniform1f(u.u_dist, DIST);
     gl.uniform1f(u.u_focal, ZOOM / Math.tan(FOV * Math.PI / 360));
-    gl.uniform1f(u.u_aspect, w / h);
+    gl.uniform2f(u.u_scale, box.width / area.width, box.width / area.height);
+    gl.uniform2f(u.u_centre,
+      (box.left + box.width / 2 - area.left) / area.width * 2 - 1,
+      1 - (box.top + box.height / 2 - area.top) / area.height * 2);
     gl.uniform1f(u.u_radius, RADIUS);
 
     // The cloud
@@ -194,24 +204,36 @@
   new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;
     if (visible) start();
-  }).observe(host);
+  }).observe(canvas);
   addEventListener("resize", start);
 
-  // Drag to rotate (vertical page scrolling still works on touch)
+  // Drag to rotate, anywhere over the box. The canvas sits behind the text, so the hero
+  // listens instead; links and logos keep their clicks.
   let drag = null;
-  canvas.addEventListener("pointerdown", (e) => {
-    drag = { x: e.clientX, y: e.clientY };
-    canvas.setPointerCapture(e.pointerId);
-    canvas.classList.add("is-dragging");
+  const overBox = (e) => {
+    const r = host.getBoundingClientRect();
+    return r.width && e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom
+      && !e.target.closest("a, button, [tabindex], .style-menu");
+  };
+  hero.addEventListener("pointermove", (e) => {
+    if (drag) {
+      yaw -= (e.clientX - drag.x) * DRAG_DEG_PER_PX;
+      pitch = Math.max(-90, Math.min(90, pitch + (e.clientY - drag.y) * DRAG_DEG_PER_PX));
+      drag = { x: e.clientX, y: e.clientY };
+      start();
+    } else {
+      hero.classList.toggle("is-lorenz-grab", e.pointerType !== "touch" && overBox(e));
+    }
   });
-  canvas.addEventListener("pointermove", (e) => {
-    if (!drag) return;
-    yaw -= (e.clientX - drag.x) * DRAG_DEG_PER_PX;
-    pitch = Math.max(-90, Math.min(90, pitch + (e.clientY - drag.y) * DRAG_DEG_PER_PX));
+  hero.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "touch" || e.button !== 0 || !overBox(e)) return;
+    e.preventDefault();   // no text selection while rotating
     drag = { x: e.clientX, y: e.clientY };
-    start();
+    hero.setPointerCapture(e.pointerId);
+    hero.classList.add("is-lorenz-dragging");
   });
-  const end = () => { drag = null; canvas.classList.remove("is-dragging"); };
-  canvas.addEventListener("pointerup", end);
-  canvas.addEventListener("pointercancel", end);
+  const end = () => { drag = null; hero.classList.remove("is-lorenz-dragging"); };
+  hero.addEventListener("pointerup", end);
+  hero.addEventListener("pointercancel", end);
+  hero.addEventListener("pointerleave", () => { if (!drag) hero.classList.remove("is-lorenz-grab"); });
 })();
