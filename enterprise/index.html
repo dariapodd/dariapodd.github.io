@@ -55,18 +55,6 @@
     :root { --content-left: 26px; } /* phones: text 53px from the edge */
   }
 
-  /* Vertical margin rule */
-  .margin-rule {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: var(--margin-line);
-    width: 1px;
-    background: var(--rule);
-    pointer-events: none;
-    z-index: 0;   /* first in the page, so the project cards paint over it */
-  }
-
   /* ---------- Shared header bits (same as the other views) ---------- */
   .view-select {
     display: flex;
@@ -133,8 +121,21 @@
 
   /* ---------- Hero ---------- */
   .hero {
+    position: relative;
     padding: 131px 0 217px var(--text-left); /* bottom: same gap to the first project as before the hint was pinned */
     padding-right: var(--gutter);
+  }
+
+  /* Vertical margin line: from the top of the page down to the first project only */
+  .hero::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--margin-line);
+    width: 1px;
+    background: var(--rule);
+    pointer-events: none;
   }
 
   .hero h1 {
@@ -461,8 +462,6 @@
 </style>
 </head>
 <body>
-  <div class="margin-rule" aria-hidden="true"></div>
-
   <a class="resume" href="../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
 
   <header class="hero">
