@@ -1,7 +1,7 @@
 // Wireframe decor turning like the Earth (west to east, once a minute), seen from a little
 // above the equator. Lines on the far side are drawn fainter. Pauses while off-screen.
 //   .micro--sphere      globe: meridians and parallels
-//   .micro--decahedron  pentagonal bipyramid with equilateral faces (10 triangles)
+//   .micro--diamond     low-poly gem like the Sketch logo: flat top, crown, pointed base
 (() => {
   const INK = "155, 153, 138";    // #9b998a (Figma)
   const FRONT = 1, BACK = 0.3;    // line opacity on the near and far side
@@ -33,31 +33,40 @@
     circles.push(pts);
   }
 
-  // Decahedron: five points on the equator (radius 1) and two apexes, so every face is
-  // equilateral. Each edge keeps the outward normals of its two faces: it is on the near
-  // side when either face looks towards the viewer.
-  const APEX = Math.sqrt((2 * Math.sin(Math.PI / 5)) ** 2 - 1);
-  const verts = [[0, APEX, 0], [0, -APEX, 0]];
-  for (let i = 0; i < 5; i++) verts.push([Math.sin(i * 2 * Math.PI / 5), 0, Math.cos(i * 2 * Math.PI / 5)]);
+  // Diamond: a six-sided table on top, a crown of triangles alternating up and down to the
+  // wider girdle, and a pavilion of triangles meeting at the point below. Each edge keeps the
+  // outward normals of its faces: it is on the near side when any of them looks at the viewer.
+  const SIDES = 6, TABLE = 0.55, TOP = 0.55, GIRDLE = 0.25, POINT = -0.65;
+  const ring = (radius, y, offset) => Array.from({ length: SIDES }, (_, i) => {
+    const a = (i + offset) * 2 * Math.PI / SIDES;
+    return [radius * Math.sin(a), y, radius * Math.cos(a)];
+  });
+  const table = ring(TABLE, TOP, 0.5), girdle = ring(1, GIRDLE, 0), point = [0, POINT, 0];
+  const faces = [table];
+  for (let i = 0; i < SIDES; i++) {
+    const j = (i + 1) % SIDES;
+    faces.push([girdle[i], girdle[j], table[i]]);    // crown, pointing up
+    faces.push([table[i], table[j], girdle[j]]);     // crown, pointing down
+    faces.push([girdle[i], girdle[j], point]);       // pavilion
+  }
+  const middle = [0, 1, 2].map(k => [...table, ...girdle, point].reduce((sum, v) => sum + v[k], 0) / (2 * SIDES + 1));
   const edges = new Map();
-  for (let i = 0; i < 5; i++) {
-    const a = 2 + i, b = 2 + (i + 1) % 5;
-    for (const apex of [0, 1]) {
-      const [p, q, s] = [verts[apex], verts[a], verts[b]];
-      const u = q.map((v, k) => v - p[k]), w = s.map((v, k) => v - p[k]);
-      let n = [u[1] * w[2] - u[2] * w[1], u[2] * w[0] - u[0] * w[2], u[0] * w[1] - u[1] * w[0]];
-      const centre = [0, 1, 2].map(k => p[k] + q[k] + s[k]);
-      if (n[0] * centre[0] + n[1] * centre[1] + n[2] * centre[2] < 0) n = n.map(v => -v);
-      for (const [x, y] of [[apex, a], [apex, b], [a, b]]) {
-        const key = Math.min(x, y) + "-" + Math.max(x, y);
-        if (!edges.has(key)) edges.set(key, { from: verts[x], to: verts[y], normals: [] });
-        edges.get(key).normals.push(n);
-      }
-    }
+  for (const face of faces) {
+    const [p, q, r] = face;
+    const u = q.map((v, k) => v - p[k]), w = r.map((v, k) => v - p[k]);
+    let n = [u[1] * w[2] - u[2] * w[1], u[2] * w[0] - u[0] * w[2], u[0] * w[1] - u[1] * w[0]];
+    const out = [0, 1, 2].map(k => face.reduce((sum, v) => sum + v[k], 0) / face.length - middle[k]);
+    if (n[0] * out[0] + n[1] * out[1] + n[2] * out[2] < 0) n = n.map(v => -v);
+    face.forEach((a, i) => {
+      const b = face[(i + 1) % face.length];
+      const key = [a, b].map(v => v.join()).sort().join("|");
+      if (!edges.has(key)) edges.set(key, { from: a, to: b, normals: [] });
+      edges.get(key).normals.push(n);
+    });
   }
 
-  for (const host of document.querySelectorAll(".micro--sphere, .micro--decahedron")) {
-    const solid = host.classList.contains("micro--decahedron");
+  for (const host of document.querySelectorAll(".micro--sphere, .micro--diamond")) {
+    const solid = host.classList.contains("micro--diamond");
     const canvas = document.createElement("canvas");
     host.append(canvas);
     const ctx = canvas.getContext("2d");

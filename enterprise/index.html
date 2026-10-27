@@ -435,9 +435,9 @@
     .micro--lorenz, .lorenz-canvas { display: none; }   /* no room beside the headline */
   }
 
-  /* Wireframe globe (project 1) and decahedron (project 2) 80px above the block's bottom edge,
+  /* Wireframe globe (project 1) and diamond (project 2) 80px above the block's bottom edge,
      under the text; they turn once a minute */
-  .micro--sphere, .micro--decahedron {
+  .micro--sphere, .micro--diamond {
     left: var(--text-left);
     bottom: 80px;
     width: 40px;
@@ -445,7 +445,7 @@
   }
   @media (min-width: 901px) {
     /* keep room for it under the text (globe + 48px gap), so it never meets the button */
-    .project:has(.micro--sphere, .micro--decahedron) .project-content { padding-bottom: calc(80px + 40px + 48px); }
+    .project:has(.micro--sphere, .micro--diamond) .project-content { padding-bottom: calc(80px + 40px + 48px); }
   }
 
   /* Phones and small tablets: stack text and screenshot */
@@ -541,7 +541,7 @@
       <img class="project-shot" src="../enterprise/assets/project-1-spatial-digital-twin.png" width="2218" height="1474"
            alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
       <div class="micro micro--surface is-flipped" aria-hidden="true"></div>
-      <div class="micro micro--decahedron" aria-hidden="true"></div>
+      <div class="micro micro--diamond" aria-hidden="true"></div>
     </section>
   </main>
 
