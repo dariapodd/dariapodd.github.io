@@ -435,13 +435,13 @@
     .micro--lorenz, .lorenz-canvas { display: none; }   /* no room beside the headline */
   }
 
-  /* Wireframe globe under the first project's button, turning once a minute */
+  /* Wireframe globe on the first project's bottom edge, under the text; turns once a minute */
   .micro--sphere {
-    width: 140px;
-    height: 140px;
-    margin: 48px 0 -40px;     /* sits closer to the block's bottom edge than text would */
+    left: var(--text-left);
+    bottom: 0;
+    width: 70px;
+    height: 70px;
   }
-  .micro--sphere canvas { display: block; width: 100%; height: 100%; }
 
   /* Phones and small tablets: stack text and screenshot */
   @media (max-width: 900px) {
@@ -509,11 +509,11 @@
           <p><strong>Result:</strong> faster asset inspections and planning, and less time/cost spent on field visits.</p>
         </div>
         <a class="button" href="#">learn more ↗</a>
-        <div class="micro--sphere" aria-hidden="true"></div>
       </div>
 
       <img class="project-shot" src="../enterprise/assets/project-1-spatial-digital-twin.png" width="2218" height="1474"
            alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
+      <div class="micro micro--sphere" aria-hidden="true"></div>
     </section>
 
     <section class="project project--grey" aria-labelledby="project-2">
