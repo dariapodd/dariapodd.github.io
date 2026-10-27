@@ -108,7 +108,7 @@
   // "attractor" changes rebuild the point cloud; everything else only redraws.
   const GROUPS = [
     { title: "Attractor", rebuild: true, items: [
-      { key: "sigma",  label: "σ (sigma)",              min: 0,     max: 30,     step: 0.1,   value: 0 },
+      { key: "sigma",  label: "σ (sigma)",              min: 0,     max: 30,     step: 0.1,   value: 8.8 },
       { key: "rho",    label: "ρ (rho)",                min: 0,     max: 60,     step: 0.1,   value: 25.4 },
       { key: "beta",   label: "β (beta)",               min: 0,     max: 6,      step: 0.01,  value: 1.07 },
       { key: "dt",     label: "Time step",              min: 0.001, max: 0.02,   step: 0.001, value: 0.006 },
@@ -123,14 +123,14 @@
     ]},
     { title: "Camera", items: [
       { key: "lock",   label: "Lock centre (don't follow the cloud)", type: "check",          value: true },
-      { key: "yaw",    label: "Yaw (°)",                min: -180,  max: 180,    step: 0.5,   value: -173.4 },
-      { key: "pitch",  label: "Pitch (°)",              min: -90,   max: 90,     step: 0.5,   value: 16.4 },
+      { key: "yaw",    label: "Yaw (°)",                min: -180,  max: 180,    step: 0.5,   value: 107.4 },
+      { key: "pitch",  label: "Pitch (°)",              min: -90,   max: 90,     step: 0.5,   value: 43.1 },
       { key: "roll",   label: "Roll (°)",               min: -180,  max: 180,    step: 0.5,   value: -43 },
       { key: "dist",   label: "Distance",               min: 20,    max: 300,    step: 1,     value: 70 },
       { key: "fov",    label: "Field of view (°)",      min: 5,     max: 120,    step: 1,     value: 70 },
       { key: "panX",   label: "Pan x",                  min: -1,    max: 1,      step: 0.01,  value: 0 },
       { key: "panY",   label: "Pan y",                  min: -1,    max: 1,      step: 0.01,  value: 0 },
-      { key: "spin",   label: "Auto-rotate (°/s)",      min: -30,   max: 30,     step: 0.5,   value: -0.5 },
+      { key: "spin",   label: "Auto-rotate (°/s)",      min: -30,   max: 30,     step: 0.5,   value: 0 },
     ]},
     { title: "Points", items: [
       { key: "size",   label: "Point size (px)",        min: 0.5,   max: 6,      step: 0.1,   value: 1 },
@@ -139,10 +139,13 @@
       { key: "persp",  label: "Size by distance",       type: "check",                        value: true },
     ]},
     { title: "Animation", items: [
-      { key: "animate", label: "Animate σ",               type: "check",                        value: true },
+      { key: "animate", label: "Animate σ",               type: "check",                        value: false },
       { key: "sigMin", label: "σ from",                   min: 0,     max: 30,     step: 0.1,   value: 0 },
       { key: "sigMax", label: "σ to",                     min: 0,     max: 30,     step: 0.1,   value: 30 },
       { key: "loop",   label: "Loop, there and back (s)", min: 10,    max: 600,    step: 10,    value: 300 },
+      { key: "dot",    label: "Teal dot along the path",  type: "check",                        value: true },
+      { key: "dotTime", label: "Dot: start to end (s)",   min: 10,    max: 600,    step: 10,    value: 120 },
+      { key: "dotSize", label: "Dot size (px)",           min: 2,     max: 16,     step: 0.5,   value: 6 },
     ]},
   ];
 
@@ -234,19 +237,19 @@
     return Math.sqrt(-2 * Math.log(rand() || 1e-9)) * Math.cos(2 * Math.PI * rand());
   }
 
-  let cloud = new Float32Array(0), count = 0, radius = 30;
+  let cloud = new Float32Array(0), count = 0, traced = 0, radius = 30;
   function build() {
     const { sigma, rho, beta, dt, every, skip, jitter } = P;
     const n = P.points | 0;
     const strays = Math.round(n * P.stray / 100);
-    const traced = n - strays;
+    const pathTarget = n - strays;
     const rand = rng(P.seed);
     const f = (x, y, z) => [sigma * (y - x), x * (rho - z) - y, x * y - beta * z];
 
     let x = P.x0, y = 0, z = P.z0;
     const out = new Float32Array(n * 3);
     let k = 0, ok = true;
-    for (let i = 0; k < traced * 3; i++) {
+    for (let i = 0; k < pathTarget * 3; i++) {
       // RK4
       const a = f(x, y, z);
       const b = f(x + a[0] * dt / 2, y + a[1] * dt / 2, z + a[2] * dt / 2);
@@ -289,6 +292,7 @@
 
     cloud = out;
     count = k / 3;
+    traced = tracedCount;   // the path itself; strays come after it
     document.getElementById("stats").textContent = ok
       ? `${count.toLocaleString()} points`
       : `Diverged after ${tracedCount.toLocaleString()} points: try a smaller time step`;
@@ -346,6 +350,8 @@
   gl.bindBuffer(gl.ARRAY_BUFFER, buf);
   gl.enableVertexAttribArray(aPos);
   gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
+  const dotBuf = gl.createBuffer();
+  const dotPos = new Float32Array(3);
   function upload() {
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.bufferData(gl.ARRAY_BUFFER, cloud.subarray(0, count * 3), gl.STATIC_DRAW);
@@ -355,6 +361,7 @@
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
   gl.clearColor(0x19 / 255, 0x16 / 255, 0x13 / 255, 1);   // #191613
   const INK = [221 / 255, 220 / 255, 200 / 255];          // #dddcc8, as the wireframe
+  const TEAL = [0, 1, 204 / 255];                          // #00ffcc
 
   // Yaw about the up axis, then pitch about the right axis, then roll about the view axis
   function rotation(yawDeg, pitchDeg, rollDeg) {
@@ -383,7 +390,7 @@
     return dpr;
   }
 
-  let last = 0, phase = 0;   // phase: 0 → 1 over one loop
+  let last = 0, phase = 0, dotPhase = 0;   // phases: 0 → 1 over one loop
   function frame(now) {
     const dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
     last = now;
@@ -414,7 +421,24 @@
     gl.uniform3fv(u.u_ink, INK);
     gl.uniform1f(u.u_alpha, P.alpha);
     gl.uniform1f(u.u_fade, P.fade);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
     gl.drawArrays(gl.POINTS, 0, count);
+
+    // Teal dot: travels the path from its first point to its last, then starts over
+    if (P.dot && traced > 1) {
+      dotPhase = (dotPhase + dt / P.dotTime) % 1;
+      const f = dotPhase * (traced - 1), i = Math.floor(f), t = f - i;
+      for (let a = 0; a < 3; a++) dotPos[a] = cloud[i * 3 + a] * (1 - t) + cloud[(i + 1) * 3 + a] * t;
+      gl.bindBuffer(gl.ARRAY_BUFFER, dotBuf);
+      gl.bufferData(gl.ARRAY_BUFFER, dotPos, gl.DYNAMIC_DRAW);
+      gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
+      gl.uniform1f(u.u_size, P.dotSize * dpr);
+      gl.uniform3fv(u.u_ink, TEAL);
+      gl.uniform1f(u.u_alpha, 1);
+      gl.uniform1f(u.u_fade, 0);
+      gl.drawArrays(gl.POINTS, 0, 1);
+    }
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
