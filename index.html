@@ -9,186 +9,553 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;700&display=swap" rel="stylesheet">
 <link rel="preload" href="fonts/KodeMono.ttf" as="font" type="font/ttf" crossorigin>
 <style>
-  /* Kode Mono, self-hosted (full character set, incl. the → arrow). License: fonts/OFL.txt */
+  /* Kode Mono, self-hosted (full character set). License: fonts/OFL.txt */
   @font-face {
     font-family: "Kode Mono";
     src: url("fonts/KodeMono.ttf") format("truetype");
     font-weight: 400 700;
     font-display: swap;
   }
-</style>
-<style>
+
   :root {
-    --bg: #21211d;
+    --bg: #1e1d19;
+    --bg-glow: #393938;
     --ink: #dddcc8;
-    --panel: rgba(58, 57, 56, 0.2);
-    --border: #4c4c4a;
-    --shadow: 0 4px 72px rgba(0, 0, 0, 0.25);
-  }
+    --accent: #00ffcc;
+    --accent-bg: rgba(0, 255, 204, 0.1);
+    --body-black: #191613;    /* project body, black variant */
+    --body-grey: #3a3938;     /* project body, grey variant */
+    --tab: rgba(217, 217, 217, 0.15);
+    --rule: #3d414a;          /* margin line and ruled lines */
+
+    --nav-fs: 16px;
+    /* Left margin, shared by all views: content starts 160px after the vertical margin line */
+    --margin-line: 26px;      /* vertical margin line, from the window's left edge */
+    --content-left: 160px;    /* margin line → content (also the project number block's width) */
+    --text-left: calc(var(--margin-line) + 1px + var(--content-left));
+    --gutter: 53px;           /* right margin; also the left margin on phones */  }
 
   * { box-sizing: border-box; }
 
   html, body { margin: 0; }
+  html { overflow-x: clip; } /* project screenshots run off the right edge by design */
 
   body {
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 35px;
-    background: var(--bg);
+    /* Figma: radial glow centred 977px down, 1920 wide × 2268 tall */
+    background: radial-gradient(960px 1134px at 50% 977px, var(--bg-glow), var(--bg)) var(--bg);
     color: var(--ink);
     font-family: "Kode Mono", ui-monospace, monospace;
   }
 
-  .card {
-    width: min(540px, 100%);
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    margin: 0;
-    padding: 48px clamp(20px, 6vw, 63px);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--panel);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: var(--shadow);
+  @media (max-width: 700px) {
+    :root { --content-left: 26px; } /* phones: text 53px from the edge */
   }
 
-  .title {
+  /* ---------- Shared header bits (same as the other views) ---------- */
+  .view-select {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 16px;
+    padding: 16px 0;
+    font-size: var(--nav-fs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+  .view-select a {
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .view-select a:hover { font-weight: 600; }
+  .view-select .arrow { margin-left: 5px; }
+
+  .resume {
+    position: fixed;
+    z-index: 10;
+    top: 32px;
+    right: 32px;
+    padding: 12px 32px;
+    border-radius: 12px;
+    background: rgba(28, 71, 56, 0.6);   /* deep green at 60% (Figma) */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .resume:hover { font-weight: 600; }
+
+  .button {
+    display: inline-block;
+    padding: 12px 32px;
+    border-radius: 12px;
+    background: var(--accent-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .button:hover { font-weight: 600; }
+
+  /* Figma: 12px radius, 100% corner smoothing → 24px squircle where supported */
+  @supports (corner-shape: squircle) {
+    .resume, .button {
+      border-radius: 24px;
+      corner-shape: squircle;
+    }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    padding: 131px 0 217px var(--text-left); /* bottom: same gap to the first project as before the hint was pinned */
+    padding-right: var(--gutter);
+  }
+
+  /* Vertical margin line: from the top of the page down to the first project only */
+  .hero::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--margin-line);
+    width: 1px;
+    background: var(--rule);
+    pointer-events: none;
+  }
+
+  .hero h1 {
+    /* full width (no max-width) so its ruled lines reach the window's right edge */
+    margin: 108px 0 0;
+    font-size: 60px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    position: relative;
+  }
+
+  /* Ruled line under each headline line, window edge to window edge:
+     Figma puts it 55.5px into each 72px line (0.925em at any size), on the baseline */
+  .hero h1::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(-1 * var(--text-left));
+    width: calc(100% + var(--text-left) + var(--gutter));
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0 0.925em,
+      var(--rule) 0.925em calc(0.925em + 1px),
+      transparent calc(0.925em + 1px) 1.2em
+    );
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Custom full stop: a 10px diamond centred on the last line's rule */
+  .hero h1 .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-left: 0.07em;
+    vertical-align: -5px;
+    background: var(--ink);
+    transform: rotate(45deg);
+  }
+
+  @media (max-width: 700px) {
+    .hero h1 { font-size: 40px; } /* 60px words like "DESIGNER," are wider than a phone */
+  }
+
+  .intro {
+    max-width: 513px;
+    margin: 64px 0 0;
+    color: #fff;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+
+  .logos {
+    display: flex;
+    flex-wrap: wrap;          /* six logos wrap onto two rows on phones instead of squashing */
+    gap: 16px;
+    margin: 36px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .logos li {
+    position: relative;
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    border-radius: 2px;
+    background: #191613;
+    display: grid;
+    place-items: center;
+    outline-offset: 3px;
+  }
+  .logos img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
+
+  /* Hover / keyboard-focus hint under each logo: company + relationship */
+  .logos .tip {
+    position: absolute;
+    z-index: 6;
+    top: calc(100% + 10px);
+    left: 0;
+    display: grid;
+    gap: 2px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(25, 22, 19, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.35);
+    width: max-content;
+    max-width: min(260px, calc(100vw - 2 * var(--gutter) - 50px));   /* long descriptions wrap instead of running off screen */
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  .logos .tip b {
+    font: 400 14px/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .logos .tip span {
+    font: 300 14px/1.4 "Chakra Petch", system-ui, sans-serif;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .logos li:hover .tip,
+  .logos li:focus-visible .tip {
+    opacity: 1;
+    transform: none;
+  }
+  .logos img.wordmark { width: 48.75px; height: auto; object-fit: contain; }
+
+  /* Pinned 36px above the bottom edge, centred; fades out once the page is scrolled */
+  .scroll-hint {
+    position: fixed;
+    z-index: 4;
+    left: 50%;
+    bottom: 36px;
+    transform: translateX(-50%);
     margin: 0;
-    font-size: 16px;
+    padding: 12px 32px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    color: var(--accent);
+    font-size: var(--nav-fs);
     line-height: 1.2;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     text-align: center;
-    font-weight: 400;
+    white-space: nowrap;
   }
-
-  .options {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  .scroll-hint.is-hidden { opacity: 0; }
+  @media (max-width: 480px) { /* too narrow for one line: wrap inside the margins */
+    .scroll-hint { width: calc(100vw - 2 * var(--gutter)); white-space: normal; padding: 12px 16px; }
   }
-
-  /* Each option is a link: clicking (or Enter) opens that style straight away */
-  .option {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 12px 24px;
-    border-radius: 12px;
-    color: inherit;
-    text-decoration: none;
-  }
-  a.option:hover,
-  a.option:focus-visible {
-    background: rgba(58, 57, 56, 0.12);
-    outline: none;
-  }
-  a.option:hover .name,
-  a.option:focus-visible .name { font-weight: 600; } /* title only, not the description */
-
-  /* Styles without a page yet */
-  .option.is-soon { opacity: 0.45; cursor: default; }
-
-  .name {
-    font-size: 16px;
-    line-height: 1.2;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .desc {
-    font-family: "Chakra Petch", system-ui, sans-serif;
-    font-weight: 300;
-    font-size: 14px;
-    line-height: 1.4;
-  }
-  .desc a { color: inherit; }
-
-  /* Figma-style 100% corner smoothing: 12px radius spread over 24px as a squircle */
   @supports (corner-shape: squircle) {
-    .card,
-    .option {
-      border-radius: 24px;
-      corner-shape: squircle;
+    .scroll-hint { border-radius: 24px; corner-shape: squircle; }
+  }
+
+  /* ---------- Project ----------
+     The block is 1920×960 in Figma and scales with the window at 2:1.
+     Graphics (screenshot, client logo) scale with it; text, buttons and the
+     number tab keep their sizes. If the text needs more room than 2:1 gives,
+     the block grows taller instead of cutting it off. */
+  .project {
+    position: relative;
+    aspect-ratio: 2 / 1;
+    margin-bottom: 120px;
+    overflow-x: clip; /* screenshot runs off the right edge without making the page scroll sideways */
+  }
+
+  .project-body {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    background: var(--body-grey);
+  }
+  .project--black .project-body { background: var(--body-black); }
+  .project--grey .project-body { background: var(--body-grey); }
+
+  .project-num {
+    position: absolute;
+    top: 0;
+    /* spans exactly the left margin: from the margin line to where the text starts */
+    left: calc(var(--margin-line) + 1px);
+    width: max(var(--content-left), 96px);
+    height: 130px;
+    display: grid;
+    place-items: center;
+    background: var(--tab);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  /* Teal diamond on the margin line, at the top edge of each project */
+  .project::before {
+    content: "";
+    position: absolute;
+    z-index: 4;
+    top: -3.5px;
+    left: calc(var(--margin-line) + 0.5px - 3.5px);   /* centred on the 1px line */
+    width: 7px;
+    height: 7px;
+    background: var(--accent);
+    transform: rotate(45deg);
+  }
+
+  .project-content {
+    position: relative;
+    z-index: 3;               /* text and buttons stay clickable above the micrographic */
+    padding: 123.5px 0 96px var(--text-left);
+    /* left half of the block, at least 64px clear of the screenshot at 50% */
+    width: max(calc(var(--text-left) + 260px), calc(50% - 64px));
+  }
+
+  .project h2 {
+    max-width: 499px;
+    margin: 0;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    position: relative;
+  }
+
+  /* Ruled line under each headline line, window edge to window edge:
+     Figma puts it 55.5px into each 72px line (0.925em at any size), on the baseline */
+  .hero h1::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(-1 * var(--text-left));
+    width: calc(100% + var(--text-left) + var(--gutter));
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0 0.925em,
+      var(--rule) 0.925em calc(0.925em + 1px),
+      transparent calc(0.925em + 1px) 1.2em
+    );
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Custom full stop: a 10px diamond centred on the last line's rule */
+  .hero h1 .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-left: 0.07em;
+    vertical-align: -5px;
+    background: var(--ink);
+    transform: rotate(45deg);
+  }
+
+  .project-desc {
+    max-width: 392px;
+    margin-top: 44px;
+    color: #fff;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .project-desc p { margin: 0 0 12px; }
+  .project-desc p:last-child { margin-bottom: 0; }
+  .project-desc strong { font-weight: 700; }
+
+  /* Client quote with attribution */
+  .project-quote {
+    max-width: 400px;
+    margin: 44px 0 0;
+    color: #fff;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .project-quote blockquote { margin: 0 0 12px; }
+  .project-quote figcaption { font-weight: 700; }
+
+  .project-content .button { margin-top: 44px; }
+
+  /* Positions below are the Figma frame's, as % of the 1920×960 block */
+  .project-shot {
+    position: absolute;
+    /* Screenshot takes the right half of the block (and runs off the edge, as in Figma);
+       on narrow desktops it keeps 64px clear of the text's 260px minimum width */
+    left: max(50%, calc(var(--text-left) + 260px + 64px));
+    top: 14.22%;           /* 136.5 / 960 */
+    width: 57.76%;         /* 1109 / 1920 — runs past the right edge, as in Figma */
+    height: auto;
+  }
+
+  /* ---------- Micrographics ----------
+     Positioned in % of the 1920×960 project block (Figma values), so they scale with it.
+     Decorative (hidden from screen readers), hidden when the project stacks on small screens. */
+  .micro {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .micro canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  /* The wireframe surface can be dragged to rotate it */
+  .micro--surface canvas { pointer-events: auto; }   /* hovering lights up surface cells */
+  .micro--surface {          /* wireframe graph, hangs over the block's bottom edge */
+    left: -11.3%;            /* -217 / 1920: starts beyond the left edge, as in Figma */
+    top: var(--micro-top, 78.65%);
+    width: 34.53%;           /* 663 / 1920 */
+    aspect-ratio: 663 / 330;
+    --micro-nudge: -40px;    /* sits 40px higher than the Figma position */
+  }
+  /* Phones and small tablets: stack text and screenshot */
+  @media (max-width: 900px) {
+    .micro { display: none; }
+    .project { aspect-ratio: auto; padding-bottom: 48px; }
+    .project-content { width: auto; padding: 160px var(--gutter) 0 var(--text-left); }
+    .project-shot {
+      position: relative;
+      display: block;
+      left: auto;
+      top: auto;
+      width: calc(100% - var(--text-left));
+      margin: 40px 0 0 var(--text-left);
     }
-  }</style>
+  }
+  /* Centre capitals exactly in buttons: the line box normally reserves room for accents
+     above and descenders below, which leaves caps ~1px high. Trimming the box to the cap
+     height lets equal padding centre them; older browsers get a 0.5px nudge instead.
+     Button height stays 43.2px either way. */
+  .resume, .button, .scroll-hint { padding-top: 12.5px; padding-bottom: 11.5px; }
+  @supports (text-box: trim-both cap alphabetic) {
+    .resume, .button, .scroll-hint {
+      text-box: trim-both cap alphabetic;
+      padding-top: 15.6px;
+      padding-bottom: 15.6px;
+    }
+  }
+</style>
 </head>
 <body>
-  <nav class="card" aria-labelledby="menu-title">
-    <h1 class="title" id="menu-title">select portfolio style:</h1>
+  <a class="resume" href="resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
 
-    <ul class="options">
-      <li>
-        <a class="option" href="enterprise/">
-          <span class="name">enterprise</span>
-          <span class="desc">Normal, recommended</span>
-        </a>
-      </li>
-      <li>
-        <div class="option is-soon" aria-disabled="true" title="Coming soon">
-          <span class="name">caveman</span>
-          <span class="desc">Very succinct, inspired by <a href="https://dev.to/onsen/caveman-claude-the-token-cutting-skill-thats-changing-ai-workflows-4hmc" target="_blank" rel="noopener">this skill</a></span>
-        </div>
-      </li>
-      <li>
-        <div class="option is-soon" aria-disabled="true" title="Coming soon">
-          <span class="name">startup</span>
-          <span class="desc">The one with emojis</span>
-        </div>
-      </li>
-      <li>
-        <a class="option" href="elevator-pitch/">
-          <span class="name">elevator pitch simulator</span>
-          <span class="desc">Imagine yourself in a lift in an endlessly tall building...</span>
-        </a>
-      </li>
-      <li>
-        <a class="option" href="json/">
-          <span class="name">json</span>
-          <span class="desc">Works best if you’re a robot</span>
-        </a>
-      </li>
-      <li>
-        <a class="option" href="resume-daria-podrezova.pdf" target="_blank" rel="noopener">
-          <span class="name">go straight to resume</span>
-          <span class="desc">View and download PDF</span>
-        </a>
-      </li>
+  <header class="hero">
+    <nav class="view-select" aria-label="Portfolio style">
+      <span>view portfolio as:</span>
+      <a href="./" title="Choose another portfolio style">enterprise portfolio<span class="arrow" aria-hidden="true">▼</span></a>
+    </nav>
+
+    <h1>Hi, I’m Daria,<br>Product Designer,<br>Agentic AI &amp; enterprise<span class="dot" aria-hidden="true"></span></h1>
+
+    <p class="intro">How I work? Talk to people. Find the real problem. Map the workflow, simplify it. Prototype it so stakeholders see it, understand it, and say yes. With 14 years in design and a Master’s in Computer Science, as well as project management and teaching experience, I’m a communicator, explorer, builder and engineers’ friend.</p>
+
+    <ul class="logos" aria-label="Where I’ve worked">
+      <li tabindex="0"><img src="enterprise/assets/logo-ey.png" alt="Ernst &amp; Young, agency"><span class="tip" aria-hidden="true"><b>Ernst &amp; Young</b><span>Agency</span></span></li>
+      <li tabindex="0"><img src="enterprise/assets/logo-2.png" alt="EY Studio+, agency"><span class="tip" aria-hidden="true"><b>EY Studio+</b><span>Agency</span></span></li>
+      <li tabindex="0"><img src="enterprise/assets/logo-3.svg" alt="The University of Sydney, teaching HCI and usability to engineers since 2019, over 600 students"><span class="tip" aria-hidden="true"><b>The University of Sydney</b><span>Teaching HCI and Usability to engineers since 2019, &gt; 600 students</span></span></li>
+      <li tabindex="0"><img src="enterprise/assets/logo-4.svg" alt="2GIS, map and reviews platform vendor, B2B and B2C" class="wordmark" style="width: 44px"><span class="tip" aria-hidden="true"><b>2GIS</b><span>Map and reviews platform vendor, B2B and B2C</span></span></li>
+      <li tabindex="0"><img src="enterprise/assets/logo-tsum.svg" alt="TSUM, luxury fashion retail: department store automation" class="wordmark" style="width: 38.67px"><span class="tip" aria-hidden="true"><b>TSUM</b><span>Luxury Fashion Retail – Department store automation</span></span></li>
+      <li tabindex="0"><img src="enterprise/assets/logo-1c-rarus.svg" alt="1C-Rarus, major ERP vendor and consultancy in Europe"><span class="tip" aria-hidden="true"><b>1C-Rarus</b><span>Major ERP vendor and consultancy in Europe</span></span></li>
     </ul>
-  </nav>
+
+    <p class="scroll-hint">scroll down for projects ↓</p>
+  </header>
+
+  <main>
+    <section class="project project--black" aria-labelledby="project-1">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true">1</div>
+
+      <div class="project-content">
+        <h2 id="project-1">Spatial digital twin</h2>
+        <div class="project-desc">
+          <p>Processing company. 4-dimensional immersive Spatial Collaboration Tool (ArcGIS). Led complex prototyping and design system development; collaborated on user research, workshops and delivery support.</p>
+          <p><strong>Result:</strong> faster asset inspections and planning, and less time/cost spent on field visits.</p>
+        </div>
+        <a class="button" href="#">learn more ↗</a>
+      </div>
+
+      <img class="project-shot" src="enterprise/assets/project-1-spatial-digital-twin.png" width="2218" height="1474"
+           alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
+      <div class="micro micro--surface" style="--micro-top: 78.65%" aria-hidden="true"></div>
+    </section>
+
+    <section class="project project--grey" aria-labelledby="project-2">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true">2</div>
+
+      <div class="project-content">
+        <h2 id="project-2">Spatial digital twin</h2>
+        <div class="project-desc">
+          <p>Processing company. 4-dimensional immersive Spatial Collaboration Tool (ArcGIS). Led complex prototyping and design system development; collaborated on user research, workshops and delivery support.</p>
+          <p><strong>Result: faster asset inspections and planning, and less time/cost spent on field visits.</strong></p>
+        </div>
+        <figure class="project-quote">
+          <blockquote>“Faster asset inspections and planning, and less time/cost spent on field visits.”</blockquote>
+          <figcaption>Project Manager</figcaption>
+        </figure>
+        <a class="button" href="#">learn more ↗</a>
+      </div>
+
+      <img class="project-shot" src="enterprise/assets/project-1-spatial-digital-twin.png" width="2218" height="1474"
+           alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
+      <div class="micro micro--surface" style="--micro-top: 81.15%" aria-hidden="true"></div>
+    </section>
+  </main>
+
+<script src="enterprise/surface.js" defer></script>
+<script src="menu.js" defer data-current="enterprise" data-autoopen></script>
 
 <script>
-(() => {
-  // Keyboard: ↑/↓ move between styles (wrapping, skipping ones without a page yet),
-  // Enter opens the focused one, Esc returns to the page the menu was opened from.
-  const options = [...document.querySelectorAll("a.option")];
-  const from = new URLSearchParams(location.search).get("style"); // e.g. ?style=json
-  const fromLink = from && options.find(a => a.getAttribute("href") === from + "/");
-
-  document.addEventListener("keydown", (e) => {
-    if (e.altKey || e.ctrlKey || e.metaKey) return;
-    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-      e.preventDefault();
-      const current = options.indexOf(document.activeElement);
-      let next;
-      if (current === -1) next = fromLink || options[0]; // first press: start at the page you came from
-      else next = options[(current + (e.key === "ArrowDown" ? 1 : -1) + options.length) % options.length];
-      next.focus();
-    } else if (e.key === "Escape") {
-      if (fromLink) location.href = fromLink.getAttribute("href");
-      else if (document.referrer.startsWith(location.origin)) history.back();
+  // Keep every logo hint inside the window: start under its logo, then shift sideways
+  // just enough to clear the side margins (hidden hints still count towards page width)
+  const tips = [...document.querySelectorAll(".logos .tip")];
+  function placeTips() {
+    const vw = document.documentElement.clientWidth;
+    const gutter = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gutter")) || 0;
+    for (const tip of tips) {
+      tip.style.left = "0px";
+      const r = tip.getBoundingClientRect();
+      let shift = 0;
+      if (r.right > vw - gutter) shift = (vw - gutter) - r.right;
+      if (r.left + shift < gutter) shift = gutter - r.left;
+      tip.style.left = shift + "px";
     }
-  });
-})();
+  }
+  placeTips();
+  addEventListener("resize", placeTips);
+  document.fonts && document.fonts.ready.then(placeTips);
+
+  // Hide the scroll hint as soon as the page is scrolled; bring it back at the top
+  const hint = document.querySelector(".scroll-hint");
+  const syncHint = () => hint.classList.toggle("is-hidden", scrollY > 8);
+  addEventListener("scroll", syncHint, { passive: true });
+  syncHint();
 </script>
-</body></html>
+</body>
+</html>
