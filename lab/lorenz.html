@@ -108,34 +108,40 @@
   // "attractor" changes rebuild the point cloud; everything else only redraws.
   const GROUPS = [
     { title: "Attractor", rebuild: true, items: [
-      { key: "sigma",  label: "σ (sigma)",              min: 0,     max: 30,     step: 0.1,   value: 10 },
-      { key: "rho",    label: "ρ (rho)",                min: 0,     max: 60,     step: 0.1,   value: 28 },
-      { key: "beta",   label: "β (beta)",               min: 0,     max: 6,      step: 0.01,  value: 2.67 },
-      { key: "dt",     label: "Time step",              min: 0.001, max: 0.02,   step: 0.001, value: 0.005 },
-      { key: "points", label: "Points",                 min: 1000,  max: 100000, step: 1000,  value: 9000 },
-      { key: "every",  label: "Keep every Nth step",    min: 1,     max: 20,     step: 1,     value: 4 },
+      { key: "sigma",  label: "σ (sigma)",              min: 0,     max: 30,     step: 0.1,   value: 0 },
+      { key: "rho",    label: "ρ (rho)",                min: 0,     max: 60,     step: 0.1,   value: 25.4 },
+      { key: "beta",   label: "β (beta)",               min: 0,     max: 6,      step: 0.01,  value: 1.07 },
+      { key: "dt",     label: "Time step",              min: 0.001, max: 0.02,   step: 0.001, value: 0.006 },
+      { key: "points", label: "Points",                 min: 1000,  max: 100000, step: 1000,  value: 40000 },
+      { key: "every",  label: "Keep every Nth step",    min: 1,     max: 20,     step: 1,     value: 1 },
       { key: "skip",   label: "Skip first steps",       min: 0,     max: 5000,   step: 50,    value: 0 },
-      { key: "x0",     label: "Start x",                min: -40,   max: 40,     step: 0.1,   value: 0.1 },
-      { key: "z0",     label: "Start z",                min: -40,   max: 80,     step: 0.1,   value: 0 },
-      { key: "jitter", label: "Scatter",                min: 0,     max: 5,      step: 0.05,  value: 0.15 },
-      { key: "stray",  label: "Stray points (%)",       min: 0,     max: 30,     step: 0.5,   value: 8 },
+      { key: "x0",     label: "Start x",                min: -40,   max: 40,     step: 0.1,   value: -1.8 },
+      { key: "z0",     label: "Start z",                min: -40,   max: 80,     step: 0.1,   value: 3.2 },
+      { key: "jitter", label: "Scatter",                min: 0,     max: 5,      step: 0.05,  value: 0 },
+      { key: "stray",  label: "Stray points (%)",       min: 0,     max: 30,     step: 0.5,   value: 4 },
       { key: "seed",   label: "Random seed",            min: 1,     max: 99,     step: 1,     value: 7 },
     ]},
     { title: "Camera", items: [
-      { key: "yaw",    label: "Yaw (°)",                min: -180,  max: 180,    step: 0.5,   value: -165 },
-      { key: "pitch",  label: "Pitch (°)",              min: -90,   max: 90,     step: 0.5,   value: 30 },
-      { key: "roll",   label: "Roll (°)",               min: -180,  max: 180,    step: 0.5,   value: -12 },
+      { key: "yaw",    label: "Yaw (°)",                min: -180,  max: 180,    step: 0.5,   value: -173.4 },
+      { key: "pitch",  label: "Pitch (°)",              min: -90,   max: 90,     step: 0.5,   value: 16.4 },
+      { key: "roll",   label: "Roll (°)",               min: -180,  max: 180,    step: 0.5,   value: -43 },
       { key: "dist",   label: "Distance",               min: 20,    max: 300,    step: 1,     value: 70 },
       { key: "fov",    label: "Field of view (°)",      min: 5,     max: 120,    step: 1,     value: 70 },
       { key: "panX",   label: "Pan x",                  min: -1,    max: 1,      step: 0.01,  value: 0 },
       { key: "panY",   label: "Pan y",                  min: -1,    max: 1,      step: 0.01,  value: 0 },
-      { key: "spin",   label: "Auto-rotate (°/s)",      min: -30,   max: 30,     step: 0.5,   value: 0 },
+      { key: "spin",   label: "Auto-rotate (°/s)",      min: -30,   max: 30,     step: 0.5,   value: -0.5 },
     ]},
     { title: "Points", items: [
-      { key: "size",   label: "Point size (px)",        min: 0.5,   max: 6,      step: 0.1,   value: 1.6 },
-      { key: "alpha",  label: "Opacity",                min: 0.05,  max: 1,      step: 0.01,  value: 0.75 },
-      { key: "fade",   label: "Depth fade",             min: 0,     max: 1,      step: 0.01,  value: 0.6 },
+      { key: "size",   label: "Point size (px)",        min: 0.5,   max: 6,      step: 0.1,   value: 1 },
+      { key: "alpha",  label: "Opacity",                min: 0.05,  max: 1,      step: 0.01,  value: 0.46 },
+      { key: "fade",   label: "Depth fade",             min: 0,     max: 1,      step: 0.01,  value: 0.47 },
       { key: "persp",  label: "Size by distance",       type: "check",                        value: true },
+    ]},
+    { title: "Animation", items: [
+      { key: "animate", label: "Animate σ",               type: "check",                        value: true },
+      { key: "sigMin", label: "σ from",                   min: 0,     max: 30,     step: 0.1,   value: 0 },
+      { key: "sigMax", label: "σ to",                     min: 0,     max: 30,     step: 0.1,   value: 30 },
+      { key: "loop",   label: "Loop, there and back (s)", min: 10,    max: 600,    step: 10,    value: 300 },
     ]},
   ];
 
@@ -174,7 +180,10 @@
         const out = row.querySelector("output");
         input.value = it.value;
         out.textContent = (+it.value).toFixed(decimals(it.step));
-        input.addEventListener("input", () => set(it.key, +input.value));
+        input.addEventListener("input", () => {
+          if (it.key === "sigma" && P.animate) set("animate", false, false);
+          set(it.key, +input.value);
+        });
         inputs[it.key] = input;
         outputs[it.key] = { el: out, digits: decimals(it.step) };
       }
@@ -368,10 +377,16 @@
     return dpr;
   }
 
-  let last = 0;
+  let last = 0, phase = 0;   // phase: 0 → 1 over one loop
   function frame(now) {
     const dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
     last = now;
+    if (P.animate) {
+      // σ eases from "from" to "to" and back once per loop (cosine, so it slows at each end)
+      phase = (phase + dt / P.loop) % 1;
+      const k = (1 - Math.cos(phase * 2 * Math.PI)) / 2;
+      set("sigma", P.sigMin + (P.sigMax - P.sigMin) * k, false);
+    }
     if (P.spin && !dragging) {
       let yaw = P.yaw + P.spin * dt;
       if (yaw > 180) yaw -= 360;
