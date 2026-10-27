@@ -77,14 +77,23 @@
     @media (prefers-reduced-motion: reduce) {
       .style-menu, .style-menu.is-open, .style-menu-dim, .style-menu-dim.is-open { transition: none; }
     }
-    .style-menu header { text-align: center; }
+    /* Teal intro box above the heading */
+    .style-menu .intro-box {
+      margin: 0;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: #00ffcc;
+      color: #000;
+      text-align: center;
+    }
     .style-menu h2 {
       margin: 0;
+      text-align: center;
       font: 400 16px/19.2px "Kode Mono", ui-monospace, monospace;
       letter-spacing: 0.1em;
       text-transform: uppercase;
     }
-    .style-menu header p,
+    .style-menu .intro-box,
     .style-menu .desc {
       margin: 0;
       font: 300 14px/19.6px "Chakra Petch", system-ui, sans-serif;
@@ -94,7 +103,7 @@
       display: flex;
       flex-direction: column;
       padding: 12px;
-      border-radius: 12px;
+      border-radius: 8px;
       color: inherit;
       text-decoration: none;
       white-space: normal;      /* undo the page's .view-select a { nowrap } */
@@ -112,9 +121,10 @@
     .style-menu a.item:hover .name,
     .style-menu a.item:focus-visible .name { font-weight: 600; }
     .style-menu .item.is-soon { opacity: 0.45; cursor: default; }
-    .style-menu .desc a { color: inherit; }
+    .style-menu .desc a { color: inherit; text-decoration: underline; }
+    /* 8px corners with Figma-style smoothing → 16px squircle where supported */
     @supports (corner-shape: squircle) {
-      .style-menu .item { border-radius: 24px; corner-shape: squircle; }
+      .style-menu .intro-box, .style-menu .item { border-radius: 16px; corner-shape: squircle; }
     }
   </style>`);
 
@@ -126,10 +136,8 @@
   menu.className = "style-menu";
   menu.id = "style-menu";
   menu.innerHTML = `
-    <header>
-      <h2>select style</h2>
-      <p>Hey! I’ve built multiple portfolio styles, have a look:</p>
-    </header>
+    <p class="intro-box">Hey! I’ve built multiple portfolio styles for different audiences, have a look:</p>
+    <h2>select style</h2>
     <ul>${STYLES.map(s => {
       const cls = `item${s.id === current ? " is-current" : ""}${s.soon ? " is-soon" : ""}`;
       const inner = `<span class="name">${s.name}</span><span class="desc">${s.desc}</span>`;
