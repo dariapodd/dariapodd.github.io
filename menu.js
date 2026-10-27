@@ -1,7 +1,7 @@
 // "View portfolio as" dropdown, shared by every portfolio view.
 // Include with: <script src="../menu.js" defer data-current="json"></script>
 // The selector link (.view-select a) toggles a panel listing all styles. With data-autoopen
-// (the root page) the panel rolls down on its own 300ms after load for new visitors.
+// (the root page) the panel rolls down on its own 300ms after load.
 (() => {
   const script = document.currentScript;
   const base = new URL(".", script.src);            // site root, wherever the page lives
@@ -59,8 +59,23 @@
       visibility: visible;
       transition: clip-path 0.3s ease-out, opacity 0.3s ease-out, transform 0.3s ease-out, visibility 0s;
     }
+    /* Dims the page under the open menu */
+    .style-menu-dim {
+      position: fixed;
+      inset: 0;
+      z-index: 29;
+      background: rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-out, visibility 0s linear 0.3s;
+    }
+    .style-menu-dim.is-open {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.3s ease-out, visibility 0s;
+    }
     @media (prefers-reduced-motion: reduce) {
-      .style-menu, .style-menu.is-open { transition: none; }
+      .style-menu, .style-menu.is-open, .style-menu-dim, .style-menu-dim.is-open { transition: none; }
     }
     .style-menu header { text-align: center; }
     .style-menu h2 {
@@ -124,6 +139,10 @@
       return `<li><a class="${cls}" href="${new URL(s.href, base).href}"${target}${currentAttr}>${inner}</a></li>`;
     }).join("")}</ul>`;
   nav.append(menu);
+  const dim = document.createElement("div");
+  dim.className = "style-menu-dim";
+  dim.setAttribute("aria-hidden", "true");
+  document.body.append(dim);
 
   toggle.setAttribute("aria-expanded", "false");
   toggle.setAttribute("aria-controls", menu.id);
@@ -133,8 +152,8 @@
   const place = () => menu.style.setProperty("--menu-left", Math.min(toggle.offsetLeft, Math.max(0, nav.clientWidth - menu.offsetWidth)) + "px");
 
   const isOpen = () => menu.classList.contains("is-open");
-  function open() { place(); menu.classList.add("is-open"); toggle.setAttribute("aria-expanded", "true"); }
-  function close() { menu.classList.remove("is-open"); toggle.setAttribute("aria-expanded", "false"); }
+  function open() { place(); menu.classList.add("is-open"); dim.classList.add("is-open"); toggle.setAttribute("aria-expanded", "true"); }
+  function close() { menu.classList.remove("is-open"); dim.classList.remove("is-open"); toggle.setAttribute("aria-expanded", "false"); }
 
   toggle.addEventListener("click", (e) => { e.preventDefault(); isOpen() ? close() : open(); });
   document.addEventListener("click", (e) => { if (isOpen() && !nav.contains(e.target)) close(); });
@@ -153,9 +172,8 @@
     next.focus();
   });
 
-  // Root page: roll the menu down 300ms after load, unless the visitor came from another view
-  const fromSite = document.referrer && new URL(document.referrer).origin === location.origin;
-  if ("autoopen" in script.dataset && !fromSite) {
+  // Root page: the menu is open by default, rolling down 300ms after load
+  if ("autoopen" in script.dataset) {
     if (document.readyState === "complete") setTimeout(open, 300);
     else addEventListener("load", () => setTimeout(open, 300));
   }
