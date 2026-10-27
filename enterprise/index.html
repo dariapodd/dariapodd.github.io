@@ -435,12 +435,16 @@
     .micro--lorenz, .lorenz-canvas { display: none; }   /* no room beside the headline */
   }
 
-  /* Wireframe globe on the first project's bottom edge, under the text; turns once a minute */
+  /* Wireframe globe 80px above the first project's bottom edge, under the text; turns once a minute */
   .micro--sphere {
     left: var(--text-left);
-    bottom: 0;
+    bottom: 80px;
     width: 70px;
     height: 70px;
+  }
+  @media (min-width: 901px) {
+    /* keep room for it under the text (globe + 48px gap), so it never meets the button */
+    .project:has(.micro--sphere) .project-content { padding-bottom: calc(80px + 70px + 48px); }
   }
 
   /* Phones and small tablets: stack text and screenshot */
