@@ -387,6 +387,12 @@
     height: auto;
     z-index: 2;            /* over the wireframe surface */
   }
+  /* Two phone mockups: rise 158px above the block and stop at its right edge (Figma 193:390) */
+  .project-shot--phones {
+    left: 55.31%;          /* 1062 / 1920 */
+    top: -16.46%;          /* -158 / 960 */
+    width: 44.69%;         /* 858 / 1920 */
+  }
 
   /* ---------- Micrographics ----------
      Positioned in % of the 1920×960 project block (Figma values), so they scale with it.
@@ -461,6 +467,7 @@
       width: calc(100% - var(--text-left));
       margin: 40px 0 0 var(--text-left);
     }
+    .project-shot--phones { max-width: 420px; }
   }
   /* Centre capitals exactly in buttons: the line box normally reserves room for accents
      above and descenders below, which leaves caps ~1px high. Trimming the box to the cap
@@ -531,15 +538,11 @@
           <p>Luxury fashion retailer with department stores and multi-brand boutiques, where sales rely on personal connections between customers and style assistants. A family of iOS apps for style assistants, warehouse and delivery teams: style suggestions, stock access, indoor navigation and checkout on iOS.</p>
           <p><strong>Result: customers complete purchases right from the fitting room, without breaking the in-store experience.</strong></p>
         </div>
-        <figure class="project-quote">
-          <blockquote>“Faster asset inspections and planning, and less time/cost spent on field visits.”</blockquote>
-          <figcaption>Project Manager</figcaption>
-        </figure>
         <a class="button" href="#">learn more ↗</a>
       </div>
 
-      <img class="project-shot" src="../enterprise/assets/project-1-spatial-digital-twin.png" width="2218" height="1474"
-           alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
+      <img class="project-shot project-shot--phones" src="../enterprise/assets/project-2-retail-apps.png" width="1716" height="2152"
+           alt="Two iPhone screens: checkout with card, cash and loyalty points, and the store assistant menu">
       <div class="micro micro--surface is-flipped" aria-hidden="true"></div>
       <div class="micro micro--diamond" aria-hidden="true"></div>
     </section>
