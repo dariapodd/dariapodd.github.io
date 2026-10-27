@@ -169,6 +169,9 @@
     );
     pointer-events: none;
     z-index: -1;
+    /* Figma: each line fades from full colour at the left edge to nothing at the right */
+    -webkit-mask-image: linear-gradient(to right, #000, transparent);
+    mask-image: linear-gradient(to right, #000, transparent);
   }
 
   /* Custom full stop: a 10px diamond centred on the last line's rule */
@@ -348,36 +351,6 @@
     letter-spacing: 0.07em;
     text-transform: uppercase;
     position: relative;
-  }
-
-  /* Ruled line under each headline line, window edge to window edge:
-     Figma puts it 55.5px into each 72px line (0.925em at any size), on the baseline */
-  .hero h1::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: calc(-1 * var(--text-left));
-    width: calc(100% + var(--text-left) + var(--gutter));
-    background: repeating-linear-gradient(
-      to bottom,
-      transparent 0 0.925em,
-      var(--rule) 0.925em calc(0.925em + 1px),
-      transparent calc(0.925em + 1px) 1.2em
-    );
-    pointer-events: none;
-    z-index: -1;
-  }
-
-  /* Custom full stop: a 10px diamond centred on the last line's rule */
-  .hero h1 .dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin-left: 0.07em;
-    vertical-align: -5px;
-    background: var(--ink);
-    transform: rotate(45deg);
   }
 
   .project-desc {
