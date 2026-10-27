@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phone floor lab</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../favicon-64.png" type="image/png" sizes="64x64">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: "Kode Mono";
+    src: url("../fonts/KodeMono.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+  }
+  :root {
+    --bg: #191613;          /* project body, black variant */
+    --panel: #21211d;
+    --ink: #dddcc8;
+    --muted: rgba(221, 220, 200, 0.55);
+    --accent: #00ffcc;
+    --rule: #3d414a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    background: var(--bg);
+    color: var(--ink);
+    font: 300 13px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .stage { position: relative; min-height: 0; overflow: hidden; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+  canvas.is-dragging { cursor: grabbing; }
+  .hint {
+    position: absolute; left: 16px; bottom: 12px; margin: 0;
+    color: rgba(255, 255, 255, 0.7); pointer-events: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  .stage.is-dropping::after {
+    content: "Drop your screens";
+    position: absolute;
+    inset: 16px;
+    display: grid;
+    place-items: center;
+    border: 2px dashed var(--accent);
+    border-radius: 24px;
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--accent);
+    font: 400 16px/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  .panel {
+    overflow-y: auto;
+    padding: 20px 20px 32px;
+    border-left: 1px solid var(--rule);
+    background: var(--panel);
+  }
+  h1, h2 {
+    margin: 0;
+    font: 400 13px/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  h1 { color: var(--accent); margin-bottom: 4px; }
+  h2 { margin: 24px 0 10px; color: var(--muted); }
+  .panel p { margin: 0; color: var(--muted); }
+  .control { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; margin-bottom: 10px; }
+  .control label { color: var(--ink); }
+  .control output { font: 400 12px/1.4 "Kode Mono", ui-monospace, monospace; color: var(--accent); }
+  .control input[type="range"] { grid-column: 1 / -1; width: 100%; margin: 0; accent-color: var(--accent); }
+  .control.is-color { align-items: center; }
+  .control input[type="color"] {
+    width: 44px; height: 28px; padding: 0;
+    border: 1px solid var(--rule); border-radius: 8px; background: none; cursor: pointer;
+  }
+  .control.is-check { grid-template-columns: auto 1fr; align-items: center; }
+  .control.is-check input { margin: 0; accent-color: var(--accent); }
+  .buttons { display: flex; gap: 8px; margin-top: 12px; }
+  button {
+    flex: 1;
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 12px;
+    background: rgba(0, 255, 204, 0.1);
+    color: var(--accent);
+    font: 400 12px/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  button:hover { font-weight: 600; }
+  .thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+  .thumbs:empty { display: none; }
+  .thumb { position: relative; aspect-ratio: 390 / 844; border-radius: 8px; overflow: hidden; background: var(--bg); }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+  .thumb button {
+    position: absolute; top: 4px; right: 4px;
+    flex: none; width: 20px; height: 20px; padding: 0;
+    border-radius: 50%; background: rgba(0, 0, 0, 0.6); color: #fff;
+    font-size: 11px; line-height: 20px; letter-spacing: 0;
+  }
+  .note { margin-top: 8px; }
+</style>
+</head>
+<body>
+  <div class="stage" id="stage">
+    <canvas id="gl"></canvas>
+    <p class="hint">Drag to turn · scroll to zoom · drop or paste PNGs</p>
+  </div>
+
+  <aside class="panel">
+    <h1>Phone floor lab</h1>
+    <p>Stylised phones lying on a coloured floor.</p>
+
+    <h2>Screens</h2>
+    <input type="file" id="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
+    <div class="buttons">
+      <button type="button" id="pick">Add images</button>
+      <button type="button" id="clear">Clear all</button>
+    </div>
+    <div class="thumbs" id="thumbs"></div>
+    <p class="note">Screens repeat across the phones in order. They fill the screen from the top (390 × 844 fits exactly).</p>
+
+    <h2>Camera</h2>
+    <div class="control"><label for="azimuth">Angle (°)</label><output></output>
+      <input type="range" id="azimuth" min="-180" max="180" step="0.5" value="-40"></div>
+    <div class="control"><label for="elevation">Tilt (°)</label><output></output>
+      <input type="range" id="elevation" min="10" max="90" step="0.5" value="38"></div>
+    <div class="control"><label for="zoom">Zoom</label><output></output>
+      <input type="range" id="zoom" min="0.3" max="4" step="0.01" value="1.1"></div>
+
+    <h2>Colours</h2>
+    <div class="control is-color"><label for="bg">Background</label><input type="color" id="bg" value="#7f78d8"></div>
+    <div class="control is-color"><label for="body">Phone body</label><input type="color" id="body" value="#f4f4f6"></div>
+    <div class="control"><label for="shadow">Shadow strength</label><output></output>
+      <input type="range" id="shadow" min="0" max="0.8" step="0.01" value="0.35"></div>
+    <div class="control"><label for="soft">Shadow softness</label><output></output>
+      <input type="range" id="soft" min="1" max="25" step="0.5" value="10"></div>
+    <div class="control"><label for="sun">Light direction (°)</label><output></output>
+      <input type="range" id="sun" min="-180" max="180" step="1" value="135"></div>
+
+    <h2>Phones</h2>
+    <div class="control"><label for="count">Phones</label><output></output>
+      <input type="range" id="count" min="1" max="24" step="1" value="6"></div>
+    <div class="control"><label for="cols">Columns</label><output></output>
+      <input type="range" id="cols" min="1" max="8" step="1" value="3"></div>
+    <div class="control"><label for="gap">Gap</label><output></output>
+      <input type="range" id="gap" min="0" max="0.6" step="0.01" value="0.16"></div>
+    <div class="control"><label for="stagger">Row stagger</label><output></output>
+      <input type="range" id="stagger" min="-1" max="1" step="0.01" value="0.5"></div>
+    <div class="control"><label for="thick">Thickness</label><output></output>
+      <input type="range" id="thick" min="0.01" max="0.12" step="0.005" value="0.04"></div>
+    <div class="control"><label for="radius">Corner radius</label><output></output>
+      <input type="range" id="radius" min="0" max="0.12" step="0.005" value="0.05"></div>
+    <div class="control"><label for="lift">Hover above floor</label><output></output>
+      <input type="range" id="lift" min="0" max="0.3" step="0.005" value="0.04"></div>
+
+    <div class="buttons">
+      <button type="button" id="save">Save PNG</button>
+      <button type="button" id="reset">Reset</button>
+    </div>
+  </aside>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const stage = $("stage"), canvas = $("gl");
+
+  // Phone size in scene units: an iPhone screen, 390 × 844 pt, at 1 unit = 1000 pt
+  const PHONE_W = 0.39, PHONE_D = 0.844, BEZEL = 0.012;
+
+  // ---------- Settings (kept in this browser) ----------
+  const KEY = "phones-lab";
+  const ids = ["azimuth", "elevation", "zoom", "bg", "body", "shadow", "soft", "sun", "count", "cols", "gap", "stagger", "thick", "radius", "lift"];
+  const defaults = Object.fromEntries(ids.map(id => [id, $(id).value]));
+  const P = {};
+  const store = () => { try { localStorage.setItem(KEY, JSON.stringify(P)); } catch {} };
+  try { Object.assign(P, defaults, JSON.parse(localStorage.getItem(KEY)) || {}); } catch { Object.assign(P, defaults); }
+
+  // ---------- Scene ----------
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.VSMShadowMap;   // soft, blurrable shadows
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x8888aa, 0.75));
+  const sun = new THREE.DirectionalLight(0xffffff, 0.55);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.bias = -0.0005;
+  scene.add(sun, sun.target);
+
+  // The floor only shows shadow, so its colour is always exactly the background
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.35 }));
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  scene.add(floor);
+
+  const bodyMat = new THREE.MeshStandardMaterial({ color: 0xf4f4f6, roughness: 0.6, metalness: 0 });
+  const blankMat = new THREE.MeshBasicMaterial({ color: 0xe9e9ec });
+  const phones = new THREE.Group();
+  scene.add(phones);
+
+  function roundedRect(w, h, r) {
+    r = Math.min(r, w / 2, h / 2);
+    const s = new THREE.Shape(), x = -w / 2, y = -h / 2;
+    s.moveTo(x + r, y);
+    s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r);
+    s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r);
+    s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y);
+    return s;
+  }
+
+  // ---------- Screens ----------
+  const screens = [];   // { url, texture, width, height }
+  const loader = new THREE.TextureLoader();
+  // Fill the screen from the top, cropping whatever doesn't fit (like object-fit: cover)
+  function coverTop(texture, imgW, imgH, w, h) {
+    const img = imgW / imgH, box = w / h;
+    texture.repeat.set(1, 1); texture.offset.set(0, 0);
+    if (img > box) { texture.repeat.x = box / img; texture.offset.x = (1 - texture.repeat.x) / 2; }
+    else { texture.repeat.y = img / box; texture.offset.y = 1 - texture.repeat.y; }
+  }
+
+  // ---------- Layout ----------
+  let extent = 1;   // half-size of the layout, for the camera and the shadow box
+  function build() {
+    for (const m of phones.children) m.traverse(o => o.geometry && o.geometry.dispose());
+    phones.clear();
+    const t = +P.thick, r = +P.radius, gap = +P.gap, cols = +P.cols, count = +P.count;
+    const bevel = Math.min(0.008, t / 3);
+    const bodyGeo = new THREE.ExtrudeGeometry(roundedRect(PHONE_W - 2 * bevel, PHONE_D - 2 * bevel, Math.max(0, r - bevel)),
+      { depth: t - 2 * bevel, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel, bevelSegments: 4, curveSegments: 12 });
+    bodyGeo.translate(0, 0, bevel);
+    const sw = PHONE_W - 2 * BEZEL, sh = PHONE_D - 2 * BEZEL;
+    const screenGeo = new THREE.ShapeGeometry(roundedRect(sw, sh, Math.max(0, r - BEZEL)), 12);
+    // Shape UVs are in scene units: map them to 0…1 across the screen
+    const uv = screenGeo.attributes.uv, pos = screenGeo.attributes.position;
+    for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / sw + 0.5, pos.getY(i) / sh + 0.5);
+
+    const rows = Math.ceil(count / cols);
+    const stepX = PHONE_W + gap, stepZ = PHONE_D + gap;
+    let maxX = 0, maxZ = 0;
+    for (let n = 0; n < count; n++) {
+      const c = n % cols, row = Math.floor(n / cols);
+      const x = (c - (cols - 1) / 2) * stepX + (row % 2 ? +P.stagger * stepX / 2 : 0);
+      const z = (row - (rows - 1) / 2) * stepZ;
+      const phone = new THREE.Group();
+      const body = new THREE.Mesh(bodyGeo, bodyMat);
+      body.castShadow = true;
+      const s = screens.length ? screens[n % screens.length] : null;
+      const screen = new THREE.Mesh(screenGeo, s ? s.material : blankMat);
+      screen.position.z = t + 0.0005;
+      phone.add(body, screen);
+      // Lay it on the floor: shape XY → floor XZ, screen facing up, top of the screen away from the viewer
+      phone.rotation.x = -Math.PI / 2;
+      phone.position.set(x, +P.lift, z);
+      phones.add(phone);
+      maxX = Math.max(maxX, Math.abs(x) + PHONE_W / 2);
+      maxZ = Math.max(maxZ, Math.abs(z) + PHONE_D / 2);
+    }
+    extent = Math.max(maxX, maxZ, 0.6);
+    render();
+  }
+
+  // ---------- Camera, light, colours ----------
+  const rad = (d) => d * Math.PI / 180;
+  function view() {
+    const az = rad(+P.azimuth), el = rad(+P.elevation), dist = 20;
+    camera.position.set(dist * Math.cos(el) * Math.sin(az), dist * Math.sin(el), dist * Math.cos(el) * Math.cos(az));
+    camera.lookAt(0, 0, 0);
+    // Light from high up, its compass direction set by the slider
+    const s = rad(+P.sun);
+    sun.position.set(6 * Math.sin(s), 10, 6 * Math.cos(s));
+    const box = extent * 1.6;
+    Object.assign(sun.shadow.camera, { left: -box, right: box, top: box, bottom: -box, near: 0.1, far: 40 });
+    sun.shadow.camera.updateProjectionMatrix();
+    sun.shadow.radius = +P.soft;
+    sun.shadow.blurSamples = 16;
+    floor.material.opacity = +P.shadow;
+    scene.background = new THREE.Color(P.bg);
+    bodyMat.color.set(P.body);
+    stage.style.background = P.bg;
+  }
+  function size() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return;
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    renderer.setSize(w, h, false);
+    const half = extent * 1.15 / +P.zoom, aspect = w / h;
+    Object.assign(camera, aspect > 1
+      ? { left: -half * aspect, right: half * aspect, top: half, bottom: -half }
+      : { left: -half, right: half, top: half / aspect, bottom: -half / aspect });
+    camera.updateProjectionMatrix();
+  }
+  function render() { view(); size(); renderer.render(scene, camera); }
+  addEventListener("resize", render);
+
+  // ---------- Controls ----------
+  const BUILD = new Set(["count", "cols", "gap", "stagger", "thick", "radius", "lift"]);
+  const show = (id) => {
+    const out = $(id).parentElement.querySelector("output");
+    if (out) out.textContent = $(id).step && +$(id).step < 1 ? (+P[id]).toFixed(2) : P[id];
+  };
+  function set(id, value) {
+    P[id] = value;
+    $(id).value = value;
+    show(id);
+    store();
+    BUILD.has(id) ? build() : render();
+  }
+  for (const id of ids) {
+    $(id).value = P[id];
+    show(id);
+    $(id).addEventListener("input", () => set(id, $(id).value));
+  }
+  $("reset").addEventListener("click", () => { for (const id of ids) { P[id] = defaults[id]; $(id).value = P[id]; show(id); } store(); build(); });
+  $("save").addEventListener("click", () => {
+    render();
+    const a = document.createElement("a");
+    a.href = canvas.toDataURL("image/png");
+    a.download = "phones.png";
+    a.click();
+  });
+
+  // Drag to turn (left/right) and tilt (up/down); scroll to zoom
+  let drag = null;
+  canvas.addEventListener("pointerdown", (e) => { drag = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); canvas.classList.add("is-dragging"); });
+  canvas.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    drag = { x: e.clientX, y: e.clientY };
+    let az = +P.azimuth - dx * 0.3;
+    az = ((az + 180) % 360 + 360) % 360 - 180;
+    P.elevation = Math.max(10, Math.min(90, +P.elevation + dy * 0.3)).toFixed(1);
+    $("elevation").value = P.elevation; show("elevation");
+    set("azimuth", az.toFixed(1));
+  });
+  const endDrag = () => { drag = null; canvas.classList.remove("is-dragging"); };
+  canvas.addEventListener("pointerup", endDrag);
+  canvas.addEventListener("pointercancel", endDrag);
+  canvas.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    set("zoom", Math.max(0.3, Math.min(4, +P.zoom * Math.exp(-e.deltaY * 0.001))).toFixed(2));
+  }, { passive: false });
+
+  // ---------- Images ----------
+  function addFiles(files) {
+    const images = [...files].filter(f => f && f.type.startsWith("image/"));
+    let pending = images.length;
+    for (const file of images) {
+      const url = URL.createObjectURL(file);
+      loader.load(url, (texture) => {
+        texture.encoding = THREE.sRGBEncoding;
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        coverTop(texture, texture.image.width, texture.image.height, PHONE_W - 2 * BEZEL, PHONE_D - 2 * BEZEL);
+        screens.push({ url, name: file.name, texture, material: new THREE.MeshBasicMaterial({ map: texture }) });
+        if (--pending === 0) { thumbs(); build(); }
+      });
+    }
+  }
+  function removeScreen(i) {
+    const [s] = screens.splice(i, 1);
+    s.texture.dispose(); s.material.dispose(); URL.revokeObjectURL(s.url);
+    thumbs(); build();
+  }
+  function thumbs() {
+    $("thumbs").replaceChildren(...screens.map((s, i) => {
+      const d = document.createElement("div");
+      d.className = "thumb";
+      d.title = s.name || "Pasted image";
+      d.innerHTML = `<img alt=""><button type="button" aria-label="Remove">×</button>`;
+      d.querySelector("img").src = s.url;
+      d.querySelector("button").addEventListener("click", () => removeScreen(i));
+      return d;
+    }));
+  }
+  $("pick").addEventListener("click", () => $("file").click());
+  $("file").addEventListener("change", () => { addFiles($("file").files); $("file").value = ""; });
+  $("clear").addEventListener("click", () => { while (screens.length) { const s = screens.pop(); s.texture.dispose(); s.material.dispose(); URL.revokeObjectURL(s.url); } thumbs(); build(); });
+  let depth = 0;
+  addEventListener("dragenter", (e) => { e.preventDefault(); depth++; stage.classList.add("is-dropping"); });
+  addEventListener("dragleave", () => { if (--depth <= 0) { depth = 0; stage.classList.remove("is-dropping"); } });
+  addEventListener("dragover", (e) => e.preventDefault());
+  addEventListener("drop", (e) => { e.preventDefault(); depth = 0; stage.classList.remove("is-dropping"); addFiles(e.dataTransfer.files); });
+  addEventListener("paste", (e) => addFiles([...e.clipboardData.items].filter(i => i.type.startsWith("image/")).map(i => i.getAsFile())));
+
+  build();
+})();
+</script>
+</body>
+</html>
