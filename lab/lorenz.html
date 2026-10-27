@@ -122,6 +122,7 @@
       { key: "seed",   label: "Random seed",            min: 1,     max: 99,     step: 1,     value: 7 },
     ]},
     { title: "Camera", items: [
+      { key: "lock",   label: "Lock centre (don't follow the cloud)", type: "check",          value: true },
       { key: "yaw",    label: "Yaw (°)",                min: -180,  max: 180,    step: 0.5,   value: -173.4 },
       { key: "pitch",  label: "Pitch (°)",              min: -90,   max: 90,     step: 0.5,   value: 16.4 },
       { key: "roll",   label: "Roll (°)",               min: -180,  max: 180,    step: 0.5,   value: -43 },
@@ -154,6 +155,7 @@
     P[it.key] = DEFAULTS[it.key] = it.value;
     if (g.rebuild) rebuildKeys.add(it.key);
   }
+  rebuildKeys.add("lock");
 
   // ---------- Panel ----------
   const panel = document.getElementById("panel");
@@ -261,16 +263,20 @@
     }
     const tracedCount = k / 3;
 
-    // Centre the cloud and measure it
-    let cx = 0, cy = 0, cz = 0;
-    for (let i = 0; i < k; i += 3) { cx += out[i]; cy += out[i + 1]; cz += out[i + 2]; }
-    cx /= tracedCount || 1; cy /= tracedCount || 1; cz /= tracedCount || 1;
+    // Centre the cloud and measure it. Locked: a fixed centre between the two wings
+    // (0, 0, ρ − 1) and a fixed depth range, so the camera stays put while σ animates.
+    let cx = 0, cy = 0, cz = P.rho - 1;
+    if (!P.lock) {
+      cz = 0;
+      for (let i = 0; i < k; i += 3) { cx += out[i]; cy += out[i + 1]; cz += out[i + 2]; }
+      cx /= tracedCount || 1; cy /= tracedCount || 1; cz /= tracedCount || 1;
+    }
     let r = 0;
     for (let i = 0; i < k; i += 3) {
       out[i] -= cx; out[i + 1] -= cy; out[i + 2] -= cz;
       r = Math.max(r, Math.hypot(out[i], out[i + 1], out[i + 2]));
     }
-    radius = r || 30;
+    radius = P.lock ? 30 : r || 30;
 
     // Stray points: a loose haze around the attractor, denser near it
     for (let s = 0; s < strays && ok; s++) {
