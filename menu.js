@@ -64,7 +64,7 @@
       position: fixed;
       inset: 0;
       z-index: 29;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.6);
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.3s ease-out, visibility 0s linear 0.3s;
