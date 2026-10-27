@@ -8,7 +8,7 @@
   const current = script.dataset.current;
 
   const STYLES = [
-    { id: "enterprise", name: "enterprise", desc: "Normal, recommended", href: "./" },
+    { id: "enterprise", name: "enterprise", desc: "Normal, recommended", href: "enterprise/" },
     { id: "caveman", name: "caveman", soon: true,
       desc: 'Very succinct, inspired by <a href="https://dev.to/onsen/caveman-claude-the-token-cutting-skill-thats-changing-ai-workflows-4hmc" target="_blank" rel="noopener">this skill</a>' },
     { id: "startup", name: "startup", soon: true, desc: "The one with emojis" },
