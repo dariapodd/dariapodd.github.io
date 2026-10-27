@@ -438,7 +438,8 @@
     aspect-ratio: 663 / 330;
     --micro-nudge: 75px;     /* about 40% of the drawn surface sits above the block */
   }
-  /* Lorenz attractor. This box sets its centre and size (drag inside it to rotate);
+  /* Lorenz attractor. This box sets its size and centre (lorenz.js shifts it 10% of the
+     page width further right); drag inside it to rotate.
      lorenz.js draws it on a canvas covering the whole hero, behind the text, so it
      isn't cut off when rotated. */
   .micro--lorenz {
@@ -449,7 +450,7 @@
   }
   .lorenz-canvas {
     position: absolute;
-    z-index: -1;               /* behind the hero text; the ruled lines draw over it */
+    z-index: -1;               /* behind the hero text, over the headline's ruled lines */
     inset: 0;
     width: 100%;
     height: 100%;

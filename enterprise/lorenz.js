@@ -1,7 +1,8 @@
 // Lorenz attractor point cloud for the hero (settings tuned in /lab/lorenz.html).
 // A teal dot with a fading tail travels the path; drag to rotate.
 // The .micro--lorenz box only sets the attractor's centre and size: the canvas covers the
-// whole hero, behind the text, so the attractor isn't cut off when rotated.
+// whole hero, behind the text (over the headline's ruled lines), so the attractor isn't
+// cut off when rotated.
 // Transparent background; pauses only while off-screen. The dot is slow and small enough
 // to keep moving even with reduced motion on.
 (() => {
@@ -14,7 +15,8 @@
   const X0 = -1.8, Z0 = 3.2;
   // Camera
   const YAW = 107.4, PITCH = 43.1, ROLL = -43, DIST = 70, FOV = 70;
-  const ZOOM = 3.5;   // scales with the box width: the attractor fills about ¾ of it
+  const ZOOM = 2.45;
+  const SHIFT = 0.1;   // centre sits this share of the page width right of the box's centre   // scales with the box width: the attractor fills about ¾ of it
   const DRAG_DEG_PER_PX = 0.3;
   // Points
   const SIZE = 1, ALPHA = 0.46, FADE = 0.47, RADIUS = 30;
@@ -65,7 +67,7 @@
   const canvas = document.createElement("canvas");
   canvas.className = "lorenz-canvas";
   canvas.setAttribute("aria-hidden", "true");
-  hero.prepend(canvas);   // first, so the headline's ruled lines still draw over it
+  hero.querySelector("h1").after(canvas);   // after the headline, so it draws over its ruled lines
   const gl = canvas.getContext("webgl", { antialias: true, premultipliedAlpha: false, alpha: true });
   if (!gl) { canvas.remove(); return; }
 
@@ -161,7 +163,7 @@
     gl.uniform1f(u.u_focal, ZOOM / Math.tan(FOV * Math.PI / 360));
     gl.uniform2f(u.u_scale, box.width / area.width, box.width / area.height);
     gl.uniform2f(u.u_centre,
-      (box.left + box.width / 2 - area.left) / area.width * 2 - 1,
+      (box.left + box.width / 2 + SHIFT * area.width - area.left) / area.width * 2 - 1,
       1 - (box.top + box.height / 2 - area.top) / area.height * 2);
     gl.uniform1f(u.u_radius, RADIUS);
 
