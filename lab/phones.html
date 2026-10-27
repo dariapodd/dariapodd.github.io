@@ -129,19 +129,22 @@
 
     <h2>Camera</h2>
     <div class="control"><label for="azimuth">Angle (°)</label><output></output>
-      <input type="range" id="azimuth" min="-180" max="180" step="0.5" value="-40"></div>
+      <input type="range" id="azimuth" min="-180" max="180" step="0.5" value="-42.5"></div>
     <div class="control"><label for="elevation">Tilt (°)</label><output></output>
-      <input type="range" id="elevation" min="10" max="90" step="0.5" value="38"></div>
+      <input type="range" id="elevation" min="10" max="90" step="0.5" value="39.5"></div>
     <div class="control"><label for="zoom">Zoom</label><output></output>
-      <input type="range" id="zoom" min="0.3" max="4" step="0.01" value="1.1"></div>
+      <input type="range" id="zoom" min="0.3" max="4" step="0.01" value="1.16"></div>
+    <div class="control is-check"><input type="checkbox" id="persp"><label for="persp">Perspective</label></div>
+    <div class="control"><label for="fov">Field of view (°)</label><output></output>
+      <input type="range" id="fov" min="5" max="100" step="1" value="35"></div>
 
     <h2>Colours</h2>
     <div class="control is-color"><label for="bg">Background</label><input type="color" id="bg" value="#7f78d8"></div>
     <div class="control is-color"><label for="body">Phone body</label><input type="color" id="body" value="#f4f4f6"></div>
     <div class="control"><label for="shadow">Shadow strength</label><output></output>
-      <input type="range" id="shadow" min="0" max="0.8" step="0.01" value="0.35"></div>
+      <input type="range" id="shadow" min="0" max="0.8" step="0.01" value="0.16"></div>
     <div class="control"><label for="soft">Shadow softness</label><output></output>
-      <input type="range" id="soft" min="1" max="25" step="0.5" value="10"></div>
+      <input type="range" id="soft" min="1" max="25" step="0.5" value="25"></div>
     <div class="control"><label for="sun">Light direction (°)</label><output></output>
       <input type="range" id="sun" min="-180" max="180" step="1" value="135"></div>
 
@@ -151,11 +154,11 @@
     <div class="control"><label for="cols">Columns</label><output></output>
       <input type="range" id="cols" min="1" max="8" step="1" value="3"></div>
     <div class="control"><label for="gap">Gap</label><output></output>
-      <input type="range" id="gap" min="0" max="0.6" step="0.01" value="0.16"></div>
+      <input type="range" id="gap" min="0" max="0.6" step="0.01" value="0.13"></div>
     <div class="control"><label for="stagger">Row stagger</label><output></output>
       <input type="range" id="stagger" min="-1" max="1" step="0.01" value="0.5"></div>
     <div class="control"><label for="thick">Thickness</label><output></output>
-      <input type="range" id="thick" min="0.01" max="0.12" step="0.005" value="0.04"></div>
+      <input type="range" id="thick" min="0.01" max="0.12" step="0.005" value="0.01"></div>
     <div class="control"><label for="radius">Corner radius</label><output></output>
       <input type="range" id="radius" min="0" max="0.12" step="0.005" value="0.05"></div>
     <div class="control"><label for="lift">Hover above floor</label><output></output>
@@ -178,8 +181,11 @@
 
   // ---------- Settings (kept in this browser) ----------
   const KEY = "phones-lab";
-  const ids = ["azimuth", "elevation", "zoom", "bg", "body", "shadow", "soft", "sun", "count", "cols", "gap", "stagger", "thick", "radius", "lift"];
-  const defaults = Object.fromEntries(ids.map(id => [id, $(id).value]));
+  const ids = ["azimuth", "elevation", "zoom", "persp", "fov", "bg", "body", "shadow", "soft", "sun", "count", "cols", "gap", "stagger", "thick", "radius", "lift"];
+  const isCheck = (id) => $(id).type === "checkbox";
+  const read = (id) => (isCheck(id) ? $(id).checked : $(id).value);
+  const write = (id, v) => { if (isCheck(id)) $(id).checked = !!v; else $(id).value = v; };
+  const defaults = Object.fromEntries(ids.map(id => [id, read(id)]));
   const P = {};
   const store = () => { try { localStorage.setItem(KEY, JSON.stringify(P)); } catch {} };
   try { Object.assign(P, defaults, JSON.parse(localStorage.getItem(KEY)) || {}); } catch { Object.assign(P, defaults); }
@@ -190,7 +196,9 @@
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.VSMShadowMap;   // soft, blurrable shadows
   const scene = new THREE.Scene();
-  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
+  const ortho = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
+  const persp = new THREE.PerspectiveCamera(35, 1, 0.01, 500);
+  let camera = ortho;
 
   scene.add(new THREE.HemisphereLight(0xffffff, 0x8888aa, 0.75));
   const sun = new THREE.DirectionalLight(0xffffff, 0.55);
@@ -275,8 +283,13 @@
 
   // ---------- Camera, light, colours ----------
   const rad = (d) => d * Math.PI / 180;
+  // Half the height of the view at the floor's centre: the same framing in both cameras
+  const half = () => extent * 1.15 / +P.zoom;
   function view() {
-    const az = rad(+P.azimuth), el = rad(+P.elevation), dist = 20;
+    camera = P.persp ? persp : ortho;
+    // Perspective: back off until the layout fills the same height as the flat view
+    const az = rad(+P.azimuth), el = rad(+P.elevation);
+    const dist = P.persp ? half() / Math.tan(rad(+P.fov) / 2) : 20;
     camera.position.set(dist * Math.cos(el) * Math.sin(az), dist * Math.sin(el), dist * Math.cos(el) * Math.cos(az));
     camera.lookAt(0, 0, 0);
     // Light from high up, its compass direction set by the slider
@@ -297,34 +310,38 @@
     if (!w || !h) return;
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
     renderer.setSize(w, h, false);
-    const half = extent * 1.15 / +P.zoom, aspect = w / h;
-    Object.assign(camera, aspect > 1
-      ? { left: -half * aspect, right: half * aspect, top: half, bottom: -half }
-      : { left: -half, right: half, top: half / aspect, bottom: -half / aspect });
-    camera.updateProjectionMatrix();
+    const hh = half(), aspect = w / h;
+    Object.assign(ortho, aspect > 1
+      ? { left: -hh * aspect, right: hh * aspect, top: hh, bottom: -hh }
+      : { left: -hh, right: hh, top: hh / aspect, bottom: -hh / aspect });
+    ortho.updateProjectionMatrix();
+    persp.aspect = aspect;
+    persp.fov = aspect > 1 ? +P.fov : 2 * Math.atan(Math.tan(rad(+P.fov) / 2) / aspect) * 180 / Math.PI;
+    persp.updateProjectionMatrix();
   }
-  function render() { view(); size(); renderer.render(scene, camera); }
+  function render() { size(); view(); renderer.render(scene, camera); }
   addEventListener("resize", render);
 
   // ---------- Controls ----------
   const BUILD = new Set(["count", "cols", "gap", "stagger", "thick", "radius", "lift"]);
   const show = (id) => {
+    if (isCheck(id)) { $("fov").disabled = !P.persp; return; }
     const out = $(id).parentElement.querySelector("output");
     if (out) out.textContent = $(id).step && +$(id).step < 1 ? (+P[id]).toFixed(2) : P[id];
   };
   function set(id, value) {
     P[id] = value;
-    $(id).value = value;
+    write(id, value);
     show(id);
     store();
     BUILD.has(id) ? build() : render();
   }
   for (const id of ids) {
-    $(id).value = P[id];
+    write(id, P[id]);
     show(id);
-    $(id).addEventListener("input", () => set(id, $(id).value));
+    $(id).addEventListener("input", () => set(id, read(id)));
   }
-  $("reset").addEventListener("click", () => { for (const id of ids) { P[id] = defaults[id]; $(id).value = P[id]; show(id); } store(); build(); });
+  $("reset").addEventListener("click", () => { for (const id of ids) { P[id] = defaults[id]; write(id, P[id]); show(id); } store(); build(); });
   $("save").addEventListener("click", () => {
     render();
     const a = document.createElement("a");
