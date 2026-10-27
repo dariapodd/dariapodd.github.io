@@ -15,7 +15,7 @@
   const SCATTER = 0;   // jitter on the path itself; drawn like the lab, so a seed matches it there
   const X0 = -1.8, Z0 = 3.2;
   // Camera
-  const YAW = 107.4, PITCH = 43.1, ROLL = -43, DIST = 20, FOV = 120;
+  const YAW = 107.4, PITCH = 43.1, ROLL = -43, DIST = 30, FOV = 120;
   const ZOOM = 2.45;
   const SHIFT = 0.1;   // centre sits this share of the page width right of the box's centre   // scales with the box width: the attractor fills about ¾ of it
   const DRAG_DEG_PER_PX = 0.3;
