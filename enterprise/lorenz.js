@@ -19,6 +19,7 @@
   const ZOOM = 2.45;
   const SHIFT = 0.1;   // centre sits this share of the page width right of the box's centre   // scales with the box width: the attractor fills about ¾ of it
   const DRAG_DEG_PER_PX = 0.3;
+  const SPIN = 1;      // °/s of yaw: one slow turn every 6 minutes, paused while dragging
   // Points
   const SIZE = 1, ALPHA = 0.38, FADE = 1, RADIUS = 30;
   const INK = [221 / 255, 220 / 255, 200 / 255];   // #dddcc8, as the wireframe
@@ -153,6 +154,7 @@
     const dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
     last = now;
     phase = (phase + dt / DOT_TIME) % 1;
+    if (!drag) yaw = wrap(yaw + SPIN * dt);
 
     const dpr = Math.min(devicePixelRatio || 1, 2);
     const w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
