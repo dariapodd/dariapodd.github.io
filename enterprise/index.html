@@ -438,6 +438,19 @@
     aspect-ratio: 663 / 330;
     --micro-nudge: 75px;     /* about 40% of the drawn surface sits above the block */
   }
+  /* Lorenz attractor: right of the headline, down to the first project; drag to rotate */
+  .micro--lorenz {
+    top: 111px;
+    height: 566px;
+    left: max(59.5%, 880px);   /* clear of the headline */
+    right: 0;
+  }
+  .micro--lorenz canvas { pointer-events: auto; cursor: grab; touch-action: pan-y; }
+  .micro--lorenz canvas.is-dragging { cursor: grabbing; }
+  @media (max-width: 1199px) {
+    .micro--lorenz { display: none; }   /* no room beside the headline */
+  }
+
   /* Phones and small tablets: stack text and screenshot */
   @media (max-width: 900px) {
     .micro { display: none; }
@@ -489,6 +502,7 @@
     </ul>
 
     <p class="scroll-hint">scroll down for projects ↓</p>
+    <div class="micro micro--lorenz" aria-hidden="true"></div>
   </header>
 
   <main>
@@ -534,6 +548,7 @@
   </main>
 
 <script src="../enterprise/surface.js" defer></script>
+<script src="../enterprise/lorenz.js" defer></script>
 <script src="../menu.js" defer data-current="enterprise"></script>
 
 <script>
