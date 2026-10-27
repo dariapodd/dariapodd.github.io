@@ -15,7 +15,7 @@
   const SCATTER = 0;   // jitter on the path itself; drawn like the lab, so a seed matches it there
   const X0 = -1.8, Z0 = 3.2;
   // Camera
-  const YAW = 107.4, PITCH = 43.1, ROLL = -43, DIST = 70, FOV = 70;
+  const YAW = 107.4, PITCH = 43.1, ROLL = -43, DIST = 24, FOV = 120;
   const ZOOM = 2.45;
   const SHIFT = 0.1;   // centre sits this share of the page width right of the box's centre   // scales with the box width: the attractor fills about ¾ of it
   const DRAG_DEG_PER_PX = 0.3;
@@ -125,6 +125,9 @@
   gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
   gl.clearColor(0, 0, 0, 0);
 
+  // Angles in degrees, kept in -180…180
+  const wrap = (deg) => ((deg + 180) % 360 + 360) % 360 - 180;
+
   // Yaw about the up axis, then pitch about the right axis, then roll about the view axis
   function rotation(yawDeg, pitchDeg, rollDeg) {
     const r = Math.PI / 180;
@@ -220,8 +223,9 @@
   };
   hero.addEventListener("pointermove", (e) => {
     if (drag) {
-      yaw -= (e.clientX - drag.x) * DRAG_DEG_PER_PX;
-      pitch = Math.max(-90, Math.min(90, pitch + (e.clientY - drag.y) * DRAG_DEG_PER_PX));
+      // Yaw and pitch go all the way round
+      yaw = wrap(yaw - (e.clientX - drag.x) * DRAG_DEG_PER_PX);
+      pitch = wrap(pitch + (e.clientY - drag.y) * DRAG_DEG_PER_PX);
       drag = { x: e.clientX, y: e.clientY };
       start();
     } else {

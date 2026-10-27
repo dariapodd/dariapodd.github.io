@@ -124,7 +124,7 @@
     { title: "Camera", items: [
       { key: "lock",   label: "Lock centre (don't follow the cloud)", type: "check",          value: true },
       { key: "yaw",    label: "Yaw (°)",                min: -180,  max: 180,    step: 0.5,   value: 107.4 },
-      { key: "pitch",  label: "Pitch (°)",              min: -90,   max: 90,     step: 0.5,   value: 43.1 },
+      { key: "pitch",  label: "Pitch (°)",              min: -180,  max: 180,     step: 0.5,   value: 43.1 },
       { key: "roll",   label: "Roll (°)",               min: -180,  max: 180,    step: 0.5,   value: -43 },
       { key: "dist",   label: "Distance",               min: 20,    max: 300,    step: 1,     value: 70 },
       { key: "fov",    label: "Field of view (°)",      min: 5,     max: 120,    step: 1,     value: 70 },
@@ -364,6 +364,9 @@
   const INK = [221 / 255, 220 / 255, 200 / 255];          // #dddcc8, as the wireframe
   const TEAL = [0, 1, 204 / 255];                          // #00ffcc
 
+  // Angles in degrees, kept in -180…180
+  const wrap = (deg) => ((deg + 180) % 360 + 360) % 360 - 180;
+
   // Yaw about the up axis, then pitch about the right axis, then roll about the view axis
   function rotation(yawDeg, pitchDeg, rollDeg) {
     const r = Math.PI / 180;
@@ -402,10 +405,7 @@
       set("sigma", P.sigMin + (P.sigMax - P.sigMin) * k, false);
     }
     if (P.spin && !dragging) {
-      let yaw = P.yaw + P.spin * dt;
-      if (yaw > 180) yaw -= 360;
-      if (yaw < -180) yaw += 360;
-      set("yaw", yaw, false);
+      set("yaw", wrap(P.yaw + P.spin * dt), false);
     }
     if (needsRebuild) { needsRebuild = false; build(); }
 
@@ -464,11 +464,9 @@
       set("panX", Math.max(-1, Math.min(1, P.panX + dx * 2 / canvas.clientWidth)), false);
       set("panY", Math.max(-1, Math.min(1, P.panY - dy * 2 / canvas.clientHeight)), false);
     } else {
-      let yaw = P.yaw - dx * 0.3;
-      if (yaw > 180) yaw -= 360;
-      if (yaw < -180) yaw += 360;
-      set("yaw", yaw, false);
-      set("pitch", Math.max(-90, Math.min(90, P.pitch + dy * 0.3)), false);
+      // Yaw and pitch go all the way round, like roll
+      set("yaw", wrap(P.yaw - dx * 0.3), false);
+      set("pitch", wrap(P.pitch + dy * 0.3), false);
     }
   });
   const endDrag = () => { dragging = null; canvas.classList.remove("is-dragging"); };
