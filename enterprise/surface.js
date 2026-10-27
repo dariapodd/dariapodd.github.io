@@ -97,12 +97,13 @@
 
   // ---- Per-frame geometry: one fine grid of projected points ----
   const grid = new Float32Array(GU * GV * 3);   // x, y (view units), depth
-  function projectGrid(yaw, pitch, roll) {
+  function projectGrid(yaw, pitch, roll, flip) {
     const pr = cameraFor(yaw, pitch, roll);
     for (let j = 0, k = 0; j < GV; j++) {
       for (let i = 0; i < GU; i++, k += 3) {
         const p = pr(i / (GU - 1), j / (GV - 1));
-        grid[k] = FIT_T.ox + p[0] * FIT_T.s;
+        const x = FIT_T.ox + p[0] * FIT_T.s;
+        grid[k] = flip ? VIEW_W - x : x;   // mirrored here, not in CSS, so hover still lines up
         grid[k + 1] = FIT_T.oy + p[1] * FIT_T.s + ROOM.top;
         grid[k + 2] = p[2];
       }
@@ -264,6 +265,7 @@
     host.style.marginTop = `calc(${-ROOM.top / VIEW_W} * 34.53% + var(--micro-nudge, 0px))`;
     const canvas = document.createElement("canvas");
     host.append(canvas);
+    const flip = host.classList.contains("is-flipped");
 
     let draw;
     try { draw = setupGL(canvas); } catch (e) { draw = null; }
@@ -289,6 +291,7 @@
         YAW0 + VIEW_TURN + wave("turn", t),
         PITCH0 + VIEW_TILT + wave("tilt", t),
         wave("roll", t),
+        flip,
       );
       hovered = pointer ? cellAt(pointer[0], pointer[1]) : -1;   // the surface moves under a still pointer
 

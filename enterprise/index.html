@@ -412,6 +412,7 @@
     top: 14.22%;           /* 136.5 / 960 */
     width: 57.76%;         /* 1109 / 1920 — runs past the right edge, as in Figma */
     height: auto;
+    z-index: 2;            /* over the wireframe surface */
   }
 
   /* ---------- Micrographics ----------
@@ -419,7 +420,7 @@
      Decorative (hidden from screen readers), hidden when the project stacks on small screens. */
   .micro {
     position: absolute;
-    z-index: 2;
+    z-index: 1;
     pointer-events: none;
   }
   .micro canvas {
@@ -430,12 +431,12 @@
   }
   /* The wireframe surface can be dragged to rotate it */
   .micro--surface canvas { pointer-events: auto; }   /* hovering lights up surface cells */
-  .micro--surface {          /* wireframe graph, hangs over the block's bottom edge */
-    left: -11.3%;            /* -217 / 1920: starts beyond the left edge, as in Figma */
-    top: var(--micro-top, 78.65%);
+  .micro--surface {          /* wireframe graph, mirrored, hangs over the block's top-right corner */
+    right: -5.9%;            /* runs past the right edge */
+    top: -13.9%;
     width: 34.53%;           /* 663 / 1920 */
     aspect-ratio: 663 / 330;
-    --micro-nudge: -40px;    /* sits 40px higher than the Figma position */
+    --micro-nudge: 75px;     /* about 40% of the drawn surface sits above the block */
   }
   /* Phones and small tablets: stack text and screenshot */
   @media (max-width: 900px) {
@@ -506,7 +507,7 @@
 
       <img class="project-shot" src="../enterprise/assets/project-1-spatial-digital-twin.png" width="2218" height="1474"
            alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
-      <div class="micro micro--surface" style="--micro-top: 78.65%" aria-hidden="true"></div>
+      <div class="micro micro--surface is-flipped" aria-hidden="true"></div>
     </section>
 
     <section class="project project--grey" aria-labelledby="project-2">
@@ -528,7 +529,7 @@
 
       <img class="project-shot" src="../enterprise/assets/project-1-spatial-digital-twin.png" width="2218" height="1474"
            alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
-      <div class="micro micro--surface" style="--micro-top: 81.15%" aria-hidden="true"></div>
+      <div class="micro micro--surface is-flipped" aria-hidden="true"></div>
     </section>
   </main>
 
