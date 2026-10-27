@@ -144,8 +144,8 @@
       { key: "sigMax", label: "σ to",                     min: 0,     max: 30,     step: 0.1,   value: 30 },
       { key: "loop",   label: "Loop, there and back (s)", min: 10,    max: 600,    step: 10,    value: 300 },
       { key: "dot",    label: "Teal dot along the path",  type: "check",                        value: true },
-      { key: "dotTime", label: "Dot: start to end (s)",   min: 10,    max: 600,    step: 10,    value: 120 },
-      { key: "dotSize", label: "Dot size (px)",           min: 2,     max: 16,     step: 0.5,   value: 6 },
+      { key: "dotTime", label: "Dot: start to end (s)",   min: 60,    max: 3600,   step: 60,    value: 1200 },
+      { key: "dotSize", label: "Dot size (px)",           min: 2,     max: 16,     step: 0.5,   value: 8 },
     ]},
   ];
 
@@ -322,11 +322,11 @@
   const FS = `
     precision mediump float;
     uniform vec3 u_ink;
-    uniform float u_alpha, u_fade;
+    uniform float u_alpha, u_fade, u_diamond;
     varying float v_depth;
     void main() {
       vec2 c = gl_PointCoord - 0.5;
-      if (dot(c, c) > 0.25) discard;   // round points
+      if (u_diamond > 0.5 ? abs(c.x) + abs(c.y) > 0.5 : dot(c, c) > 0.25) discard;   // diamond or round
       gl_FragColor = vec4(u_ink, u_alpha * (1.0 - u_fade * v_depth));
     }`;
 
@@ -343,7 +343,7 @@
   gl.linkProgram(prog);
   gl.useProgram(prog);
   const U = (name) => gl.getUniformLocation(prog, name);
-  const u = Object.fromEntries(["u_rot", "u_dist", "u_focal", "u_aspect", "u_size", "u_radius", "u_persp", "u_pan", "u_ink", "u_alpha", "u_fade"].map(n => [n, U(n)]));
+  const u = Object.fromEntries(["u_rot", "u_dist", "u_focal", "u_aspect", "u_size", "u_radius", "u_persp", "u_pan", "u_ink", "u_alpha", "u_fade", "u_diamond"].map(n => [n, U(n)]));
 
   const buf = gl.createBuffer();
   const aPos = gl.getAttribLocation(prog, "a_pos");
@@ -421,6 +421,7 @@
     gl.uniform3fv(u.u_ink, INK);
     gl.uniform1f(u.u_alpha, P.alpha);
     gl.uniform1f(u.u_fade, P.fade);
+    gl.uniform1f(u.u_diamond, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
     gl.drawArrays(gl.POINTS, 0, count);
@@ -437,6 +438,7 @@
       gl.uniform3fv(u.u_ink, TEAL);
       gl.uniform1f(u.u_alpha, 1);
       gl.uniform1f(u.u_fade, 0);
+      gl.uniform1f(u.u_diamond, 1);
       gl.drawArrays(gl.POINTS, 0, 1);
     }
     requestAnimationFrame(frame);
