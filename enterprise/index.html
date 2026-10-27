@@ -387,11 +387,21 @@
     height: auto;
     z-index: 2;            /* over the wireframe surface */
   }
-  /* Two phone mockups: rise 158px above the block and stop at its right edge (Figma 193:390) */
+  /* Two phone mockups over a leather photo card, both stopping at the block's right edge
+     (Figma 195:458) */
   .project-shot--phones {
-    left: 55.31%;          /* 1062 / 1920 */
-    top: -16.46%;          /* -158 / 960 */
-    width: 44.69%;         /* 858 / 1920 */
+    left: 53.54%;          /* 1028 / 1920 */
+    top: -1.67%;           /* -16 / 960: just above the block */
+    width: 46.46%;         /* 892 / 1920 */
+  }
+  .project-backdrop {
+    position: absolute;
+    left: 50%;
+    top: 12.08%;           /* 116 / 960 */
+    width: 50%;            /* 960 / 1920 */
+    height: auto;
+    border-radius: 20px 0 0 20px;
+    z-index: 1;
   }
 
   /* ---------- Micrographics ----------
@@ -468,6 +478,7 @@
       margin: 40px 0 0 var(--text-left);
     }
     .project-shot--phones { max-width: 420px; }
+    .project-backdrop { display: none; }
   }
   /* Centre capitals exactly in buttons: the line box normally reserves room for accents
      above and descenders below, which leaves caps ~1px high. Trimming the box to the cap
@@ -541,9 +552,9 @@
         <a class="button" href="#">learn more ↗</a>
       </div>
 
-      <img class="project-shot project-shot--phones" src="../enterprise/assets/project-2-retail-apps.png" width="1716" height="2152"
+      <img class="project-backdrop" src="../enterprise/assets/project-2-leather.jpg" width="1920" height="1400" alt="">
+      <img class="project-shot project-shot--phones" src="../enterprise/assets/project-2-retail-apps.png" width="1784" height="1928"
            alt="Two iPhone screens: checkout with card, cash and loyalty points, and the store assistant menu">
-      <div class="micro micro--surface is-flipped" aria-hidden="true"></div>
       <div class="micro micro--diamond" aria-hidden="true"></div>
     </section>
   </main>
