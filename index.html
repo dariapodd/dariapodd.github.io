@@ -365,6 +365,10 @@
   .project-desc p { margin: 0 0 12px; }
   .project-desc p:last-child { margin-bottom: 0; }
   .project-desc strong { font-weight: 600; }
+  .project-desc--wide { max-width: 469px; }   /* Figma 184:31: the full text column */
+  /* A quote inside the description: 12px under the result, name straight under the quote */
+  .project-desc .project-quote { max-width: none; margin: 0; }
+  .project-desc .project-quote blockquote { margin: 0; }
 
   /* Client quote with attribution */
   .project-quote {
@@ -543,9 +547,13 @@
 
       <div class="project-content">
         <h2 id="project-1">4-dimensional spatial collaboration</h2>
-        <div class="project-desc">
-          <p>4-dimensional immersive Spatial Collaboration Tool for a railway company built on ArcGIS and custom web front-end. I’ve led complex prototyping and design system development; collaborated on user research, workshops and delivery support.</p>
+        <div class="project-desc project-desc--wide">
+          <p>Immersive Spatial Collaboration Tool for railway asset management. I’ve led complex prototyping and design system development; collaborated on user research, workshops and delivery support.</p>
           <p><strong>Result:</strong> faster asset inspections and planning, and less time/cost spent on field visits.</p>
+          <figure class="project-quote">
+            <blockquote>Daria has managed to deliver an outstanding product that is of a much higher quality than most other enterprise applications. Daria has a strong user-centric sense but also a strong business sense.</blockquote>
+            <figcaption>— P., Project Manager</figcaption>
+          </figure>
         </div>
         <a class="button" href="projects/spatial-collaboration/">learn more ↗</a>
       </div>
