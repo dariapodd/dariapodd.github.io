@@ -422,6 +422,35 @@
     z-index: 1;
   }
 
+  /* ---------- Recommendations (Figma 234:452): two columns, quote over name ---------- */
+  .recs { padding: 0 var(--text-left) 120px; }
+  .recs h2 {
+    margin: 0 0 44px;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  .recs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 44px 64px; }
+  .rec {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    color: #fff;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .rec blockquote { margin: 0; }
+  .rec figcaption { font-weight: 600; }
+  @media (max-width: 900px) {
+    .recs { padding-right: var(--gutter); }
+    .recs-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 700px) {
+    .recs h2 { font-size: 32px; }
+  }
+
   /* ---------- Micrographics ----------
      Positioned in % of the 1920×960 project block (Figma values), so they scale with it.
      Decorative (hidden from screen readers), hidden when the project stacks on small screens. */
@@ -580,6 +609,44 @@
       <img class="project-shot project-shot--phones" src="enterprise/assets/project-2-retail-apps.png" width="1784" height="1928"
            alt="Two iPhone screens: checkout with card, cash and loyalty points, and the store assistant menu">
       <div class="micro micro--diamond" aria-hidden="true"></div>
+    </section>
+
+    <section class="recs" id="recommendations" aria-labelledby="recs-title">
+      <h2 id="recs-title">recommendations</h2>
+      <div class="recs-grid">
+      <figure class="rec">
+        <blockquote>Daria led the building and evolving of our Design, Figma and AI prototyping capability across a large national team of designers. […] What makes Daria particularly good is her ability to bridge design and technology. She can get deep into a technical problem, understand what engineers and technology teams need, and then translate that into a strong experience for users.</blockquote>
+        <figcaption>— D., Product &amp; Service Designer</figcaption>
+      </figure>
+      <figure class="rec">
+        <blockquote>Daria has a talent for bringing clarity to ambiguity, turning complex technical discussions, vague ideas and high-level stakeholder commentary into clear direction and execution. […] She builds trust and alignment with ease across senior stakeholders, technical teams, and offshore team members.</blockquote>
+        <figcaption>— T., Associate Director</figcaption>
+      </figure>
+      <figure class="rec">
+        <blockquote>She combines exceptional project management, business analysis, and stakeholder communication skills with deep UI/UX expertise, enabling her to deliver outstanding outcomes while keeping users at the centre of every decision.</blockquote>
+        <figcaption>— D., AI &amp; Automation Lead</figcaption>
+      </figure>
+      <figure class="rec">
+        <blockquote>Thank you for being the most amazing counsellor and manager over the last 4 years, a lot of my career has been shaped by your guidance and support, and I was always so impressed by the breadth of your knowledge.</blockquote>
+        <figcaption>— S., Designer</figcaption>
+      </figure>
+      <figure class="rec">
+        <blockquote>You have single-handedly raised everyone’s skillsets in continually showcasing the latest and greatest in Figma and vibe-coding. You have always been a go-to source of knowledge and someone who is always ready to provide the best advice on design and UX challenges.</blockquote>
+        <figcaption>— J., Design Manager</figcaption>
+      </figure>
+      <figure class="rec">
+        <blockquote>Thank you for empowering me to advocate for design decisions that make our products better.</blockquote>
+        <figcaption>— L., Senior Designer</figcaption>
+      </figure>
+      <figure class="rec">
+        <blockquote>Your input and experience have been invaluable in getting to the position we are now in and without you we really wouldn’t have made the impact we did. No task was too challenging for you.</blockquote>
+        <figcaption>— T., Project Manager</figcaption>
+      </figure>
+      <figure class="rec">
+        <blockquote>I still remember when you invited me to join the AI + Design workshop and share how AI could help us prototype and bring design and development closer together. You gave me so much guidance and encouragement throughout that session.</blockquote>
+        <figcaption>— Z., Front-end Developer</figcaption>
+      </figure>
+      </div>
     </section>
   </main>
 
