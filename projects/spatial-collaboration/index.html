@@ -138,6 +138,8 @@
   .text { max-width: 513px; }
   .text p { margin: 0; }
   .text p + p.after-gap { margin-top: 22.4px; }   /* a blank line between paragraphs, as in Figma */
+  /* Closing disclaimer */
+  .note { margin: -72px 0 0; color:   /* 48px under the last caption rather than a full 120px section gap */ rgba(255, 255, 255, 0.6); font: 300 14px/1.4 "Chakra Petch", system-ui, sans-serif; }
 
   /* ---------- Intro ---------- */
   .intro { display: flex; flex-direction: column; gap: 80px; }
@@ -327,6 +329,8 @@
         <img src="assets/scope.jpg" width="1024" height="495" loading="lazy" alt="Overview board of the design system, main scope and additional features">
         <figcaption class="caption">Scope of work delivered and deployed into production.</figcaption>
       </figure>
+
+      <p class="note">Note: all UI designs are white-labelled and all images are regenerated.</p>
     </article>
   </main>
 </body>
