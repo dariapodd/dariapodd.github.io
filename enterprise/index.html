@@ -394,7 +394,7 @@
     height: auto;
     z-index: 2;            /* over the wireframe surface */
   }
-  /* Track maintenance app, in black and white (Figma 184:31: saturation −1, exposure +0.24),
+  /* Track maintenance app, in black and white (Figma 221:411: saturation −1, exposure +0.27),
      vertically centred in the block and running off its right edge */
   .project-shot--track {
     left: max(50%, calc(var(--text-left) + 260px + 64px));
@@ -404,7 +404,7 @@
     object-fit: cover;
     border-radius: 12px;
     transform: translateY(-50%);
-    filter: grayscale(1) brightness(1.18);
+    filter: grayscale(1) brightness(1.21);   /* 2^0.27 */
   }
   /* Two phone mockups over a leather photo card, both stopping at the block's right edge
      (Figma 195:458) */
@@ -559,8 +559,8 @@
         <a class="button" href="../projects/spatial-collaboration/">learn more ↗</a>
       </div>
 
-      <img class="project-shot project-shot--track" src="../enterprise/assets/project-1-spatial-collaboration.jpg" width="1532" height="1025"
-           alt="Track maintenance app: layer list, 360° imagery of the track, and a map with access roads and exclusion zones">
+      <img class="project-shot project-shot--track" src="../enterprise/assets/project-1-tunnel.jpg" width="1532" height="1025"
+           alt="Track maintenance app: layer list, 360° imagery inside a rail tunnel, and a map with access roads and exclusion zones">
       <div class="micro micro--sphere" aria-hidden="true"></div>
     </section>
 
