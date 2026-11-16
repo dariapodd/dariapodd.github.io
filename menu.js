@@ -98,7 +98,7 @@
       margin: 0;
       font: 300 14px/19.6px "Chakra Petch", system-ui, sans-serif;
     }
-    .style-menu ul { margin: 0; padding: 0; list-style: none; }
+    .style-menu ul { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; }   /* a little air between highlighted items */
     .style-menu .item {
       display: flex;
       flex-direction: column;
