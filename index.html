@@ -473,13 +473,14 @@
     width: 40px;
     height: 40px;
   }
-  @media (min-width: 901px) {
+  @media (min-width: 1280px) {
     /* keep room for it under the text (globe + 48px gap), so it never meets the button */
     .project:has(.micro--sphere, .micro--diamond) .project-content { padding-bottom: calc(80px + 40px + 48px); }
   }
 
-  /* Phones and small tablets: stack text and screenshot */
-  @media (max-width: 900px) {
+  /* Below 1280px the text column is too narrow for the longest heading word
+     ("collaboration", ~420px at 48px) to clear the screenshot: stack text and screenshot */
+  @media (max-width: 1279px) {
     .micro { display: none; }
     .project { aspect-ratio: auto; padding-bottom: 48px; }
     .project-content { width: auto; padding: 160px var(--gutter) 0 var(--text-left); }
