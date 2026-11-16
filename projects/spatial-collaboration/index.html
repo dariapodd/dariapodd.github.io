@@ -165,7 +165,8 @@
     border-radius: 12px;
     background: var(--card);
   }
-  .award img { flex: none; width: 240px; height: 240px; border-radius: 4px; }
+  .award picture { flex: none; display: block; }
+  .award img { display: block; width: 240px; height: 240px; border-radius: 4px; }
   .award p { flex: 1; margin: 0; }
   @supports (corner-shape: squircle) {
     .award { border-radius: 24px; corner-shape: squircle; }
@@ -234,7 +235,11 @@
             <p class="text">I joined as the design lead after the first interviews and wireframes, then ran discovery and validation workshops, built high-fidelity prototypes and a new design system, and polished production designs for dozens of new features. I led a team of up to three designers, and prototyped new features for client pitches.</p>
           </div>
           <div class="award">
-            <img src="assets/award.jpg" width="240" height="240" alt="Made For Awards 2024 winner trophy: Breakthrough Product">
+            <!-- Animated trophy; a still frame for people who prefer reduced motion -->
+            <picture>
+              <source srcset="assets/award.jpg" media="(prefers-reduced-motion: reduce)">
+              <img src="assets/award.webp" width="240" height="240" alt="Made For Awards 2024 winner trophy: Breakthrough Product">
+            </picture>
             <p>Won Creativity: Breakthrough Product Made For Award (EY Global) for developing an immersive view of the client’s physical assets.</p>
           </div>
         </div>
