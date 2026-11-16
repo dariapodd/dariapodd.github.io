@@ -389,6 +389,18 @@
     height: auto;
     z-index: 2;            /* over the wireframe surface */
   }
+  /* Track maintenance app, in black and white (Figma 184:31: saturation −1, exposure +0.24),
+     vertically centred in the block and running off its right edge */
+  .project-shot--track {
+    left: max(50%, calc(var(--text-left) + 260px + 64px));
+    top: 50%;
+    width: 53.19%;         /* 766 / 1440 */
+    aspect-ratio: 766 / 507;
+    object-fit: cover;
+    border-radius: 12px;
+    transform: translateY(-50%);
+    filter: grayscale(1) brightness(1.18);
+  }
   /* Two phone mockups over a leather photo card, both stopping at the block's right edge
      (Figma 195:458) */
   .project-shot--phones {
@@ -481,6 +493,7 @@
     }
     .project-shot--phones { max-width: 420px; }
     .project-backdrop { display: none; }
+    .project-shot--track { transform: none; }
   }
   /* Centre capitals exactly in buttons: the line box normally reserves room for accents
      above and descenders below, which leaves caps ~1px high. Trimming the box to the cap
@@ -528,16 +541,16 @@
       <div class="project-num" aria-hidden="true">1</div>
 
       <div class="project-content">
-        <h2 id="project-1">Spatial digital twin</h2>
+        <h2 id="project-1">4-dimensional spatial collaboration</h2>
         <div class="project-desc">
-          <p>Processing company. 4-dimensional immersive Spatial Collaboration Tool (ArcGIS). Led complex prototyping and design system development; collaborated on user research, workshops and delivery support.</p>
+          <p>4-dimensional immersive Spatial Collaboration Tool for a railway company built on ArcGIS and custom web front-end. I’ve led complex prototyping and design system development; collaborated on user research, workshops and delivery support.</p>
           <p><strong>Result:</strong> faster asset inspections and planning, and less time/cost spent on field visits.</p>
         </div>
-        <a class="button" href="#">learn more ↗</a>
+        <a class="button" href="projects/spatial-collaboration/">learn more ↗</a>
       </div>
 
-      <img class="project-shot" src="enterprise/assets/project-1-spatial-digital-twin.png" width="2218" height="1474"
-           alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
+      <img class="project-shot project-shot--track" src="enterprise/assets/project-1-spatial-collaboration.jpg" width="1532" height="1025"
+           alt="Track maintenance app: layer list, 360° imagery of the track, and a map with access roads and exclusion zones">
       <div class="micro micro--sphere" aria-hidden="true"></div>
     </section>
 

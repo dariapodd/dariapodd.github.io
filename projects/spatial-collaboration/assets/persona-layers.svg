@@ -1,0 +1,24 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="230" height="188" viewBox="0 0 230 188" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Frame 83">
+<mask id="stroke0_0_9" fill="white">
+<path d="M230 24C230 37.2548 178.513 48 115 48C51.4873 48 0 37.2548 0 24C0 10.7452 51.4873 0 115 0C178.513 0 230 10.7452 230 24Z"/>
+</mask>
+<ellipse id="Ellipse 2170" cx="115" cy="24" rx="115" ry="24" stroke-width="2" stroke="#B2B2B2" mask="url(#stroke0_0_9)"/>
+<mask id="stroke1_0_9" fill="white">
+<path d="M230 59C230 72.2548 178.513 83 115 83C51.4873 83 0 72.2548 0 59C0 45.7452 51.4873 35 115 35C178.513 35 230 45.7452 230 59Z"/>
+</mask>
+<ellipse id="Ellipse 2171" opacity="0.8" cx="115" cy="59" rx="115" ry="24" stroke-width="2" stroke="#B2B2B2" mask="url(#stroke1_0_9)"/>
+<mask id="stroke2_0_9" fill="white">
+<path d="M230 94C230 107.255 178.513 118 115 118C51.4873 118 0 107.255 0 94C0 80.7452 51.4873 70 115 70C178.513 70 230 80.7452 230 94Z"/>
+</mask>
+<ellipse id="Ellipse 2172" opacity="0.6" cx="115" cy="94" rx="115" ry="24" stroke-width="2" stroke="#B2B2B2" mask="url(#stroke2_0_9)"/>
+<mask id="stroke3_0_9" fill="white">
+<path d="M230 129C230 142.255 178.513 153 115 153C51.4873 153 0 142.255 0 129C0 115.745 51.4873 105 115 105C178.513 105 230 115.745 230 129Z"/>
+</mask>
+<ellipse id="Ellipse 2173" opacity="0.4" cx="115" cy="129" rx="115" ry="24" stroke-width="2" stroke="#B2B2B2" mask="url(#stroke3_0_9)"/>
+<mask id="stroke4_0_9" fill="white">
+<path d="M230 164C230 177.255 178.513 188 115 188C51.4873 188 0 177.255 0 164C0 150.745 51.4873 140 115 140C178.513 140 230 150.745 230 164Z"/>
+</mask>
+<ellipse id="Ellipse 2174" opacity="0.2" cx="115" cy="164" rx="115" ry="24" stroke-width="2" stroke="#B2B2B2" mask="url(#stroke4_0_9)"/>
+</g>
+</svg>

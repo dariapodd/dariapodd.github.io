@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4-dimensional spatial collaboration: Daria Podrezova</title>
+<meta name="description" content="Case study: a 4-dimensional spatial asset management, planning and collaboration tool for a railway company, used by about 2,000 people.">
+<link rel="icon" href="../../favicon-64.png" type="image/png" sizes="64x64">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" href="../../fonts/KodeMono.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+  /* Kode Mono, self-hosted (full character set). License: fonts/OFL.txt */
+  @font-face {
+    font-family: "Kode Mono";
+    src: url("../../fonts/KodeMono.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+  }
+
+  /* Same tokens as the homepage */
+  :root {
+    --bg: #1e1d19;
+    --bg-mid: #2c2b29;
+    --bg-glow: #393938;
+    --ink: #dddcc8;
+    --accent: #00ffcc;
+    --accent-bg: rgba(0, 255, 204, 0.1);
+    --card: #3a3938;
+    --rule: #3d414a;
+
+    --nav-fs: 16px;
+    --margin-line: 26px;
+    --content-left: 160px;
+    --text-left: calc(var(--margin-line) + 1px + var(--content-left));
+    --gutter: 53px;
+  }
+  @media (max-width: 700px) {
+    :root { --content-left: 26px; }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    position: relative;
+    min-height: 100vh;
+    /* Figma: a tall radial glow down the middle of the page */
+    background: radial-gradient(960px 2887px at 50% 50%, var(--bg-glow), var(--bg-mid) 50%, var(--bg)) var(--bg);
+    color: var(--ink);
+    font-family: "Kode Mono", ui-monospace, monospace;
+  }
+  /* Vertical margin line, the full height of the page */
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--margin-line);
+    width: 1px;
+    background: var(--rule);
+    pointer-events: none;
+  }
+
+  /* ---------- Buttons (as on the homepage) ---------- */
+  .resume, .button {
+    padding: 12.5px 32px 11.5px;
+    border-radius: 12px;
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  .resume:hover, .button:hover { font-weight: 600; }
+  .resume {
+    position: fixed;
+    z-index: 10;
+    top: 32px;
+    right: 32px;
+    background: rgba(28, 71, 56, 0.6);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+  }
+  @supports (corner-shape: squircle) {
+    .resume, .button { border-radius: 24px; corner-shape: squircle; }
+  }
+  @supports (text-box: trim-both cap alphabetic) {
+    .resume, .button { text-box: trim-both cap alphabetic; padding-top: 15.6px; padding-bottom: 15.6px; }
+  }
+
+  /* ---------- Page ---------- */
+  .page {
+    padding: 131px var(--gutter) 217px var(--text-left);
+  }
+  .back {
+    display: inline-block;
+    padding: 16px 0;
+    color: var(--accent);
+    font-size: var(--nav-fs);
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .back:hover { font-weight: 600; }
+
+  .case {
+    display: flex;
+    flex-direction: column;
+    gap: 120px;
+    max-width: 1086px;
+    padding-top: 48px;
+  }
+
+  h1, h2 {
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  h1 { font-size: 60px; line-height: 1.2; }
+  h2 { font-size: 48px; line-height: 1.2; }
+  @media (max-width: 700px) {
+    h1 { font-size: 36px; }
+    h2 { font-size: 32px; }
+  }
+
+  /* Body copy: Chakra Petch Light, 16/22.4 */
+  .text, .lead, .caption, .award p, .review {
+    color: #fff;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .text { max-width: 513px; }
+  .text p { margin: 0; }
+  .text p + p.after-gap { margin-top: 22.4px; }   /* a blank line between paragraphs, as in Figma */
+
+  /* ---------- Intro ---------- */
+  .intro { display: flex; flex-direction: column; gap: 80px; }
+  .meta {
+    margin: 0;
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .intro-body { display: flex; gap: 48px; align-items: flex-start; }
+  .intro-copy { flex: 1; display: flex; flex-direction: column; gap: 32px; }
+  .intro-copy p { margin: 0; }
+  .lead { font-weight: 500; font-size: 20px; line-height: normal; }
+  .award {
+    display: flex;
+    flex: none;
+    gap: 32px;
+    align-items: center;
+    width: 576px;
+    padding: 32px;
+    border-radius: 12px;
+    background: var(--card);
+  }
+  .award img { flex: none; width: 240px; height: 240px; border-radius: 4px; }
+  .award p { flex: 1; margin: 0; }
+  @supports (corner-shape: squircle) {
+    .award { border-radius: 24px; corner-shape: squircle; }
+  }
+
+  /* ---------- Sections ---------- */
+  .section { display: flex; flex-direction: column; gap: 36px; }
+  .section--aside { flex-direction: row; align-items: center; }
+  .section--aside > div { flex: 1; display: flex; flex-direction: column; gap: 36px; }
+  .section--aside > img { flex: none; }
+
+  /* Reviews: two rows of two */
+  .reviews { display: grid; grid-template-columns: 1fr 1fr; gap: 36px 64px; }
+  .review { margin: 0; display: flex; flex-direction: column; gap: 12px; }
+  .review blockquote { margin: 0; }
+  .review blockquote p { margin: 0; }
+  .review figcaption { font-weight: 600; }
+
+  /* ---------- Figures ---------- */
+  figure.shot { margin: 0; display: flex; flex-direction: column; gap: 16px; }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 12px; }
+  .caption { text-align: center; }
+  .shot--main img { opacity: 0.9; }
+  .shot--scope img { aspect-ratio: 1086 / 486; object-fit: cover; object-position: bottom; filter: grayscale(1); }
+  /* Two workshop boards side by side, clipped together */
+  .pair { display: flex; height: 251px; overflow: hidden; border-radius: 12px; }
+  .pair img { height: 100%; border-radius: 0; object-fit: cover; filter: brightness(0.9); }
+  .pair img:first-child { width: 59.02%; flex: none; }   /* 641 / 1086 */
+  .pair img:last-child { flex: 1; min-width: 0; }
+  @supports (corner-shape: squircle) {
+    .shot img, .pair { border-radius: 24px; corner-shape: squircle; }
+    .pair img { border-radius: 0; }
+  }
+
+  /* ---------- Narrow screens ---------- */
+  @media (max-width: 1100px) {
+    .intro-body { flex-direction: column; }
+    .award { width: 100%; max-width: 576px; }
+  }
+  @media (max-width: 800px) {
+    .page { padding-top: 112px; }
+    .case { gap: 80px; }
+    .intro { gap: 40px; }
+    .reviews { grid-template-columns: 1fr; }
+    .section--aside { flex-direction: column; align-items: flex-start; }
+    .award { flex-direction: column; align-items: flex-start; }
+    .award img { width: 100%; max-width: 240px; height: auto; }
+    .pair { flex-direction: column; height: auto; }
+    .pair img:first-child, .pair img:last-child { width: 100%; height: auto; }
+  }
+</style>
+</head>
+<body>
+  <a class="resume" href="../../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
+
+  <main class="page">
+    <a class="back" href="../../enterprise/#project-1">← Back to projects</a>
+
+    <article class="case">
+      <header class="intro">
+        <h1>4-dimensional spatial asset management, planning and collaboration tool</h1>
+        <p class="meta">UX Lead · 12 months · Esri ArcGIS · ~2,000 users</p>
+        <div class="intro-body">
+          <div class="intro-copy">
+            <p class="lead">A family of data-heavy web apps, dashboards and custom workflows for a railway company, replacing and connecting about two dozen tools used to plan and run track inspections. One 2D and 3D map of the network with 360° imagery, LiDAR point clouds and around 30 data layers through time, used by about 2,000 people.</p>
+            <p class="text">I joined as the design lead after the first interviews and wireframes, then ran discovery and validation workshops, built high-fidelity prototypes and a new design system, and polished production designs for dozens of new features. I led a team of up to three designers, and prototyped new features for client pitches.</p>
+          </div>
+          <div class="award">
+            <img src="assets/award.jpg" width="240" height="240" alt="Made For Awards 2024 winner trophy: Breakthrough Product">
+            <p>Won Creativity: Breakthrough Product Made For Award (EY Global) for developing an immersive view of the client’s physical assets.</p>
+          </div>
+        </div>
+      </header>
+
+      <section class="section" aria-labelledby="reviews">
+        <h2 id="reviews">Stakeholder reviews</h2>
+        <div class="reviews">
+          <figure class="review">
+            <blockquote>
+              <p>Daria [...] has been an invaluable team member both hands-on tools for ***, and within the Design team – coaching [two junior designers] for which they have been greatly appreciative.</p>
+              <p>When it comes to UI Design and Figma, I can’t sing Daria’s praises enough. She is a technical expert who is helping the entire *** Design team upskill through her idea of [...] weekly Figma learning sessions. Daria is also highly organised, closely managing the tasks of the other designers on her workstream to ensure quality deliverables and deadlines are met. Thank you, Daria!</p>
+            </blockquote>
+            <figcaption>— C., Design Lead</figcaption>
+          </figure>
+          <figure class="review">
+            <blockquote>
+              <p>Daria is a real leader and is a gold standard example of someone who embodies democratised learning and teaching. She has technical excellence, is always the first to master new features [...], and is constantly learning and sharing her expertise with others. She also has resilience in spades when navigating difficult dynamics. Although working part time, Daria’s contribution is really as much as someone working full time.</p>
+            </blockquote>
+            <figcaption>— D., Stream Lead</figcaption>
+          </figure>
+          <figure class="review">
+            <blockquote>
+              <p>Daria has managed to deliver an outstanding product that is of a much higher quality than most other enterprise applications. She has also managed to do this while working part-time, which is impressive in itself.</p>
+              <p>Daria has a strong user-centric sense but also a strong business sense [...].</p>
+            </blockquote>
+            <figcaption>— P., Project Manager</figcaption>
+          </figure>
+          <figure class="review">
+            <blockquote>
+              <p>Daria is very technology savvy and takes an active role in spreading awareness across colleagues regarding pioneering new tech especially around AI implemented tools. She is also a great mentor and delegates work really well - she is a fantastic resource especially in times of tight turnarounds and unexpected client deadlines.</p>
+            </blockquote>
+            <figcaption>— J., Project manager</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <figure class="shot shot--main">
+        <img src="assets/main-view.jpg" width="2172" height="1163" loading="lazy"
+             alt="Track maintenance app: layer list, 360° imagery of the track, and a map of the line with access roads and exclusion zones">
+        <figcaption class="caption">One of the main views showing a Street View-like 360 imagery panel for checking asset condition, known defects and access roads, and a 2D or 3D map with data layers from dozens of different systems to check permissions, restrictions, planned work and historic data for maintenance planning.</figcaption>
+      </figure>
+
+      <section class="section" aria-labelledby="problem">
+        <h2 id="problem">The problem</h2>
+        <div class="text">
+          <p>Rail track inspectors spent a lot of time on field visits: preparing forms beforehand, filling them in by hand on site, and searching for maintenance history across about two dozen disconnected systems. The brief: make field visits more efficient. We built a web app on Esri ArcGIS with a custom app on top. Defects, standing water, flooding and debris; assets and their maintenance; work orders; permissions and restricted areas such as national parks and heritage sites. Teams move along the line in 360° imagery from a train-mounted camera, or through a LiDAR point cloud.</p>
+        </div>
+      </section>
+
+      <section class="section section--aside" aria-labelledby="pivot">
+        <div>
+          <h2 id="pivot">process highlights: persona pivot</h2>
+          <div class="text">
+            <p>Initially, the problem looked like data entry for field inspectors.</p>
+            <p>But one-to-one interviews and design thinking workshops showed inspectors were fine with paper. The workload sat with the shift manager, who compiles data from many sources before a visit and processes the reports after it.</p>
+            <p class="after-gap">And the data was already there. Surfaced well, it could replace some field visits altogether with a virtual inspection. That moved the product from digitising forms to bringing every source onto one map, and later to proactive planning: fire and flood risk dashboards, and image recognition that flags standing water and vegetation on the track.</p>
+          </div>
+        </div>
+        <img src="assets/persona-layers.svg" width="230" height="188" alt="">
+      </section>
+
+      <figure class="shot">
+        <img src="assets/view-sharing.jpg" width="1367" height="940" loading="lazy"
+             alt="360° view of a rail bridge with a crack running down its wall">
+        <figcaption class="caption">One of the most loved features — sharing exact point of view proved very valuable for onboarding contractors.</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="assets/measuring.jpg" width="2172" height="1049" loading="lazy"
+             alt="Point cloud of the track with a measured slope profile chart">
+        <figcaption class="caption">Measuring tools and condition history allowed to skip some field trips, greatly reducing costs and time spent.</figcaption>
+      </figure>
+
+      <section class="section" aria-labelledby="sales">
+        <h2 id="sales">Prototyping for sales</h2>
+        <div class="text">
+          <p>Interactive prototypes were the key asset in our sales pitches: they made complex features and use cases easy to grasp for every stakeholder, and then guided delivery.</p>
+          <p class="after-gap">We’ve engaged a group of power users for ideation and spread of knowledge. Our user champions suggested a link that shares the exact view (camera angle, zoom and data layers), and it became one of the most loved features to align on planned work and defects. They also pioneered virtual inspections for learning and onboarding, training new teams and contractors before they ever went on site.</p>
+        </div>
+      </section>
+
+      <figure class="shot">
+        <div class="pair">
+          <img src="assets/workshop-1.jpg" width="1024" height="397" loading="lazy" alt="Workshop board: sticky notes grouped into themes">
+          <img src="assets/workshop-2.jpg" width="1024" height="577" loading="lazy" alt="Workshop board: persona, user flow and data source systems">
+        </div>
+        <figcaption class="caption">Examples of discovery workshop synthesis.</figcaption>
+      </figure>
+
+      <figure class="shot shot--scope">
+        <img src="assets/scope.jpg" width="1024" height="495" loading="lazy" alt="Overview board of the design system, main scope and additional features">
+        <figcaption class="caption">Scope of work delivered and deployed into production.</figcaption>
+      </figure>
+    </article>
+  </main>
+</body>
+</html>
