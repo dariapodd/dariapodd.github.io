@@ -110,6 +110,8 @@
     white-space: nowrap;
   }
   .button:hover { font-weight: 600; }
+  /* Not a link yet: amber, no hover */
+  .button--soon, .button--soon:hover { background: rgba(255, 166, 0, 0.1); color: #ffae00; font-weight: 400; cursor: default; }
 
   /* Figma: 12px radius, 100% corner smoothing → 24px squircle where supported */
   @supports (corner-shape: squircle) {
@@ -405,6 +407,12 @@
     border-radius: 12px;
     transform: translateY(-50%);
   }
+  /* Approval portal mock-up (Figma 245:1195), running off the block's right edge */
+  .project-shot--portal {
+    top: 9.34%;            /* 68.6 / 734.6 */
+    width: 50.69%;         /* 730 / 1440 */
+    border-radius: 12px;
+  }
   /* Two phone mockups over a leather photo card, both stopping at the block's right edge
      (Figma 195:458) */
   .project-shot--phones {
@@ -597,7 +605,24 @@
       <div class="project-num" aria-hidden="true">2</div>
 
       <div class="project-content">
-        <h2 id="project-2">Luxury in-store retail apps</h2>
+        <h2 id="project-2">Government/<wbr>health portal</h2>
+        <div class="project-desc">
+          <p>Audit and redesign of a complex certification/approval flow with multiple organisations and departments involved, following a recent ServiceNow implementation.</p>
+          <p><strong>Result: average approval time reduced from 12 months to 3 months.</strong></p>
+        </div>
+        <a class="button" href="projects/government-approval-portal/">learn more ↗</a>
+      </div>
+
+      <img class="project-shot project-shot--portal" src="enterprise/assets/project-2-approval-portal.jpg" width="1460" height="1193"
+           alt="Approval portal: certification steps from scope to decision, and the applicant’s task list with one action needed">
+    </section>
+
+    <section class="project project--black" aria-labelledby="project-3">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true">3</div>
+
+      <div class="project-content">
+        <h2 id="project-3">Luxury in-store retail apps</h2>
         <div class="project-desc">
           <p>Luxury fashion retailer with department stores and multi-brand boutiques, where sales rely on personal connections between customers and style assistants. A family of iOS apps for style assistants, warehouse and delivery teams: style suggestions, stock access, indoor navigation and checkout on iOS.</p>
           <p><strong>Result: customers complete purchases right from the fitting room, without breaking the in-store experience.</strong></p>
@@ -609,6 +634,27 @@
       <img class="project-shot project-shot--phones" src="enterprise/assets/project-2-retail-apps.png" width="1784" height="1928"
            alt="Two iPhone screens: checkout with card, cash and loyalty points, and the store assistant menu">
       <div class="micro micro--diamond" aria-hidden="true"></div>
+    </section>
+
+    <section class="project project--grey" aria-labelledby="project-4">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true">4</div>
+
+      <div class="project-content">
+        <h2 id="project-4">Spatial digital twin</h2>
+        <div class="project-desc">
+          <p>Processing company. 4-dimensional immersive Spatial Collaboration Tool (ArcGIS). Led complex prototyping and design system development; collaborated on user research, workshops and delivery support.</p>
+          <p><strong>Result: faster asset inspections and planning, and less time/cost spent on field visits.</strong></p>
+        </div>
+        <figure class="project-quote">
+          <blockquote>“Faster asset inspections and planning, and less time/cost spent on field visits.”</blockquote>
+          <figcaption>Project Manager</figcaption>
+        </figure>
+        <span class="button button--soon" aria-disabled="true">case study coming soon</span>
+      </div>
+
+      <img class="project-shot" src="enterprise/assets/project-4-spatial-digital-twin.webp" width="1664" height="1106"
+           alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
     </section>
 
     <section class="recs" id="recommendations" aria-labelledby="recs-title">

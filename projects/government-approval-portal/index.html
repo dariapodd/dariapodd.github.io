@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Approval flow optimisation for government/health: Daria Podrezova</title>
+<meta name="description" content="Case study: redesigning a 12-month government certification and approval process around one initial assessment and one to-do list, on ServiceNow.">
+<link rel="icon" href="../../favicon-64.png" type="image/png" sizes="64x64">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="../../fonts/KodeMono.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+  /* Kode Mono, self-hosted (full character set). License: fonts/OFL.txt */
+  @font-face {
+    font-family: "Kode Mono";
+    src: url("../../fonts/KodeMono.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+  }
+
+  /* Same tokens as the homepage */
+  :root {
+    --bg: #1e1d19;
+    --bg-mid: #2c2b29;
+    --bg-glow: #393938;
+    --ink: #dddcc8;
+    --accent: #00ffcc;
+    --rule: #3d414a;
+
+    --nav-fs: 16px;
+    --margin-line: 26px;
+    --content-left: 160px;
+    --text-left: calc(var(--margin-line) + 1px + var(--content-left));
+    --gutter: 53px;
+  }
+  @media (max-width: 700px) {
+    :root { --content-left: 26px; }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    position: relative;
+    min-height: 100vh;
+    /* Figma: a tall radial glow down the middle of the page */
+    background: radial-gradient(960px 2887px at 50% 50%, var(--bg-glow), var(--bg-mid) 50%, var(--bg)) var(--bg);
+    color: var(--ink);
+    font-family: "Kode Mono", ui-monospace, monospace;
+  }
+  /* Vertical margin line, the full height of the page */
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--margin-line);
+    width: 1px;
+    background: var(--rule);
+    pointer-events: none;
+  }
+
+  /* ---------- Resume button (as on the homepage) ---------- */
+  .resume {
+    position: fixed;
+    z-index: 10;
+    top: 32px;
+    right: 32px;
+    padding: 12.5px 32px 11.5px;
+    border-radius: 12px;
+    background: rgba(28, 71, 56, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .resume:hover { font-weight: 600; }
+  @supports (corner-shape: squircle) {
+    .resume { border-radius: 24px; corner-shape: squircle; }
+  }
+  @supports (text-box: trim-both cap alphabetic) {
+    .resume { text-box: trim-both cap alphabetic; padding-top: 15.6px; padding-bottom: 15.6px; }
+  }
+
+  /* ---------- Page ---------- */
+  .page {
+    padding: 131px var(--gutter) 217px var(--text-left);
+  }
+  .back {
+    display: inline-block;
+    padding: 16px 0;
+    color: var(--accent);
+    font-size: var(--nav-fs);
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .back:hover { font-weight: 600; }
+
+  .case {
+    display: flex;
+    flex-direction: column;
+    gap: 120px;
+    max-width: 1086px;
+    padding-top: 48px;
+  }
+
+  h1, h2 {
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  h1 { font-size: 60px; line-height: 1.2; }
+  h2 { font-size: 48px; line-height: 1.2; }
+  @media (max-width: 700px) {
+    h1 { font-size: 36px; }
+    h2 { font-size: 32px; }
+  }
+
+  /* Body copy: Chakra Petch Light, 16/22.4, 12px between paragraphs */
+  .text, .lead, .caption, .review {
+    color: #fff;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .text { max-width: 513px; }
+  .text p { margin: 0; }
+  .text p + p { margin-top: 12px; }
+  /* Closing disclaimer, 48px under the review rather than a full section gap */
+  .note { margin: -72px 0 0; color: rgba(255, 255, 255, 0.6); font: 300 14px/1.4 "Chakra Petch", system-ui, sans-serif; }
+
+  /* ---------- Intro: problem and solution side by side ---------- */
+  .intro { display: flex; flex-direction: column; gap: 80px; }
+  .meta {
+    margin: 0;
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .columns { display: flex; gap: 80px; align-items: flex-start; }
+  .columns > section { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 36px; }
+  .columns .text { max-width: none; }
+  .lead { font-weight: 500; font-size: 20px; line-height: normal; }
+  .lead p { margin: 0; }
+  .lead p + p { margin-top: 24px; }
+  .tech-logo { display: block; opacity: 0.4; }   /* ServiceNow, the platform it's built on (Figma 245:1176) */
+
+  /* ---------- Sections ---------- */
+  .section { display: flex; flex-direction: column; gap: 36px; }
+
+  .review { margin: 0; display: flex; flex-direction: column; gap: 12px; max-width: 513px; }
+  .review blockquote { margin: 0; }
+  .review figcaption { font-weight: 600; }
+
+  /* ---------- Figures ---------- */
+  figure.shot { margin: 0; display: flex; flex-direction: column; gap: 16px; }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 12px; }
+  .caption { text-align: center; }
+  /* The original form and the original flow, side by side */
+  .before { display: flex; gap: 64px; align-items: flex-start; }
+  .before .shot:first-child { flex: none; width: 203px; }
+  .before .shot:last-child { flex: 1; min-width: 0; }
+  @supports (corner-shape: squircle) {
+    .shot img { border-radius: 24px; corner-shape: squircle; }
+  }
+
+  /* ---------- Narrow screens ---------- */
+  @media (max-width: 1100px) {
+    .columns { flex-direction: column; gap: 64px; }
+  }
+  @media (max-width: 800px) {
+    .page { padding-top: 112px; }
+    .case { gap: 80px; }
+    .intro { gap: 40px; }
+    .before { flex-direction: column; gap: 40px; }
+    .before .shot:first-child { width: 203px; max-width: 100%; }
+    .before .shot:first-child .caption { text-align: left; }
+  }
+</style>
+</head>
+<body>
+  <a class="resume" href="../../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
+
+  <main class="page">
+    <a class="back" href="../../enterprise/#project-2">← Back to projects</a>
+
+    <article class="case">
+      <header class="intro">
+        <h1>approval flow optimisation for Government/<wbr>health</h1>
+        <p class="meta">UX Lead · 3 months · ServiceNow</p>
+        <div class="columns">
+          <section aria-labelledby="problem">
+            <h2 id="problem">The problem</h2>
+            <div class="lead">
+              <p>Businesses go through a complex certification, testing and approval process to access government services. It spans multiple applications, departments and third-party organisations: testing, evidence submission, compliance validation and secure resource provisioning.</p>
+              <p>The process can take up to 12 months, with many consultations with the support team. And because every type of business follows a different certification flow, users could not tell upfront how long it would take, which artefacts they’d need or which steps applied to them. An earlier ServiceNow implementation hadn’t improved any of this.</p>
+            </div>
+          </section>
+          <section aria-labelledby="solution">
+            <h2 id="solution">The solution</h2>
+            <div class="text">
+              <p>After 3 weeks of discovery workshops and 3 weeks validating future-state opportunities, we changed the process, not just the screens.</p>
+              <p>A simple custom portal: one page and one “initial assessment” form that moves every key decision point upfront, followed by a fixed “to-do list” of required actions. This made the journey transparent and easier to estimate. From there, ServiceNow takes over the tickets and processing.</p>
+              <p>As UX lead, working with one other designer and along the Business Analysis team, I ran the workshops and the discovery report, mapped the current and future state, and designed the front-end, its design system and a ServiceNow customisation.</p>
+            </div>
+            <img class="tech-logo" src="assets/servicenow.svg" width="130" height="19" alt="Built on ServiceNow">
+          </section>
+        </div>
+      </header>
+
+      <div class="before">
+        <figure class="shot">
+          <img src="assets/original-form.jpg" width="406" height="430" alt="Pages of the original paper application form">
+          <figcaption class="caption">Original application form (Phase 1 of 4, 56 pages).</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="assets/original-flow.jpg" width="1628" height="430" alt="The original approval flow across eight levels of support">
+          <figcaption class="caption">Original approval flow with 8 levels of support for different departments and third-parties handling parts of the approval process. The whole process took 12 months.</figcaption>
+        </figure>
+      </div>
+
+      <section class="section" aria-labelledby="challenge-servicenow">
+        <h2 id="challenge-servicenow">Challenges: building after an unsuccessful ServiceNow implementation</h2>
+        <div class="text">
+          <p>Sometimes good digital experience is not possible without process change.</p>
+          <p>The first implementation digitised the paper forms as they were. One of them, covering just one phase of the process, was 56 pages long, and it became an equally heavy ServiceNow form. It also left triage and routing to the users: they still had to work out which steps applied to them, start each one and route it themselves. So we fixed the process first: a dedicated routing step, then one to-do list.</p>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="challenge-experts">
+        <h2 id="challenge-experts">Challenges: engaging experts</h2>
+        <div class="text">
+          <p>Interviews with subject matter experts highlighted a common internal bias. One experienced support officer was able to navigate a 56-page, branching application form from memory, making the process appear efficient and intuitive from an internal perspective:</p>
+          <p>“...if you’ve filled A.2.1 two months ago, then it’s easy, just go to B.5.2 and skip B.5.1”</p>
+          <p>With about 15 stakeholders across interviews and workshops, the key was an open, comfortable space where people from every phase and swim lane of the approval flow could share their part, and often for the first time see the whole journey end to end. The current-state process and journey map we built together was sometimes eye-opening.</p>
+        </div>
+      </section>
+
+      <figure class="shot">
+        <img src="assets/workshop.jpg" width="2172" height="724" loading="lazy" alt="Workshop board mapping the current approval flow with sticky notes">
+        <figcaption class="caption">Workshop board: one of the challenges was to gather representatives of different parts of the workflow and establish a good environment to discuss the whole flow from users’ perspective.</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="assets/future-flow.jpg" width="2172" height="538" loading="lazy" alt="Future-state approval flow with an initial assessment step routing to one to-do list">
+        <figcaption class="caption">Future state – simplified approval flow with a dedicated “initial assessment” step to route different approvals and documents correctly. After this step, one to-do list is formed for the user to complete.</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="assets/future-architecture.jpg" width="2172" height="653" loading="lazy" alt="Future-state diagram of the custom web front-end connected to ServiceNow tickets">
+        <figcaption class="caption">Future state – the new approval flow combines custom web front-end and ServiceNow tickets tracking to ensure smooth integration with other services.</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="assets/portal-ui.jpg" width="2172" height="1812" loading="lazy" alt="Portal screen: Product A safety certification steps and the applicant’s task list">
+        <figcaption class="caption">Future state – the new approval flow provides estimates and visibility of the approval process.</figcaption>
+      </figure>
+
+      <section class="section" aria-labelledby="reviews">
+        <h2 id="reviews">Stakeholder reviews</h2>
+        <figure class="review">
+          <blockquote>Daria has led the UX UI work stream […] They have exceeded client expectations. She collaborated well with the technical workstream. […] Daria has expertly led and facilitated workshops. I can’t fault her technical skills and solution design delivery.</blockquote>
+          <figcaption>— M., Project Manager</figcaption>
+        </figure>
+      </section>
+
+      <p class="note">Note: all UI designs are white-labelled and all images are regenerated.</p>
+    </article>
+  </main>
+</body>
+</html>
