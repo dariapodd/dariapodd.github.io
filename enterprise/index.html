@@ -482,6 +482,7 @@
   .more-card ul { margin: 0; padding: 0; list-style: none; }
   .more-card li + li { margin-top: 12px; }
   .more-card strong { font-weight: 600; }
+  .more-soon { margin: 0; color: rgba(255, 255, 255, 0.5); }   /* card without a description yet */
   /* Empty slots, to be filled */
   .more-card--empty { background: none; border: 1px dashed rgba(221, 220, 200, 0.2); }
   @supports (corner-shape: squircle) {
@@ -823,7 +824,10 @@
             <li><strong>Agent skill</strong> – Assembles user journey maps from Figma components under hard styling rules.</li>
           </ul>
         </article>
-        <article class="more-card more-card--empty" aria-hidden="true"></article>
+        <article class="more-card">
+          <h3>Illustrations and icons</h3>
+          <p class="more-soon">Coming soon</p>
+        </article>
         <article class="more-card more-card--empty" aria-hidden="true"></article>
         <article class="more-card more-card--empty" aria-hidden="true"></article>
       </div>
