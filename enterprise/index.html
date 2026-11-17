@@ -465,22 +465,25 @@
   /* ---------- More projects: cards, three to a row ---------- */
   .more-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
   .more-card {
-    min-height: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
     padding: 32px;
     border-radius: 12px;
     background: var(--body-grey);
     color: #fff;
     font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
   }
+  .more-thumb { display: block; width: 100%; height: auto; aspect-ratio: 1; border-radius: 6px; }
+  .more-text { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .more-card h3 {
-    margin: 0 0 24px;
+    margin: 0;
     color: var(--ink);
     font: 400 24px/1.2 "Kode Mono", ui-monospace, monospace;
     letter-spacing: 0.07em;
     text-transform: uppercase;
   }
-  .more-card ul { margin: 0; padding: 0; list-style: none; }
-  .more-card li + li { margin-top: 12px; }
+  .more-card p { margin: 0; }
   .more-card strong { font-weight: 600; }
   /* Link out of a card, styled like the homepage's other links */
   .more-link {
@@ -490,9 +493,10 @@
     text-transform: uppercase;
     text-decoration: none;
   }
-  .more-link:hover { font-weight: 600; }
+  a.more-link:hover { font-weight: 600; }
+  .more-link--soon { opacity: 0.4; cursor: default; }   /* no URL yet */
   /* Empty slots, to be filled */
-  .more-card--empty { background: none; border: 1px dashed rgba(221, 220, 200, 0.2); }
+  .more-card--empty { min-height: 490px; background: none; border: 1px dashed rgba(221, 220, 200, 0.2); }   /* as tall as a filled card (Figma) */
   @supports (corner-shape: squircle) {
     .more-card { border-radius: 24px; corner-shape: squircle; }
   }
@@ -809,33 +813,53 @@
       <h2 id="more-title">More projects</h2>
       <div class="more-grid">
         <article class="more-card">
-          <h3>2GIS</h3>
-          <ul>
-            <li><strong>UI</strong> – Lifestyle recommendation, reviews and advanced local search service on web, iOS and Android (2.6M monthly visitors).</li>
-            <li><strong>UI and prototyping</strong> – B2B SaaS dashboards.</li>
-          </ul>
+          <img class="more-thumb" src="../enterprise/assets/more/ujm-builder.jpg" width="550" height="550" alt="" loading="lazy">
+          <div class="more-text">
+            <h3>UJM builder skill</h3>
+            <p><strong>Agent skill</strong> – Assembles user journey maps under hard styling rules</p>
+          </div>
+          <span class="more-link more-link--soon" title="Link coming soon">github ↗</span>
         </article>
         <article class="more-card">
-          <h3>1C-Rarus</h3>
-          <ul>
-            <li><strong>UI</strong> – Company portal: 450 hi-fi pages, 10 Axure RP clickable prototypes.</li>
-            <li><strong>UI</strong> – Two industry news portals, product promo sites.</li>
-            <li><strong>UX</strong> – Audit and recommendations for desktop ERP solutions.</li>
-            <li><strong>Visual design</strong> – 150 visual assets (icon sets, illustrations, print materials, ads).</li>
-            <li><strong>Usability</strong> – 3 audits, telemetry analysis.</li>
-            <li><strong>Team management (6 designers)</strong> – Trained and coached the team, led internship workshops, PM, hiring.</li>
-          </ul>
+          <img class="more-thumb" src="../enterprise/assets/more/illustrations.jpg" width="550" height="550" alt="" loading="lazy">
+          <div class="more-text">
+            <h3>Illustrations and icons</h3>
+          </div>
+          <a class="more-link" href="../projects/illustrations/">view ↗</a>
         </article>
         <article class="more-card">
-          <h3>Branded UJM builder</h3>
-          <ul>
-            <li><strong>Agent skill</strong> – Assembles user journey maps from Figma components under hard styling rules.</li>
-          </ul>
+          <img class="more-thumb" src="../enterprise/assets/more/theremin-glove.jpg" width="550" height="550" alt="" loading="lazy">
+          <div class="more-text">
+            <h3>Theremin glove</h3>
+            <p>Physical Arduino prototype</p>
+          </div>
+          <span class="more-link more-link--soon" title="Link coming soon">view ↗</span>
         </article>
         <article class="more-card">
-          <h3>Illustrations and icons</h3>
-          <a class="more-link" href="../projects/illustrations/">view illustrations ↗</a>
+          <img class="more-thumb" src="../enterprise/assets/more/2gis.jpg" width="550" height="550" alt="" loading="lazy">
+          <div class="more-text">
+            <h3>2GIS</h3>
+            <p>Local search service, 2.6M monthly visitors</p>
+          </div>
+          <a class="more-link" href="https://www.behance.net/gallery/41865863/Case-iOS-and-Android-apps-for-localsearch" target="_blank" rel="noopener">view ↗</a>
         </article>
+        <article class="more-card">
+          <img class="more-thumb" src="../enterprise/assets/more/1c-rarus.jpg" width="550" height="550" alt="" loading="lazy">
+          <div class="more-text">
+            <h3>1C-Rarus</h3>
+            <p>Software vendor portal, 450 pages</p>
+          </div>
+          <a class="more-link" href="https://www.behance.net/gallery/41865681/Case-Large-corporate-website-design-team-management" target="_blank" rel="noopener">view ↗</a>
+        </article>
+        <article class="more-card">
+          <img class="more-thumb" src="../enterprise/assets/more/giftaway.jpg" width="550" height="550" alt="" loading="lazy">
+          <div class="more-text">
+            <h3>GiftAway</h3>
+            <p>Food sharing mobile app</p>
+          </div>
+          <a class="more-link" href="https://www.behance.net/gallery/114718019/GiftAway-Mobiledesktop-product-design" target="_blank" rel="noopener">view ↗</a>
+        </article>
+        <article class="more-card more-card--empty" aria-hidden="true"></article>
         <article class="more-card more-card--empty" aria-hidden="true"></article>
         <article class="more-card more-card--empty" aria-hidden="true"></article>
       </div>
