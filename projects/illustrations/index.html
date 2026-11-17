@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Illustrations and icons: Daria Podrezova</title>
+<meta name="description" content="Illustrations, icon sets and merchandise prints by Daria Podrezova.">
+<link rel="icon" href="../../favicon-64.png" type="image/png" sizes="64x64">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preload" href="../../fonts/KodeMono.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+  /* Kode Mono, self-hosted (full character set). License: fonts/OFL.txt */
+  @font-face {
+    font-family: "Kode Mono";
+    src: url("../../fonts/KodeMono.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+  }
+
+  /* Same tokens as the homepage */
+  :root {
+    --bg: #1e1d19;
+    --bg-mid: #2c2b29;
+    --bg-glow: #393938;
+    --ink: #dddcc8;
+    --accent: #00ffcc;
+    --rule: #3d414a;
+
+    --nav-fs: 16px;
+    --margin-line: 26px;
+    --content-left: 160px;
+    --text-left: calc(var(--margin-line) + 1px + var(--content-left));
+    --gutter: 53px;
+  }
+  @media (max-width: 700px) {
+    :root { --content-left: 26px; }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    position: relative;
+    min-height: 100vh;
+    background: radial-gradient(960px 2887px at 50% 50%, var(--bg-glow), var(--bg-mid) 50%, var(--bg)) var(--bg);
+    color: var(--ink);
+    font-family: "Kode Mono", ui-monospace, monospace;
+  }
+  /* Vertical margin line, the full height of the page */
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--margin-line);
+    width: 1px;
+    background: var(--rule);
+    pointer-events: none;
+  }
+
+  /* ---------- Resume button (as on the homepage) ---------- */
+  .resume {
+    position: fixed;
+    z-index: 10;
+    top: 32px;
+    right: 32px;
+    padding: 12.5px 32px 11.5px;
+    border-radius: 12px;
+    background: rgba(28, 71, 56, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .resume:hover { font-weight: 600; }
+  @supports (corner-shape: squircle) {
+    .resume { border-radius: 24px; corner-shape: squircle; }
+  }
+  @supports (text-box: trim-both cap alphabetic) {
+    .resume { text-box: trim-both cap alphabetic; padding-top: 15.6px; padding-bottom: 15.6px; }
+  }
+
+  /* ---------- Page ---------- */
+  .page {
+    padding: 131px var(--gutter) 217px var(--text-left);
+  }
+  .back {
+    display: inline-block;
+    padding: 16px 0;
+    color: var(--accent);
+    font-size: var(--nav-fs);
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .back:hover { font-weight: 600; }
+
+  h1 {
+    margin: 48px 0 80px;
+    font-size: 60px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  @media (max-width: 700px) {
+    h1 { font-size: 36px; margin-bottom: 48px; }
+  }
+
+  /* A series of images down the column, each at most its natural size and 800px tall */
+  .gallery {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;   /* left-aligned with the heading */
+    gap: 64px;
+    max-width: 1086px;
+  }
+  .gallery img {
+    display: block;
+    max-width: 100%;
+    max-height: 800px;
+    width: auto;
+    height: auto;
+    border-radius: 12px;
+  }
+  @supports (corner-shape: squircle) {
+    .gallery img { border-radius: 24px; corner-shape: squircle; }
+  }
+  @media (max-width: 800px) {
+    .page { padding-top: 112px; }
+    .gallery { gap: 32px; }
+  }
+</style>
+</head>
+<body>
+  <a class="resume" href="../../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
+
+  <main class="page">
+    <a class="back" href="../../enterprise/#more-title">← Back to projects</a>
+
+    <h1>Illustrations and icons</h1>
+
+    <div class="gallery">
+      <img src="assets/watercolour-cat.jpg" width="847" height="854" alt="Watercolour of a large, calm grey cat rising above a misty pine forest">
+      <img src="assets/moon-cat.jpg" width="1200" height="1200" alt="Digital illustration of a kitten with a bow reaching for an owl under a full moon in a dark forest">
+      <img src="assets/kitties-of-dune.jpg" width="1600" height="1600" alt="“Kitties of Dune”: a hooded figure in the desert with a giant cat rising from the sand">
+      <img src="assets/flamp-totes.jpg" width="1280" height="791" alt="Three Flamp tote bags with printed icon illustrations">
+      <img src="assets/tshirt-print.jpg" width="1600" height="1105" alt="T-shirt print of a cat sunbathing on a lounger under a mushroom-patterned umbrella">
+      <img src="assets/line-icons.jpg" width="710" height="655" alt="Set of line icons for local services: taxi, café, shopping, pets, beauty and more">
+      <img src="assets/flamp-totes-flat.jpg" width="1280" height="712" alt="Flamp tote bags laid flat, showing the icon prints">
+      <img src="assets/icon-states.jpg" width="610" height="800" alt="Taxi, cocktail and restaurant icons in outline, light and filled styles">
+    </div>
+  </main>
+</body>
+</html>

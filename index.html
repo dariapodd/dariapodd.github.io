@@ -481,7 +481,15 @@
   .more-card ul { margin: 0; padding: 0; list-style: none; }
   .more-card li + li { margin-top: 12px; }
   .more-card strong { font-weight: 600; }
-  .more-soon { margin: 0; color: rgba(255, 255, 255, 0.5); }   /* card without a description yet */
+  /* Link out of a card, styled like the homepage's other links */
+  .more-link {
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .more-link:hover { font-weight: 600; }
   /* Empty slots, to be filled */
   .more-card--empty { background: none; border: 1px dashed rgba(221, 220, 200, 0.2); }
   @supports (corner-shape: squircle) {
@@ -825,7 +833,7 @@
         </article>
         <article class="more-card">
           <h3>Illustrations and icons</h3>
-          <p class="more-soon">Coming soon</p>
+          <a class="more-link" href="projects/illustrations/">view illustrations ↗</a>
         </article>
         <article class="more-card more-card--empty" aria-hidden="true"></article>
         <article class="more-card more-card--empty" aria-hidden="true"></article>
