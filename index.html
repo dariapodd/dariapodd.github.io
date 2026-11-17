@@ -407,6 +407,8 @@
     border-radius: 12px;
     transform: translateY(-50%);
   }
+  /* Placeholder projects without a screenshot yet: an empty frame where it will go */
+  .project-shot--empty { border: 1px dashed rgba(221, 220, 200, 0.2); background: rgba(255, 255, 255, 0.02); }
   /* Approval portal mock-up (Figma 245:1195), running off the block's right edge */
   .project-shot--portal {
     top: 9.34%;            /* 68.6 / 734.6 */
@@ -431,8 +433,8 @@
   }
 
   /* ---------- Recommendations (Figma 234:452): two columns, quote over name ---------- */
-  .recs { padding: 0 var(--text-left) 120px; }
-  .recs h2 {
+  .recs, .more { padding: 0 var(--text-left) 120px; }
+  .recs h2, .more h2 {
     margin: 0 0 44px;
     font-size: 48px;
     font-weight: 400;
@@ -452,12 +454,40 @@
   .rec blockquote { margin: 0; }
   .rec figcaption { font-weight: 600; }
   @media (max-width: 900px) {
-    .recs { padding-right: var(--gutter); }
+    .recs, .more { padding-right: var(--gutter); }
     .recs-grid { grid-template-columns: 1fr; }
   }
   @media (max-width: 700px) {
-    .recs h2 { font-size: 32px; }
+    .recs h2, .more h2 { font-size: 32px; }
   }
+
+  /* ---------- More projects: cards, three to a row ---------- */
+  .more-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .more-card {
+    min-height: 240px;
+    padding: 32px;
+    border-radius: 12px;
+    background: var(--body-grey);
+    color: #fff;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .more-card h3 {
+    margin: 0 0 24px;
+    color: var(--ink);
+    font: 400 24px/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  .more-card ul { margin: 0; padding: 0; list-style: none; }
+  .more-card li + li { margin-top: 12px; }
+  .more-card strong { font-weight: 600; }
+  /* Empty slots, to be filled */
+  .more-card--empty { background: none; border: 1px dashed rgba(221, 220, 200, 0.2); }
+  @supports (corner-shape: squircle) {
+    .more-card { border-radius: 24px; corner-shape: squircle; }
+  }
+  @media (max-width: 1100px) { .more-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .more-grid { grid-template-columns: 1fr; } }
 
   /* ---------- Micrographics ----------
      Positioned in % of the 1920×960 project block (Figma values), so they scale with it.
@@ -622,7 +652,113 @@
       <div class="project-num" aria-hidden="true">3</div>
 
       <div class="project-content">
-        <h2 id="project-3">Luxury in-store retail apps</h2>
+        <h2 id="project-3">Literary translation workbench</h2>
+        <div class="project-desc">
+          <p><strong>Agent skill.</strong> Manages terminology, character names, translation rules and style controls.</p>
+        </div>
+        <span class="button button--soon" aria-disabled="true">GitHub coming soon</span>
+      </div>
+
+      <div class="project-shot project-shot--track project-shot--empty" aria-hidden="true"></div>
+    </section>
+
+    <section class="project project--grey" aria-labelledby="project-4">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true">4</div>
+
+      <div class="project-content">
+        <h2 id="project-4">Branded UJM builder</h2>
+        <div class="project-desc">
+          <p><strong>Agent skill.</strong> Assembles user journey maps from Figma components under hard styling rules.</p>
+        </div>
+        <span class="button button--soon" aria-disabled="true">GitHub coming soon</span>
+      </div>
+
+      <div class="project-shot project-shot--track project-shot--empty" aria-hidden="true"></div>
+    </section>
+
+    <section class="project project--black" aria-labelledby="project-5">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true">5</div>
+
+      <div class="project-content">
+        <h2 id="project-5">Large education client</h2>
+        <div class="project-desc">
+          <p><strong>UX/BA.</strong> Led current-state assessments, workshops, workflow mapping, prototyping, and prepared comprehensive strategic reports and maps used to inform major transformation initiatives.</p>
+        </div>
+        <span class="button button--soon" aria-disabled="true">case study coming soon</span>
+      </div>
+
+      <div class="project-shot project-shot--track project-shot--empty" aria-hidden="true"></div>
+    </section>
+
+    <section class="project project--grey" aria-labelledby="project-6">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true">6</div>
+
+      <div class="project-content">
+        <h2 id="project-6">Government client</h2>
+        <div class="project-desc">
+          <p><strong>UX Lead.</strong> AI-driven transcription, metadata automation and document management workflow PoC prototyped and implemented.</p>
+        </div>
+        <span class="button button--soon" aria-disabled="true">case study coming soon</span>
+      </div>
+
+      <div class="project-shot project-shot--track project-shot--empty" aria-hidden="true"></div>
+    </section>
+
+    <section class="project project--black" aria-labelledby="project-7">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true">7</div>
+
+      <div class="project-content">
+        <h2 id="project-7">Figma &amp; AI enablement</h2>
+        <div class="project-desc">
+          <p>Go-to prototyping support for the APAC team: 68 training sessions on advanced prototyping and automation, plus hands-on 1:1 help.</p>
+        </div>
+        <span class="button button--soon" aria-disabled="true">case study coming soon</span>
+      </div>
+
+      <div class="project-shot project-shot--track project-shot--empty" aria-hidden="true"></div>
+    </section>
+
+    <section class="project project--grey" aria-labelledby="project-8">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true">8</div>
+
+      <div class="project-content">
+        <h2 id="project-8">Spatial digital twin</h2>
+        <div class="project-desc">
+          <p><strong>UX Lead.</strong> GIS visualisations, digital twin and AI-assisted planning platform for the processing industry. Interactive prototypes for sales pitches, PoC web app delivered.</p>
+        </div>
+        <span class="button button--soon" aria-disabled="true">case study coming soon</span>
+      </div>
+
+      <img class="project-shot" src="enterprise/assets/project-4-spatial-digital-twin.webp" width="1664" height="1106"
+           alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
+    </section>
+
+    <section class="project project--black" aria-labelledby="project-9">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true">9</div>
+
+      <div class="project-content">
+        <h2 id="project-9">Social startup for the Deaf community</h2>
+        <div class="project-desc">
+          <p><strong>E2E Product Design.</strong> For the Deaf community and Auslan interpreters: user research, focus groups, questionnaires, personas, journey mapping, data analysis, stakeholder pitches, lo-fi, hi-fi, UI and handover. iOS PoC app delivered.</p>
+        </div>
+        <span class="button button--soon" aria-disabled="true">case study coming soon</span>
+      </div>
+
+      <div class="project-shot project-shot--track project-shot--empty" aria-hidden="true"></div>
+    </section>
+
+    <section class="project project--grey" aria-labelledby="project-10">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true">10</div>
+
+      <div class="project-content">
+        <h2 id="project-10">Luxury in-store retail apps</h2>
         <div class="project-desc">
           <p>Luxury fashion retailer with department stores and multi-brand boutiques, where sales rely on personal connections between customers and style assistants. A family of iOS apps for style assistants, warehouse and delivery teams: style suggestions, stock access, indoor navigation and checkout on iOS.</p>
           <p><strong>Result: customers complete purchases right from the fitting room, without breaking the in-store experience.</strong></p>
@@ -634,27 +770,6 @@
       <img class="project-shot project-shot--phones" src="enterprise/assets/project-2-retail-apps.png" width="1784" height="1928"
            alt="Two iPhone screens: checkout with card, cash and loyalty points, and the store assistant menu">
       <div class="micro micro--diamond" aria-hidden="true"></div>
-    </section>
-
-    <section class="project project--grey" aria-labelledby="project-4">
-      <div class="project-body" aria-hidden="true"></div>
-      <div class="project-num" aria-hidden="true">4</div>
-
-      <div class="project-content">
-        <h2 id="project-4">Spatial digital twin</h2>
-        <div class="project-desc">
-          <p>Processing company. 4-dimensional immersive Spatial Collaboration Tool (ArcGIS). Led complex prototyping and design system development; collaborated on user research, workshops and delivery support.</p>
-          <p><strong>Result: faster asset inspections and planning, and less time/cost spent on field visits.</strong></p>
-        </div>
-        <figure class="project-quote">
-          <blockquote>“Faster asset inspections and planning, and less time/cost spent on field visits.”</blockquote>
-          <figcaption>Project Manager</figcaption>
-        </figure>
-        <span class="button button--soon" aria-disabled="true">case study coming soon</span>
-      </div>
-
-      <img class="project-shot" src="enterprise/assets/project-4-spatial-digital-twin.webp" width="1664" height="1106"
-           alt="Spatial digital twin: aerial site map with work order, incident, stockpile and facility dashboard cards">
     </section>
 
     <section class="recs" id="recommendations" aria-labelledby="recs-title">
@@ -692,6 +807,34 @@
         <blockquote>I still remember when you invited me to join the AI + Design workshop and share how AI could help us prototype and bring design and development closer together. You gave me so much guidance and encouragement throughout that session.</blockquote>
         <figcaption>— Z., Front-end Developer</figcaption>
       </figure>
+      </div>
+    </section>
+
+    <section class="more" aria-labelledby="more-title">
+      <h2 id="more-title">More projects</h2>
+      <div class="more-grid">
+        <article class="more-card">
+          <h3>2GIS</h3>
+          <ul>
+            <li><strong>UI</strong> – Lifestyle recommendation, reviews and advanced local search service on web, iOS and Android (2.6M monthly visitors).</li>
+            <li><strong>UI and prototyping</strong> – B2B SaaS dashboards.</li>
+          </ul>
+        </article>
+        <article class="more-card">
+          <h3>1C-Rarus</h3>
+          <ul>
+            <li><strong>UI</strong> – Company portal: 450 hi-fi pages, 10 Axure RP clickable prototypes.</li>
+            <li><strong>UI</strong> – Two industry news portals, product promo sites.</li>
+            <li><strong>UX</strong> – Audit and recommendations for desktop ERP solutions.</li>
+            <li><strong>Visual design</strong> – 150 visual assets (icon sets, illustrations, print materials, ads).</li>
+            <li><strong>Usability</strong> – 3 audits, telemetry analysis.</li>
+            <li><strong>Team management (6 designers)</strong> – Trained and coached the team, led internship workshops, PM, hiring.</li>
+          </ul>
+        </article>
+        <article class="more-card more-card--empty" aria-hidden="true"></article>
+        <article class="more-card more-card--empty" aria-hidden="true"></article>
+        <article class="more-card more-card--empty" aria-hidden="true"></article>
+        <article class="more-card more-card--empty" aria-hidden="true"></article>
       </div>
     </section>
   </main>
