@@ -475,6 +475,18 @@
     font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
   }
   .more-thumb { display: block; width: 100%; height: auto; aspect-ratio: 1; border-radius: 6px; }
+  /* Thumbnails link like the card's first link; a 10% white veil on hover */
+  .more-thumb-link { position: relative; display: block; border-radius: 6px; overflow: hidden; }
+  .more-thumb-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+  .more-thumb-link:hover::after { opacity: 1; }
   .more-text { flex: 1; display: flex; flex-direction: column; gap: 6px; }
   .more-card h3 {
     margin: 0;
@@ -814,7 +826,9 @@
       <h2 id="more-title">More projects</h2>
       <div class="more-grid">
         <article class="more-card">
-          <img class="more-thumb" src="../enterprise/assets/more/ujm-builder.jpg" width="550" height="550" alt="" loading="lazy">
+          <a class="more-thumb-link" href="https://www.figma.com/community/file/1628023173002348154" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+            <img class="more-thumb" src="../enterprise/assets/more/ujm-builder.jpg" width="550" height="550" alt="" loading="lazy">
+          </a>
           <div class="more-text">
             <h3>UJM builder skill</h3>
             <p>With hard styling rules</p>
@@ -825,14 +839,18 @@
           </div>
         </article>
         <article class="more-card">
-          <img class="more-thumb" src="../enterprise/assets/more/illustrations.jpg" width="550" height="550" alt="" loading="lazy">
+          <a class="more-thumb-link" href="../projects/illustrations/" tabindex="-1" aria-hidden="true">
+            <img class="more-thumb" src="../enterprise/assets/more/illustrations.jpg" width="550" height="550" alt="" loading="lazy">
+          </a>
           <div class="more-text">
             <h3>Illustrations and icons</h3>
           </div>
           <a class="more-link" href="../projects/illustrations/">view ↗</a>
         </article>
         <article class="more-card">
-          <img class="more-thumb" src="../enterprise/assets/more/theremin-glove.jpg" width="550" height="550" alt="" loading="lazy">
+          <a class="more-thumb-link" href="https://www.behance.net/gallery/114719135/Physical-product-design-Arduino-prorotyping" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+            <img class="more-thumb" src="../enterprise/assets/more/theremin-glove.jpg" width="550" height="550" alt="" loading="lazy">
+          </a>
           <div class="more-text">
             <h3>Theremin glove</h3>
             <p>Physical Arduino prototype</p>
@@ -840,7 +858,9 @@
           <a class="more-link" href="https://www.behance.net/gallery/114719135/Physical-product-design-Arduino-prorotyping" target="_blank" rel="noopener">view ↗</a>
         </article>
         <article class="more-card">
-          <img class="more-thumb" src="../enterprise/assets/more/2gis.jpg" width="550" height="550" alt="" loading="lazy">
+          <a class="more-thumb-link" href="https://www.behance.net/gallery/41865863/Case-iOS-and-Android-apps-for-localsearch" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+            <img class="more-thumb" src="../enterprise/assets/more/2gis.jpg" width="550" height="550" alt="" loading="lazy">
+          </a>
           <div class="more-text">
             <h3>2GIS</h3>
             <p>Local search service, 2.6M monthly visitors</p>
@@ -848,7 +868,9 @@
           <a class="more-link" href="https://www.behance.net/gallery/41865863/Case-iOS-and-Android-apps-for-localsearch" target="_blank" rel="noopener">view ↗</a>
         </article>
         <article class="more-card">
-          <img class="more-thumb" src="../enterprise/assets/more/1c-rarus.jpg" width="550" height="550" alt="" loading="lazy">
+          <a class="more-thumb-link" href="https://www.behance.net/gallery/41865681/Case-Large-corporate-website-design-team-management" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+            <img class="more-thumb" src="../enterprise/assets/more/1c-rarus.jpg" width="550" height="550" alt="" loading="lazy">
+          </a>
           <div class="more-text">
             <h3>1C-Rarus</h3>
             <p>Software vendor portal, 450 pages</p>
@@ -856,7 +878,9 @@
           <a class="more-link" href="https://www.behance.net/gallery/41865681/Case-Large-corporate-website-design-team-management" target="_blank" rel="noopener">view ↗</a>
         </article>
         <article class="more-card">
-          <img class="more-thumb" src="../enterprise/assets/more/giftaway.jpg" width="550" height="550" alt="" loading="lazy">
+          <a class="more-thumb-link" href="https://www.behance.net/gallery/114718019/GiftAway-Mobiledesktop-product-design" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+            <img class="more-thumb" src="../enterprise/assets/more/giftaway.jpg" width="550" height="550" alt="" loading="lazy">
+          </a>
           <div class="more-text">
             <h3>GiftAway</h3>
             <p>Food sharing mobile app</p>
