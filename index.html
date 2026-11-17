@@ -494,6 +494,7 @@
   }
   a.more-link:hover { font-weight: 600; }
   .more-link--soon { opacity: 0.4; cursor: default; }   /* no URL yet */
+  .more-links { display: flex; flex-direction: column; gap: 6px; }   /* two links stacked (Figma 260:1572) */
   /* Empty slots, to be filled */
   .more-card--empty { min-height: 490px; background: none; border: 1px dashed rgba(221, 220, 200, 0.2); }   /* as tall as a filled card (Figma) */
   @supports (corner-shape: squircle) {
@@ -815,9 +816,12 @@
           <img class="more-thumb" src="enterprise/assets/more/ujm-builder.jpg" width="550" height="550" alt="" loading="lazy">
           <div class="more-text">
             <h3>UJM builder skill</h3>
-            <p><strong>Agent skill</strong> – Assembles user journey maps under hard styling rules</p>
+            <p>With hard styling rules</p>
           </div>
-          <span class="more-link more-link--soon" title="Link coming soon">github ↗</span>
+          <div class="more-links">
+            <a class="more-link" href="https://www.figma.com/community/file/1628023173002348154" target="_blank" rel="noopener">Figma community ↗</a>
+            <a class="more-link" href="https://github.com/dariapodd/figma-branded-ujm-builder" target="_blank" rel="noopener">GitHub ↗</a>
+          </div>
         </article>
         <article class="more-card">
           <img class="more-thumb" src="enterprise/assets/more/illustrations.jpg" width="550" height="550" alt="" loading="lazy">
