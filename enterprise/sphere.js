@@ -131,10 +131,11 @@
       const pages = place(extrude(profile, -0.68, 0.68), undefined, [0, 0.03, 0]);
       const cover = box([0, -0.03, -0.74], [1.06, 0.03, 0.74]);
       const half = [...pages, ...cover];
-      return { faces: [
+      // Tipped 50° about x so the pages face the viewer more
+      return { faces: place([
         ...place(half, rotZ(rad(8))),
         ...place(half, (v) => rotZ(rad(-8))([-v[0], v[1], v[2]])),   // mirrored
-      ] };
+      ], rotX(rad(50))) };
     },
     cap() {
       // Square board on an eight-sided cap, with a tassel off one corner
