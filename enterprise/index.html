@@ -583,9 +583,9 @@
     .micro--lorenz, .lorenz-canvas { display: none; }   /* no room beside the headline */
   }
 
-  /* Wireframe globe (project 1) and diamond (project 2) 80px above the block's bottom edge,
-     under the text; they turn once a minute */
-  .micro--sphere, .micro--diamond {
+  /* Wireframe globe (project 1) and a low-poly solid for each other project (sphere.js),
+     80px above the block's bottom edge, under the text; they turn once a minute */
+  .micro--sphere, .micro--solid {
     left: var(--text-left);
     bottom: 80px;
     width: 40px;
@@ -593,7 +593,7 @@
   }
   @media (min-width: 1280px) {
     /* keep room for it under the text (globe + 48px gap), so it never meets the button */
-    .project:has(.micro--sphere, .micro--diamond) .project-content { padding-bottom: calc(80px + 40px + 48px); }
+    .project:has(.micro--sphere, .micro--solid) .project-content { padding-bottom: calc(80px + 40px + 48px); }
   }
 
   /* Below 1280px the text column is too narrow for the longest heading word
@@ -690,6 +690,7 @@
         <a class="button" href="../projects/government-approval-portal/">learn more ↗</a>
       </div>
 
+      <div class="micro micro--solid" data-shape="cross" aria-hidden="true"></div>
       <a class="project-shot project-shot--portal project-shot-link" href="../projects/government-approval-portal/" tabindex="-1" aria-hidden="true">
         <img src="../enterprise/assets/project-2-approval-portal-display.jpg" width="1460" height="1193" alt="Approval portal on a laptop: certification steps from scope to decision, and the applicant’s task list">
       </a>
@@ -711,7 +712,7 @@
       <a class="project-shot project-shot--fashion project-shot-link" href="../projects/fashion-retail-apps/" tabindex="-1" aria-hidden="true">
         <img src="../enterprise/assets/project-3-fashion-phone.jpg" width="1556" height="1167" alt="Store assistant app on an iPhone in a marble stand: menu with filters, new order, track order, reserve, shopping bag, print tags and barcode">
       </a>
-      <div class="micro micro--diamond" aria-hidden="true"></div>
+      <div class="micro micro--solid" data-shape="diamond" aria-hidden="true"></div>
     </section>
 
     <section class="project project--grey" aria-labelledby="project-4">
@@ -726,6 +727,7 @@
         <a class="button" href="https://github.com/dariapodd/translation-workbench" target="_blank" rel="noopener">GitHub ↗</a>
       </div>
 
+      <div class="micro micro--solid" data-shape="book" aria-hidden="true"></div>
       <a class="project-shot project-shot--track project-shot-link" href="https://github.com/dariapodd/translation-workbench" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
         <img src="../enterprise/assets/project-4-translation-workbench.jpg" width="1532" height="1014" alt="Translation workbench on a laptop: a chapter shown side by side in English and French, with a glossary note on a highlighted term">
       </a>
@@ -743,6 +745,7 @@
         <span class="button button--soon" aria-disabled="true">case study coming soon</span>
       </div>
 
+      <div class="micro micro--solid" data-shape="cap" aria-hidden="true"></div>
       <div class="project-shot project-shot--track project-shot--empty" aria-hidden="true"></div>
     </section>
 
@@ -758,6 +761,7 @@
         <span class="button button--soon" aria-disabled="true">case study coming soon</span>
       </div>
 
+      <div class="micro micro--solid" data-shape="temple" aria-hidden="true"></div>
       <div class="project-shot project-shot--track project-shot--empty" aria-hidden="true"></div>
     </section>
 
@@ -773,6 +777,7 @@
         <span class="button button--soon" aria-disabled="true">case study coming soon</span>
       </div>
 
+      <div class="micro micro--solid" data-shape="sparkle" aria-hidden="true"></div>
       <div class="project-shot project-shot--track project-shot--empty" aria-hidden="true"></div>
     </section>
 
@@ -788,6 +793,7 @@
         <span class="button button--soon" aria-disabled="true">case study coming soon</span>
       </div>
 
+      <div class="micro micro--solid" data-shape="tesseract" aria-hidden="true"></div>
       <div class="project-shot project-shot--track project-shot--empty" aria-hidden="true"></div>
     </section>
 
@@ -803,8 +809,9 @@
         <span class="button button--soon" aria-disabled="true">case study coming soon</span>
       </div>
 
+      <div class="micro micro--solid" data-shape="hand" aria-hidden="true"></div>
       <div class="project-shot project-shot--deaf">
-        <img src="../enterprise/assets/project-9-deaf-community-phone.jpg" width="1440" height="1160" loading="lazy" alt="Booking app on a phone: search results listing Auslan interpreters and paraprofessionals with their hourly rates">
+        <img src="../enterprise/assets/project-9-deaf-community-phone.png" width="1440" height="1160" loading="lazy" alt="Booking app on a phone: search results listing Auslan interpreters and paraprofessionals with their hourly rates">
       </div>
     </section>
 

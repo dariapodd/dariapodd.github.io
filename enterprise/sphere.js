@@ -1,7 +1,15 @@
 // Wireframe decor turning like the Earth (west to east, once a minute), seen from a little
 // above the equator. Lines on the far side are drawn fainter. Pauses while off-screen.
-//   .micro--sphere      globe: meridians and parallels
-//   .micro--diamond     low-poly gem like the Sketch logo: flat top, crown, pointed base
+//   .micro--sphere                      globe: meridians and parallels
+//   .micro--solid[data-shape="…"]       low-poly solids, one per project:
+//     diamond   gem like the Sketch logo: flat top, crown, pointed base (retail)
+//     cross     health cross (government/health portal)
+//     book      open book (translation workbench)
+//     cap       graduation cap (education)
+//     temple    portico with columns and pediment (government)
+//     sparkle   four-pointed AI sparkle (Figma & AI enablement)
+//     tesseract cube within a cube (spatial digital twin)
+//     hand      open hand, palm to the viewer (Deaf community)
 (() => {
   const INK = "155, 153, 138";    // #9b998a (Figma)
   const FRONT = 1, BACK = 0.3;    // line opacity on the near and far side
@@ -14,7 +22,7 @@
 
   const rad = (d) => d * Math.PI / 180;
 
-  // Globe circles as point lists on the unit sphere (x right, y up, z towards the viewer)
+  // ---------- Globe: circles as point lists on the unit sphere (x right, y up, z to the viewer)
   const circles = [];
   for (let m = 0; m < MERIDIANS; m++) {
     const lon = (m / MERIDIANS) * 2 * Math.PI, pts = [];
@@ -33,40 +41,193 @@
     circles.push(pts);
   }
 
-  // Diamond: a six-sided table on top, a crown of triangles alternating up and down to the
-  // wider girdle, and a pavilion of triangles meeting at the point below. Each edge keeps the
-  // outward normals of its faces: it is on the near side when any of them looks at the viewer.
-  const SIDES = 6, TABLE = 0.55, TOP = 0.55, GIRDLE = 0.25, POINT = -0.65;
-  const ring = (radius, y, offset) => Array.from({ length: SIDES }, (_, i) => {
-    const a = (i + offset) * 2 * Math.PI / SIDES;
+  // ---------- Solids: faces with outward normals, plus loose lines
+  const add = (a, b) => a.map((v, i) => v + b[i]);
+  const sub = (a, b) => a.map((v, i) => v - b[i]);
+  const mul = (a, s) => a.map(v => v * s);
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const mean = (pts) => mul(pts.reduce(add, [0, 0, 0]), 1 / pts.length);
+  const rotX = (a) => ([x, y, z]) => [x, y * Math.cos(a) - z * Math.sin(a), y * Math.sin(a) + z * Math.cos(a)];
+  const rotY = (a) => ([x, y, z]) => [x * Math.cos(a) + z * Math.sin(a), y, -x * Math.sin(a) + z * Math.cos(a)];
+  const rotZ = (a) => ([x, y, z]) => [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a), z];
+
+  // A face's normal (Newell's method, fine for concave outlines), flipped to agree with `hint`
+  function face(pts, hint) {
+    const n = [0, 0, 0];
+    pts.forEach((p, i) => {
+      const q = pts[(i + 1) % pts.length];
+      n[0] += (p[1] - q[1]) * (p[2] + q[2]);
+      n[1] += (p[2] - q[2]) * (p[0] + q[0]);
+      n[2] += (p[0] - q[0]) * (p[1] + q[1]);
+    });
+    return { pts, n: dot(n, hint) < 0 ? mul(n, -1) : n };
+  }
+  // A convex part: every face points away from the part's centre
+  const convex = (polys) => {
+    const c = mean(polys.flat());
+    return polys.map(p => face(p, sub(mean(p), c)));
+  };
+  // Move faces: rotate points and normals, then shift points
+  const place = (faces, rot = (v) => v, shift = [0, 0, 0]) =>
+    faces.map(f => ({ pts: f.pts.map(p => add(rot(p), shift)), n: rot(f.n) }));
+  // Ring of points around the y axis
+  const ring = (sides, radius, y, offset = 0) => Array.from({ length: sides }, (_, i) => {
+    const a = (i + offset) * 2 * Math.PI / sides;
     return [radius * Math.sin(a), y, radius * Math.cos(a)];
   });
-  const table = ring(TABLE, TOP, 0.5), girdle = ring(1, GIRDLE, 0), point = [0, POINT, 0];
-  const faces = [table];
-  for (let i = 0; i < SIDES; i++) {
-    const j = (i + 1) % SIDES;
-    faces.push([girdle[i], girdle[j], table[i]]);    // crown, pointing up
-    faces.push([table[i], table[j], girdle[j]]);     // crown, pointing down
-    faces.push([girdle[i], girdle[j], point]);       // pavilion
-  }
-  const middle = [0, 1, 2].map(k => [...table, ...girdle, point].reduce((sum, v) => sum + v[k], 0) / (2 * SIDES + 1));
-  const edges = new Map();
-  for (const face of faces) {
-    const [p, q, r] = face;
-    const u = q.map((v, k) => v - p[k]), w = r.map((v, k) => v - p[k]);
-    let n = [u[1] * w[2] - u[2] * w[1], u[2] * w[0] - u[0] * w[2], u[0] * w[1] - u[1] * w[0]];
-    const out = [0, 1, 2].map(k => face.reduce((sum, v) => sum + v[k], 0) / face.length - middle[k]);
-    if (n[0] * out[0] + n[1] * out[1] + n[2] * out[2] < 0) n = n.map(v => -v);
-    face.forEach((a, i) => {
-      const b = face[(i + 1) % face.length];
-      const key = [a, b].map(v => v.join()).sort().join("|");
-      if (!edges.has(key)) edges.set(key, { from: a, to: b, normals: [] });
-      edges.get(key).normals.push(n);
+  // Box between corners
+  const box = ([x0, y0, z0], [x1, y1, z1]) => {
+    const v = (i) => [i & 1 ? x1 : x0, i & 2 ? y1 : y0, i & 4 ? z1 : z0];
+    return convex([[0, 1, 3, 2], [4, 5, 7, 6], [0, 1, 5, 4], [2, 3, 7, 6], [0, 2, 6, 4], [1, 3, 7, 5]]
+      .map(q => q.map(v)));
+  };
+  // Prism along y between two rings (a frustum when the radii differ)
+  const frustum = (sides, r0, y0, r1, y1, offset = 0) => {
+    const a = ring(sides, r0, y0, offset), b = ring(sides, r1, y1, offset);
+    return convex([a, b, ...a.map((p, i) => [p, a[(i + 1) % sides], b[(i + 1) % sides], b[i]])]);
+  };
+  // Flat outline in the xy plane, extruded from z0 to z1
+  const extrude = (outline, z0, z1) => {
+    let poly = outline;
+    const area = poly.reduce((s, p, i) => { const q = poly[(i + 1) % poly.length]; return s + p[0] * q[1] - q[0] * p[1]; }, 0);
+    if (area < 0) poly = [...poly].reverse();
+    const lo = poly.map(([x, y]) => [x, y, z0]), hi = poly.map(([x, y]) => [x, y, z1]);
+    const faces = [face(hi, [0, 0, 1]), face(lo, [0, 0, -1])];
+    poly.forEach((p, i) => {
+      const j = (i + 1) % poly.length, q = poly[j];
+      faces.push(face([lo[i], lo[j], hi[j], hi[i]], [q[1] - p[1], p[0] - q[0], 0]));
     });
+    return faces;
+  };
+  // Square-section segment from centre b to centre t (both in the xy plane), half-widths w0 → w1
+  const segment = (b, t, w0, w1, depth = 0.85) => {
+    const d = sub(t, b), len = Math.hypot(d[0], d[1]), u = [d[1] / len, -d[0] / len, 0];
+    const square = (c, w) => [[-1, -1], [1, -1], [1, 1], [-1, 1]]
+      .map(([s, k]) => add(add(c, mul(u, s * w)), [0, 0, k * w * depth]));
+    const B = square(b, w0), T = square(t, w1);
+    return convex([B, T, ...B.map((p, i) => [p, B[(i + 1) % 4], T[(i + 1) % 4], T[i]])]);
+  };
+
+  const SHAPES = {
+    diamond() {
+      // Six-sided table on top, a crown of triangles alternating up and down to the wider
+      // girdle, and a pavilion meeting at the point below
+      const SIDES = 6, table = ring(SIDES, 0.55, 0.55, 0.5), girdle = ring(SIDES, 1, 0.25), point = [0, -0.65, 0];
+      const polys = [table];
+      for (let i = 0; i < SIDES; i++) {
+        const j = (i + 1) % SIDES;
+        polys.push([girdle[i], girdle[j], table[i]], [table[i], table[j], girdle[j]], [girdle[i], girdle[j], point]);
+      }
+      return { faces: convex(polys) };
+    },
+    cross() {
+      const a = 0.32, L = 1;
+      return { faces: extrude([[a, -L], [a, -a], [L, -a], [L, a], [a, a], [a, L], [-a, L], [-a, a], [-L, a], [-L, -a], [-a, -a], [-a, -L]], -0.3, 0.3) };
+    },
+    book() {
+      // Two halves of pages rising from the spine in a shallow V
+      const half = box([0, 0, -0.7], [1, 0.14, 0.7]);
+      const cover = box([0, -0.05, -0.75], [1.05, 0, 0.75]);
+      return { faces: [
+        ...place([...half, ...cover], rotZ(rad(18))),
+        ...place([...half, ...cover], (v) => rotZ(rad(-18))([-v[0], v[1], v[2]])),   // mirrored
+      ] };
+    },
+    cap() {
+      // Square board on an eight-sided cap, with a tassel off one corner
+      const board = box([-0.85, -0.03, -0.85], [0.85, 0.03, 0.85]);
+      return {
+        faces: [...place(board, rotY(rad(45))), ...frustum(8, 0.48, -0.03, 0.42, -0.42, 0.5)],
+        lines: [[[0, 0.03, 0], [0, 0.03, 1.2]], [[0, 0.03, 1.2], [0, -0.45, 1.2]]],
+      };
+    },
+    temple() {
+      const faces = [
+        ...box([-1, -0.78, -0.48], [1, -0.66, 0.48]),         // base
+        ...box([-0.9, -0.66, -0.4], [0.9, -0.58, 0.4]),       // step
+        ...box([-0.92, 0.28, -0.4], [0.92, 0.4, 0.4]),        // entablature
+        ...extrude([[-0.98, 0.4], [0.98, 0.4], [0, 0.78]], -0.4, 0.4),   // pediment
+      ];
+      for (const x of [-0.66, -0.22, 0.22, 0.66]) faces.push(...place(frustum(6, 0.1, -0.58, 0.085, 0.28), undefined, [x, 0, 0.12]));
+      return { faces };
+    },
+    sparkle() {
+      // Four-pointed star, its outline pulled out to a point in front and behind
+      const w = 0.22;
+      const outline = [[0, 1], [-w, w], [-1, 0], [-w, -w], [0, -1], [w, -w], [1, 0], [w, w]];
+      const front = [0, 0, 0.3], back = [0, 0, -0.3], faces = [];
+      outline.forEach((p, i) => {
+        const q = outline[(i + 1) % outline.length], out = [q[1] - p[1], p[0] - q[0]];
+        const P = [p[0], p[1], 0], Q = [q[0], q[1], 0];
+        faces.push(face([P, Q, front], [out[0], out[1], 1]), face([Q, P, back], [out[0], out[1], -1]));
+      });
+      return { faces };
+    },
+    tesseract() {
+      // Two nested cubes joined corner to corner (lines only)
+      const corner = (s, i) => [i & 1 ? s : -s, i & 2 ? s : -s, i & 4 ? s : -s];
+      const lines = [];
+      for (let i = 0; i < 8; i++) {
+        for (const bit of [1, 2, 4]) if (!(i & bit)) {
+          lines.push([corner(1, i), corner(1, i | bit)], [corner(0.45, i), corner(0.45, i | bit)]);
+        }
+        lines.push([corner(1, i), corner(0.45, i)]);
+      }
+      return { faces: [], lines };
+    },
+    hand() {
+      // Open hand, palm to the viewer, thumb out to the right. Fingers are square-section
+      // segments with a small gap at each knuckle.
+      const faces = [...extrude([[-0.4, -0.6], [0.34, -0.6], [0.46, -0.08], [0.45, 0.42], [-0.45, 0.42], [-0.47, -0.15]], -0.13, 0.13)];
+      const fingers = [   // base x, length, lean (degrees, + leans left)
+        [-0.335, 0.6, 9], [-0.11, 0.8, 3], [0.115, 0.86, -1], [0.34, 0.76, -6],
+      ];
+      for (const [x, len, lean] of fingers) {
+        const dir = [-Math.sin(rad(lean)), Math.cos(rad(lean)), 0];
+        let at = [x, 0.45, 0], w = 0.1;
+        for (const part of [0.45, 0.32, 0.23]) {
+          const to = add(at, mul(dir, len * part - 0.025)), w1 = w * 0.88;
+          faces.push(...segment(at, to, w, w1));
+          at = add(to, mul(dir, 0.025));
+          w = w1;
+        }
+      }
+      // Thumb: rooted in the lower palm, curving up and out to the right
+      let at = [0.26, -0.45, 0.06], w = 0.12;
+      for (const [len, angle] of [[0.36, 42], [0.28, 30], [0.2, 18]]) {
+        const to = add(at, mul([Math.sin(rad(angle)), Math.cos(rad(angle)), 0], len)), w1 = w * 0.85;
+        faces.push(...place(segment([0, 0, 0], sub(to, at), w, w1), undefined, at));
+        at = add(to, mul([Math.sin(rad(angle)), Math.cos(rad(angle)), 0], 0.025));
+        w = w1;
+      }
+      return { faces };
+    },
+  };
+
+  // Turn a shape into edges (each with the normals of the faces that share it) and loose lines,
+  // centred and scaled to fit the unit sphere so it never leaves its box while turning
+  function build(name) {
+    const { faces, lines = [] } = SHAPES[name]();
+    const all = [...faces.flatMap(f => f.pts), ...lines.flat()];
+    const lo = [0, 1, 2].map(k => Math.min(...all.map(p => p[k])));
+    const hi = [0, 1, 2].map(k => Math.max(...all.map(p => p[k])));
+    const c = [(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2];
+    const s = 1 / Math.max(...all.map(p => Math.hypot(...sub(p, c))));
+    const fit = (p) => mul(sub(p, c), s);
+    const edges = new Map();
+    for (const f of faces) {
+      f.pts.forEach((a, i) => {
+        const b = f.pts[(i + 1) % f.pts.length];
+        const key = [a, b].map(v => v.map(x => x.toFixed(4)).join()).sort().join("|");
+        if (!edges.has(key)) edges.set(key, { from: fit(a), to: fit(b), normals: [] });
+        edges.get(key).normals.push(f.n);
+      });
+    }
+    return { edges: [...edges.values()], lines: lines.map(([a, b]) => ({ from: fit(a), to: fit(b) })) };
   }
 
-  for (const host of document.querySelectorAll(".micro--sphere, .micro--diamond")) {
-    const solid = host.classList.contains("micro--diamond");
+  for (const host of document.querySelectorAll(".micro--sphere, .micro--solid")) {
+    const solid = host.classList.contains("micro--solid") && SHAPES[host.dataset.shape] ? build(host.dataset.shape) : null;
     const canvas = document.createElement("canvas");
     host.append(canvas);
     const ctx = canvas.getContext("2d");
@@ -84,6 +245,7 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, size, size);
       ctx.lineWidth = LINE;
+      ctx.lineJoin = "round";
       const r = size / 2 - LINE, c = size / 2;
       const ca = Math.cos(angle), sa = Math.sin(angle), ct = Math.cos(TILT), st = Math.sin(TILT);
 
@@ -97,24 +259,28 @@
         const [x, y, z] = turn(v);
         return [c + x * r, c - y * r, z];
       };
+      const segment = (a, b) => { ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); };
 
       // Far side first, then near side on top
       for (const front of [false, true]) {
         ctx.strokeStyle = `rgba(${INK}, ${front ? FRONT : BACK})`;
         ctx.beginPath();
         if (solid) {
-          for (const e of edges.values()) {
-            if (e.normals.some(n => turn(n)[2] > 0) !== front) continue;
-            const a = project(e.from), b = project(e.to);
-            ctx.moveTo(a[0], a[1]);
-            ctx.lineTo(b[0], b[1]);
+          // An edge is on the near side when any face it belongs to looks at the viewer
+          for (const e of solid.edges) {
+            if (e.normals.some(n => turn(n)[2] > 0) === front) segment(project(e.from), project(e.to));
+          }
+          // Loose lines: by the depth of their middle
+          for (const l of solid.lines) {
+            const a = project(l.from), b = project(l.to);
+            if ((a[2] + b[2] >= 0) === front) segment(a, b);
           }
         } else {
           for (const pts of circles) {
             let prev = project(pts[0]);
             for (let i = 1; i < pts.length; i++) {
               const p = project(pts[i]);
-              if ((p[2] + prev[2] >= 0) === front) { ctx.moveTo(prev[0], prev[1]); ctx.lineTo(p[0], p[1]); }
+              if ((p[2] + prev[2] >= 0) === front) segment(prev, p);
               prev = p;
             }
           }
