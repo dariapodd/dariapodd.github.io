@@ -407,6 +407,18 @@
     border-radius: 12px;
     transform: translateY(-50%);
   }
+  /* Deaf community app on a glass phone (Figma 292:5), vertically centred, running off the right edge */
+  .project-shot--deaf {
+    left: max(50%, calc(var(--text-left) + 260px + 64px));
+    top: 50%;
+    width: 50%;            /* 720 / 1440 */
+    aspect-ratio: 720 / 580;
+    object-fit: cover;
+    border-radius: 12px;
+    transform: translateY(-50%);
+    overflow: hidden;
+  }
+  .project-shot--deaf img { display: block; width: 100%; height: 100%; object-fit: cover; }
   /* Placeholder projects without a screenshot yet: an empty frame where it will go */
   .project-shot--empty { border: 1px dashed rgba(221, 220, 200, 0.2); background: rgba(255, 255, 255, 0.02); }
   /* Approval portal mock-up (Figma 245:1195), running off the block's right edge */
@@ -597,7 +609,7 @@
       width: calc(100% - var(--text-left));
       margin: 40px 0 0 var(--text-left);
     }
-    .project-shot--track, .project-shot--fashion { transform: none; }
+    .project-shot--track, .project-shot--fashion, .project-shot--deaf { transform: none; }
     .project-shot--fashion { border-radius: 16px; }
   }
   /* Centre capitals exactly in buttons: the line box normally reserves room for accents
@@ -790,7 +802,9 @@
         <span class="button button--soon" aria-disabled="true">case study coming soon</span>
       </div>
 
-      <div class="project-shot project-shot--track project-shot--empty" aria-hidden="true"></div>
+      <div class="project-shot project-shot--deaf">
+        <img src="enterprise/assets/project-9-deaf-community-phone.jpg" width="1440" height="1160" loading="lazy" alt="Booking app on a phone: search results listing Auslan interpreters and paraprofessionals with their hourly rates">
+      </div>
     </section>
 
     <section class="recs" id="recommendations" aria-labelledby="recs-title">
