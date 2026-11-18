@@ -188,39 +188,6 @@
     .shot img { border-radius: 24px; corner-shape: squircle; }
   }
 
-  /* ---------- Slides: three in a row, scrolled with text arrows ---------- */
-  .slider-head { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-  .slider-nav { display: flex; gap: 24px; }
-  .slider-nav button {
-    padding: 4px 0;
-    border: 0;
-    background: none;
-    color: var(--accent);
-    font: 400 24px/1 "Kode Mono", ui-monospace, monospace;
-    cursor: pointer;
-  }
-  .slider-nav button:hover { font-weight: 600; }
-  .slider-nav button:disabled { opacity: 0.3; cursor: default; font-weight: 400; }
-  .slides {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: calc((100% - 2 * 24px) / 3);
-    gap: 24px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-  }
-  .slides::-webkit-scrollbar { display: none; }
-  .slides li { scroll-snap-align: start; }
-  .slides img { display: block; width: 100%; height: auto; border-radius: 12px; }
-  @media (prefers-reduced-motion: reduce) {
-    .slides { scroll-behavior: auto; }
-  }
-
   /* ---------- Narrow screens ---------- */
   @media (max-width: 1100px) {
     .columns { flex-direction: column; gap: 64px; }
@@ -230,7 +197,6 @@
     .page { padding-top: 112px; }
     .case { gap: 80px; }
     .intro { gap: 40px; }
-    .slides { grid-auto-columns: 85%; }
     /* The table becomes a list of cards */
     .apps thead { display: none; }
     .apps, .apps tbody, .apps tr, .apps td { display: block; width: auto !important; }
@@ -371,48 +337,8 @@
         <figcaption class="caption">Customer-facing shopping website — wedding planner</figcaption>
       </figure>
 
-      <section class="section" aria-labelledby="slides-title">
-        <div class="slider-head">
-          <h2 id="slides-title">Project slides</h2>
-          <div class="slider-nav">
-            <button type="button" class="prev" aria-label="Previous slides" aria-controls="slides">←</button>
-            <button type="button" class="next" aria-label="Next slides" aria-controls="slides">→</button>
-          </div>
-        </div>
-        <ul class="slides" id="slides">
-          <li><img src="assets/slide-01-cover.jpg" width="1200" height="899" loading="lazy" alt="TSUM Fashion Store: mobile apps for luxury department store staff"></li>
-          <li><img src="assets/slide-02-tsum-store.jpg" width="1200" height="899" loading="lazy" alt="TSUM department store: Moscow’s signature fashion store for over 110 years, 70,000 square metres"></li>
-          <li><img src="assets/slide-03-tsum-brands.jpg" width="1200" height="899" loading="lazy" alt="TSUM’s brands and services, from Dolce &amp; Gabbana and Chanel to mobile checkout and salespersons’ mobile assistants"></li>
-          <li><img src="assets/slide-05-pocket-assistant.jpg" width="1200" height="899" loading="lazy" alt="Pocket salesperson’s assistant: an iPod in every pocket, replacing paper reservations and trips to storage"></li>
-          <li><img src="assets/slide-06-cashdesk.jpg" width="1200" height="899" loading="lazy" alt="Cashdesk that follows the customer: mobile checkout anywhere in the store"></li>
-          <li><img src="assets/slide-07-interior-collections.jpg" width="1200" height="899" loading="lazy" alt="Big screen for interior design collections: iPad catalogues for 9 shops"></li>
-          <li><img src="assets/slide-08-white-label.jpg" width="1200" height="899" loading="lazy" alt="White-label apps for independent boutiques: Brioni, Loro Piana, Valentino, Dolce &amp; Gabbana, Ralph Lauren"></li>
-          <li><img src="assets/slide-09-loyal-customers.jpg" width="1200" height="899" loading="lazy" alt="Strong connection with loyal customers: profiles, purchase history and preferences"></li>
-          <li><img src="assets/slide-10-online-delivery.jpg" width="1200" height="899" loading="lazy" alt="Hassle-free online orders delivery: routes, confirmations, payment and loyalty"></li>
-          <li><img src="assets/slide-11-distribution.jpg" width="1200" height="899" loading="lazy" alt="Distributing items for delivery: every online order checked with a scanner"></li>
-          <li><img src="assets/slide-12-packing.jpg" width="1200" height="899" loading="lazy" alt="One scanner button to pack the order, with an iPod and scanner kit"></li>
-        </ul>
-      </section>
     </article>
   </main>
 
-<script>
-  // Slides: the arrows move by one slide; each disables at its end of the row
-  (() => {
-    const track = document.getElementById("slides");
-    const prev = document.querySelector(".slider-nav .prev");
-    const next = document.querySelector(".slider-nav .next");
-    const step = () => track.firstElementChild.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap);
-    const sync = () => {
-      prev.disabled = track.scrollLeft <= 1;
-      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
-    };
-    prev.addEventListener("click", () => track.scrollBy({ left: -step() }));
-    next.addEventListener("click", () => track.scrollBy({ left: step() }));
-    track.addEventListener("scroll", sync, { passive: true });
-    addEventListener("resize", sync);
-    sync();
-  })();
-</script>
 </body>
 </html>
