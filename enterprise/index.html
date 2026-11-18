@@ -416,21 +416,15 @@
     width: 50.69%;         /* 730 / 1440 */
     border-radius: 12px;
   }
-  /* Two phone mockups over a leather photo card, both stopping at the block's right edge
-     (Figma 195:458) */
-  .project-shot--phones {
-    left: 53.54%;          /* 1028 / 1920 */
-    top: -1.67%;           /* -16 / 960: just above the block */
-    width: 46.46%;         /* 892 / 1920 */
-  }
-  .project-backdrop {
-    position: absolute;
-    left: 50%;
-    top: 12.08%;           /* 116 / 960 */
-    width: 50%;            /* 960 / 1920 */
-    height: auto;
-    border-radius: 20px 0 0 20px;
-    z-index: 1;
+  /* Fashion apps: the store assistant app on a stand (Figma 263:1785), vertically centred,
+     rounded on the left and running off the block's right edge */
+  .project-shot--fashion {
+    top: 50%;
+    width: 54.03%;         /* 778 / 1440 */
+    aspect-ratio: 778 / 583.5;
+    object-fit: cover;
+    border-radius: 16px 0 0 16px;
+    transform: translateY(-50%);
   }
 
   /* ---------- Recommendations (Figma 234:452): two columns, quote over name ---------- */
@@ -590,9 +584,8 @@
       width: calc(100% - var(--text-left));
       margin: 40px 0 0 var(--text-left);
     }
-    .project-shot--phones { max-width: 420px; }
-    .project-backdrop { display: none; }
-    .project-shot--track { transform: none; }
+    .project-shot--track, .project-shot--fashion { transform: none; }
+    .project-shot--fashion { border-radius: 16px; }
   }
   /* Centre capitals exactly in buttons: the line box normally reserves room for accents
      above and descenders below, which leaves caps ~1px high. Trimming the box to the cap
@@ -687,9 +680,8 @@
         <a class="button" href="../projects/fashion-retail-apps/">learn more ↗</a>
       </div>
 
-      <img class="project-backdrop" src="../enterprise/assets/project-2-leather.jpg" width="1920" height="1400" alt="">
-      <img class="project-shot project-shot--phones" src="../enterprise/assets/project-2-retail-apps.png" width="1784" height="1928"
-           alt="Two iPhone screens: checkout with card, cash and loyalty points, and the store assistant menu">
+      <img class="project-shot project-shot--fashion" src="../enterprise/assets/project-3-fashion-phone.jpg" width="1556" height="1167"
+           alt="Store assistant app on an iPhone in a marble stand: menu with filters, new order, track order, reserve, shopping bag, print tags and barcode">
       <div class="micro micro--diamond" aria-hidden="true"></div>
     </section>
 
