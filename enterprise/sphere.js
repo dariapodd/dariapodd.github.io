@@ -125,12 +125,15 @@
       return { faces: extrude([[a, -L], [a, -a], [L, -a], [L, a], [a, a], [a, L], [-a, L], [-a, a], [-L, a], [-L, -a], [-a, -a], [-a, -L]], -0.3, 0.3) };
     },
     book() {
-      // Two halves of pages rising from the spine in a shallow V
-      const half = box([0, 0, -0.7], [1, 0.14, 0.7]);
-      const cover = box([0, -0.05, -0.75], [1.05, 0, 0.75]);
+      // Open book, spine running front to back: each half is a block of pages whose top curves
+      // up from the spine and flattens out, on a thin cover
+      const profile = [[0, 0], [1, 0], [1, 0.2], [0.75, 0.27], [0.45, 0.28], [0.2, 0.22], [0.06, 0.1]];
+      const pages = place(extrude(profile, -0.68, 0.68), undefined, [0, 0.03, 0]);
+      const cover = box([0, -0.03, -0.74], [1.06, 0.03, 0.74]);
+      const half = [...pages, ...cover];
       return { faces: [
-        ...place([...half, ...cover], rotZ(rad(18))),
-        ...place([...half, ...cover], (v) => rotZ(rad(-18))([-v[0], v[1], v[2]])),   // mirrored
+        ...place(half, rotZ(rad(8))),
+        ...place(half, (v) => rotZ(rad(-8))([-v[0], v[1], v[2]])),   // mirrored
       ] };
     },
     cap() {
