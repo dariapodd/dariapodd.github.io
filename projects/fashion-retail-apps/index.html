@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sales automation apps for luxury fashion retail: Daria Podrezova</title>
+<meta name="description" content="Case study: 17 iOS apps for TSUM's style assistants, warehouse and delivery teams, including the first mobile checkout on iOS in the country.">
+<link rel="icon" href="../../favicon-64.png" type="image/png" sizes="64x64">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="../../fonts/KodeMono.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+  /* Kode Mono, self-hosted (full character set). License: fonts/OFL.txt */
+  @font-face {
+    font-family: "Kode Mono";
+    src: url("../../fonts/KodeMono.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+  }
+
+  /* Same tokens as the homepage */
+  :root {
+    --bg: #1e1d19;
+    --bg-mid: #2c2b29;
+    --bg-glow: #393938;
+    --ink: #dddcc8;
+    --accent: #00ffcc;
+    --rule: #3d414a;
+
+    --nav-fs: 16px;
+    --margin-line: 26px;
+    --content-left: 160px;
+    --text-left: calc(var(--margin-line) + 1px + var(--content-left));
+    --gutter: 53px;
+  }
+  @media (max-width: 700px) {
+    :root { --content-left: 26px; }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    position: relative;
+    min-height: 100vh;
+    /* Figma: a tall radial glow down the middle of the page */
+    background: radial-gradient(960px 2887px at 50% 50%, var(--bg-glow), var(--bg-mid) 50%, var(--bg)) var(--bg);
+    color: var(--ink);
+    font-family: "Kode Mono", ui-monospace, monospace;
+  }
+  /* Vertical margin line, the full height of the page */
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--margin-line);
+    width: 1px;
+    background: var(--rule);
+    pointer-events: none;
+  }
+
+  /* ---------- Resume button (as on the homepage) ---------- */
+  .resume {
+    position: fixed;
+    z-index: 10;
+    top: 32px;
+    right: 32px;
+    padding: 12.5px 32px 11.5px;
+    border-radius: 12px;
+    background: rgba(28, 71, 56, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .resume:hover { font-weight: 600; }
+  @supports (corner-shape: squircle) {
+    .resume { border-radius: 24px; corner-shape: squircle; }
+  }
+  @supports (text-box: trim-both cap alphabetic) {
+    .resume { text-box: trim-both cap alphabetic; padding-top: 15.6px; padding-bottom: 15.6px; }
+  }
+
+  /* ---------- Page ---------- */
+  .page {
+    padding: 131px var(--gutter) 217px var(--text-left);
+  }
+  .back {
+    display: inline-block;
+    padding: 16px 0;
+    color: var(--accent);
+    font-size: var(--nav-fs);
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .back:hover { font-weight: 600; }
+
+  .case {
+    display: flex;
+    flex-direction: column;
+    gap: 120px;
+    max-width: 1086px;
+    padding-top: 48px;
+  }
+
+  h1, h2 {
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  h1 { font-size: 60px; line-height: 1.2; }
+  h2 { font-size: 48px; line-height: 1.2; }
+  @media (max-width: 700px) {
+    h1 { font-size: 36px; }
+    h2 { font-size: 32px; }
+  }
+
+  /* Body copy: Chakra Petch Light, 16/22.4, 12px between paragraphs */
+  .text, .lead, .caption, .apps {
+    color: #fff;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .text { max-width: 513px; }
+  .text p { margin: 0; }
+  .text p + p { margin-top: 12px; }
+
+  /* ---------- Intro: problem and solution side by side ---------- */
+  .intro { display: flex; flex-direction: column; gap: 80px; }
+  .meta {
+    margin: 0;
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .columns { display: flex; gap: 80px; align-items: flex-start; }
+  .columns > section { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 36px; }
+  .columns .text { max-width: none; }
+  .lead { font-weight: 500; font-size: 20px; line-height: normal; }
+  .lead p { margin: 0; }
+  .lead p + p { margin-top: 24px; }
+
+  /* ---------- Sections ---------- */
+  .section { display: flex; flex-direction: column; gap: 36px; }
+
+  /* Results: four big numbers */
+  .results { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin: 0; }
+  .results div { display: flex; flex-direction: column; gap: 8px; }
+  .results dt { order: 2; color: #fff; font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif; }
+  .results dd { order: 1; margin: 0; color: var(--accent); font: 400 60px/1 "Kode Mono", ui-monospace, monospace; }
+
+  /* The apps, and what each one replaced */
+  .apps { width: 100%; border-collapse: collapse; }
+  .apps th {
+    padding: 0 24px 12px 0;
+    border-bottom: 1px solid var(--rule);
+    color: rgba(221, 220, 200, 0.6);
+    font: 400 14px/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+  .apps td { padding: 16px 24px 16px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .apps td:first-child { width: 24%; color: var(--ink); font-weight: 600; }
+  .apps td:nth-child(2) { width: 40%; }
+  .apps td:last-child { color: rgba(255, 255, 255, 0.65); }
+
+  /* ---------- Figures ---------- */
+  figure.shot { margin: 0; display: flex; flex-direction: column; gap: 16px; }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 12px; }
+  .caption { text-align: center; }
+  @supports (corner-shape: squircle) {
+    .shot img { border-radius: 24px; corner-shape: squircle; }
+  }
+
+  /* ---------- Slides: three in a row, scrolled with text arrows ---------- */
+  .slider-head { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .slider-nav { display: flex; gap: 24px; }
+  .slider-nav button {
+    padding: 4px 0;
+    border: 0;
+    background: none;
+    color: var(--accent);
+    font: 400 24px/1 "Kode Mono", ui-monospace, monospace;
+    cursor: pointer;
+  }
+  .slider-nav button:hover { font-weight: 600; }
+  .slider-nav button:disabled { opacity: 0.3; cursor: default; font-weight: 400; }
+  .slides {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - 2 * 24px) / 3);
+    gap: 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+  }
+  .slides::-webkit-scrollbar { display: none; }
+  .slides li { scroll-snap-align: start; }
+  .slides img { display: block; width: 100%; height: auto; border-radius: 12px; }
+  @media (prefers-reduced-motion: reduce) {
+    .slides { scroll-behavior: auto; }
+  }
+
+  /* ---------- Narrow screens ---------- */
+  @media (max-width: 1100px) {
+    .columns { flex-direction: column; gap: 64px; }
+    .results { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 800px) {
+    .page { padding-top: 112px; }
+    .case { gap: 80px; }
+    .intro { gap: 40px; }
+    .slides { grid-auto-columns: 85%; }
+    /* The table becomes a list of cards */
+    .apps thead { display: none; }
+    .apps, .apps tbody, .apps tr, .apps td { display: block; width: auto !important; }
+    .apps tr { padding: 16px 0; border-bottom: 1px solid var(--rule); }
+    .apps td { padding: 0; border: 0; }
+    .apps td + td { margin-top: 8px; }
+    .apps td:last-child::before { content: "Replaced: "; color: rgba(221, 220, 200, 0.6); }
+  }
+  @media (max-width: 500px) {
+    .results { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <a class="resume" href="../../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
+
+  <main class="page">
+    <a class="back" href="../../enterprise/#project-9">← Back to projects</a>
+
+    <article class="case">
+      <header class="intro">
+        <h1>Sales automation apps for luxury fashion retail</h1>
+        <p class="meta">UI/UX and BA · iOS+Dynamics</p>
+        <div class="columns">
+          <section aria-labelledby="problem">
+            <h2 id="problem">The problem</h2>
+            <div class="lead">
+              <p>TSUM is Moscow’s signature luxury department store: more than 110 years old and, at 70,000 m², the largest department store in Eastern Europe, carrying brands from Dior and Chanel to Rolex and Baccarat. Alongside the store, it runs standalone boutiques for multiple brands.</p>
+              <p>Its success relies on the personal connection between customers and style assistants on the shop floor, so any new tool had to support those conversations rather than get in their way.</p>
+            </div>
+          </section>
+          <section aria-labelledby="solution">
+            <h2 id="solution">The solution</h2>
+            <div class="text">
+              <p>A family of iOS apps for style assistants, warehouse and delivery teams. Together they support every step of in-store service: style suggestions, stock lookup, indoor navigation and checkout on iPod touch, so customers can pay right from the fitting room without breaking the experience.</p>
+            </div>
+          </section>
+        </div>
+      </header>
+
+      <section class="section" aria-labelledby="role">
+        <h2 id="role">My role</h2>
+        <div class="text">
+          <p>As UI designer and business analyst, I designed an ecosystem of 17 bespoke apps for sales, warehouse and delivery staff, including the country’s first iOS-based mobile payment terminal. For customers, I designed two loyalty apps, a navigation app for a boutique shopping village and indoor navigation for a multi-level department store.</p>
+          <p>Day to day, I gathered business requirements, wrote specs for developers, built prototypes and hi-fi designs, and kept the needs of the business, its users and the tech teams in balance.</p>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="results">
+        <h2 id="results">Results</h2>
+        <dl class="results">
+          <div><dt>of the customer journey optimised</dt><dd>80%</dd></div>
+          <div><dt>iOS apps for sales, warehouse and delivery staff</dt><dd>17</dd></div>
+          <div><dt>of devices making thousands of product queries a day</dt><dd>100s</dd></div>
+          <div><dt>mobile checkout on iOS in the country</dt><dd>1st</dd></div>
+        </dl>
+      </section>
+
+      <section class="section" aria-labelledby="inquiry">
+        <h2 id="inquiry">Process highlights: Contextual inquiry to understand physical context</h2>
+        <div class="text">
+          <p>Store and section managers were enthusiastic about giving assistants iPads for client conversations. But on the shop floor, assistants were constantly on the move: carrying garments, managing fitting rooms, packing purchases. They simply had no hands free for a tablet.</p>
+          <p>So instead of one feature-rich tablet app, we designed a suite of lightweight, role-based workflow “slices” on iPod touch, giving assistants just-in-time functionality within the natural flow of their work. We even measured assistants’ pockets to prove the hypothesis: an iPod touch fits in every one.</p>
+          <p>Tablets still had their place. For interior design collections, where consultations are seated and unhurried, we designed a big-screen iPad app instead: the right device for each context.</p>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="testing">
+        <h2 id="testing">Process highlights: User testing</h2>
+        <div class="text">
+          <p>Testing surfaced three lessons:</p>
+          <p>— Match the real world: assistants didn’t recognise the “Reserve” feature, because on the floor everyone called it “lay-by”. “Reserve” was only the status name in the back-end database.</p>
+          <p>— Small shortcuts matter: even a quick action like clearing an input field saved a lot of time when repeated all day.</p>
+          <p>— You are not the user, and neither is your stakeholder: the floor manager’s view of the job was not the store assistant’s.</p>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="paper">
+        <h2 id="paper">Replacing paper and the backroom PC</h2>
+        <div class="text">
+          <p>Almost every old workflow had the same step: walking to the backroom PC. Each app took one of those trips, and the paperwork around it, onto the shop floor.</p>
+        </div>
+        <table class="apps">
+          <thead>
+            <tr><th scope="col">App</th><th scope="col">What it does</th><th scope="col">What it replaced</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Pocket salesperson’s assistant</td><td>Stock, sizes, similar items and reservations, on an iPod touch in every assistant’s pocket</td><td>Reserving items on paper, checking sizes by hand, trips to storage, customers waiting for options</td></tr>
+            <tr><td>Cashdesk that follows the customer</td><td>Payment, returns, receipt printing and parking validation anywhere in the store</td><td>Queues, a limited number of cashiers, separate loyalty card and parking payments</td></tr>
+            <tr><td>Big screen for interior design collections</td><td>Catalogues, shop transfers and customer wish lists on iPad for 9 shops, including Baccarat, Daum &amp; Lalique, Gallery Royal and Fabergé</td><td>Paper catalogues, checking they were up to date, customers remembering their choices</td></tr>
+            <tr><td>Connection with loyal customers</td><td>Detailed customer profiles, purchase and event history, personal preferences</td><td>Profiles in the desktop ERP, Excel reports, paper call lists, preferences recorded by hand</td></tr>
+            <tr><td>Online order delivery</td><td>Delivery routes and orders, sales and PLU confirmations, payment and loyalty</td><td>Paper invoices and route lists, comparing stickers, checking items by hand</td></tr>
+            <tr><td>Distribution for delivery</td><td>Every online order checked with a scanner</td><td>Printing delivery papers, paper invoices, looking for storage cells</td></tr>
+            <tr><td>Packing</td><td>One scanner button to pack an order, with an iPod touch and scanner kit for all storage room staff</td><td>Paper packing lists, filling in papers by hand, checking item lists</td></tr>
+            <tr><td>White-label boutique apps</td><td>Apps for independent boutiques such as Brioni, Loro Piana, Valentino, Dolce &amp; Gabbana and Ralph Lauren: separate databases and business processes, one development and support system</td><td>Each boutique running its own separate processes</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <figure class="shot">
+        <img src="assets/staff-apps.jpg" width="2172" height="1500" loading="lazy" alt="Screens from four staff apps: Buyer, CRM, Lookbook and Warehouse">
+        <figcaption class="caption">4 out of 17 staff apps: Buyer, CRM, Lookbook, Warehouse</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="assets/shopping-village.jpg" width="2172" height="1258" loading="lazy" alt="Customer-facing app for a boutique shopping village">
+        <figcaption class="caption">Customer-facing app — shopping village</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="assets/department-store.jpg" width="2172" height="1258" loading="lazy" alt="Customer-facing shopping app for the department store">
+        <figcaption class="caption">Customer-facing shopping app — department store</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="assets/wedding-planner.jpg" width="2172" height="1142" loading="lazy" alt="Customer-facing shopping website for wedding planning">
+        <figcaption class="caption">Customer-facing shopping website — wedding planner</figcaption>
+      </figure>
+
+      <section class="section" aria-labelledby="slides-title">
+        <div class="slider-head">
+          <h2 id="slides-title">Project slides</h2>
+          <div class="slider-nav">
+            <button type="button" class="prev" aria-label="Previous slides" aria-controls="slides">←</button>
+            <button type="button" class="next" aria-label="Next slides" aria-controls="slides">→</button>
+          </div>
+        </div>
+        <ul class="slides" id="slides">
+          <li><img src="assets/slide-01-cover.jpg" width="1200" height="899" loading="lazy" alt="TSUM Fashion Store: mobile apps for luxury department store staff"></li>
+          <li><img src="assets/slide-02-tsum-store.jpg" width="1200" height="899" loading="lazy" alt="TSUM department store: Moscow’s signature fashion store for over 110 years, 70,000 square metres"></li>
+          <li><img src="assets/slide-03-tsum-brands.jpg" width="1200" height="899" loading="lazy" alt="TSUM’s brands and services, from Dolce &amp; Gabbana and Chanel to mobile checkout and salespersons’ mobile assistants"></li>
+          <li><img src="assets/slide-04-journey-map.jpg" width="1200" height="899" loading="lazy" alt="80% of the customer journey optimised with 17 iOS apps, from buying and packing to checkout"></li>
+          <li><img src="assets/slide-05-pocket-assistant.jpg" width="1200" height="899" loading="lazy" alt="Pocket salesperson’s assistant: an iPod in every pocket, replacing paper reservations and trips to storage"></li>
+          <li><img src="assets/slide-06-cashdesk.jpg" width="1200" height="899" loading="lazy" alt="Cashdesk that follows the customer: mobile checkout anywhere in the store"></li>
+          <li><img src="assets/slide-07-interior-collections.jpg" width="1200" height="899" loading="lazy" alt="Big screen for interior design collections: iPad catalogues for 9 shops"></li>
+          <li><img src="assets/slide-08-white-label.jpg" width="1200" height="899" loading="lazy" alt="White-label apps for independent boutiques: Brioni, Loro Piana, Valentino, Dolce &amp; Gabbana, Ralph Lauren"></li>
+          <li><img src="assets/slide-09-loyal-customers.jpg" width="1200" height="899" loading="lazy" alt="Strong connection with loyal customers: profiles, purchase history and preferences"></li>
+          <li><img src="assets/slide-10-online-delivery.jpg" width="1200" height="899" loading="lazy" alt="Hassle-free online orders delivery: routes, confirmations, payment and loyalty"></li>
+          <li><img src="assets/slide-11-distribution.jpg" width="1200" height="899" loading="lazy" alt="Distributing items for delivery: every online order checked with a scanner"></li>
+          <li><img src="assets/slide-12-packing.jpg" width="1200" height="899" loading="lazy" alt="One scanner button to pack the order, with an iPod and scanner kit"></li>
+        </ul>
+      </section>
+    </article>
+  </main>
+
+<script>
+  // Slides: the arrows move by one slide; each disables at its end of the row
+  (() => {
+    const track = document.getElementById("slides");
+    const prev = document.querySelector(".slider-nav .prev");
+    const next = document.querySelector(".slider-nav .next");
+    const step = () => track.firstElementChild.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap);
+    const sync = () => {
+      prev.disabled = track.scrollLeft <= 1;
+      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+    };
+    prev.addEventListener("click", () => track.scrollBy({ left: -step() }));
+    next.addEventListener("click", () => track.scrollBy({ left: step() }));
+    track.addEventListener("scroll", sync, { passive: true });
+    addEventListener("resize", sync);
+    sync();
+  })();
+</script>
+</body>
+</html>
