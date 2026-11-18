@@ -127,7 +127,7 @@
   }
 
   /* Body copy: Chakra Petch Light, 16/22.4, 12px between paragraphs */
-  .text, .lead, .caption, .apps {
+  .text, .lead, .caption, .apps, .awards {
     color: #fff;
     font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
   }
@@ -154,6 +154,11 @@
   /* Platforms it's built on (Figma 263:1830) */
   .tech-logos { display: flex; align-items: center; gap: 50px; opacity: 0.4; }
   .tech-logos img { display: block; }
+  /* Recognition (Figma 284:26) */
+  .awards { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 16px; font-size: 14px; line-height: normal; margin-top: -4px; }
+  .awards li { display: flex; flex-direction: column; gap: 4px; }
+  .awards strong { font-weight: inherit; color: #fff; }
+  .awards span { color: var(--ink); }
 
   /* ---------- Sections ---------- */
   .section { display: flex; flex-direction: column; gap: 36px; }
@@ -231,8 +236,13 @@
           <section aria-labelledby="solution">
             <h2 id="solution">The solution</h2>
             <div class="text">
-              <p>A family of iOS apps for style assistants, warehouse and delivery teams. Together they support every step of in-store service: style suggestions, stock lookup, indoor navigation and checkout on iPod touch, so customers can pay right from the fitting room without breaking the experience.</p>
+              <p>An ecosystem of 17 iOS apps for style assistants, warehouse and delivery teams, including the country’s first iOS-based mobile payment terminal. Together they support every step of in-store service: style suggestions, stock lookup, indoor navigation and checkout on iPod touch, so customers can pay right from the fitting room without breaking the experience.</p>
             </div>
+            <ul class="awards" aria-label="Recognition">
+              <li><strong>Retail Tech Award</strong><span>International Digital Retail Forum</span></li>
+              <li><strong>Featured product</strong><span>MCOM Marketplace and Ecosystems</span></li>
+              <li><strong>Featured product</strong><span>Digital Technologies Forum</span></li>
+            </ul>
             <div class="tech-logos">
               <img src="assets/dynamics-365.svg" width="157" height="55" alt="Microsoft Dynamics 365">
               <img src="assets/apple.svg" width="43" height="51" alt="Apple iOS">
