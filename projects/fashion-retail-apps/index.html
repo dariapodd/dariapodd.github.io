@@ -151,6 +151,9 @@
   .lead { font-weight: 500; font-size: 20px; line-height: normal; }
   .lead p { margin: 0; }
   .lead p + p { margin-top: 24px; }
+  /* Platforms it's built on (Figma 263:1830) */
+  .tech-logos { display: flex; align-items: center; gap: 50px; opacity: 0.4; }
+  .tech-logos img { display: block; }
 
   /* ---------- Sections ---------- */
   .section { display: flex; flex-direction: column; gap: 36px; }
@@ -264,9 +267,23 @@
             <div class="text">
               <p>A family of iOS apps for style assistants, warehouse and delivery teams. Together they support every step of in-store service: style suggestions, stock lookup, indoor navigation and checkout on iPod touch, so customers can pay right from the fitting room without breaking the experience.</p>
             </div>
+            <div class="tech-logos">
+              <img src="assets/dynamics-365.svg" width="157" height="55" alt="Microsoft Dynamics 365">
+              <img src="assets/apple.svg" width="43" height="51" alt="Apple iOS">
+            </div>
           </section>
         </div>
       </header>
+
+      <figure class="shot">
+        <img src="assets/store-assistant.jpg" width="2172" height="1684" alt="Store assistant app on an iPhone: menu with filters, new order, track order, reserve, shopping bag and print tags">
+        <figcaption class="caption">Store assistant app for helping customers and answering questions</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="assets/payment-app.jpg" width="2172" height="1684" loading="lazy" alt="Main payment app on an iPhone: card, cash and split payment, with loyalty points">
+        <figcaption class="caption">Main payment app enabling the “mobile checkout experience”</figcaption>
+      </figure>
 
       <section class="section" aria-labelledby="role">
         <h2 id="role">My role</h2>
