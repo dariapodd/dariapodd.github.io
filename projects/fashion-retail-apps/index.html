@@ -156,7 +156,7 @@
   .section { display: flex; flex-direction: column; gap: 36px; }
 
   /* Results: four big numbers */
-  .results { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin: 0; }
+  .results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px 32px; margin: 0; }
   .results div { display: flex; flex-direction: column; gap: 8px; }
   .results dt { order: 2; color: #fff; font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif; }
   .results dd { order: 1; margin: 0; color: var(--accent); font: 400 60px/1 "Kode Mono", ui-monospace, monospace; }
@@ -255,7 +255,7 @@
           <section aria-labelledby="problem">
             <h2 id="problem">The problem</h2>
             <div class="lead">
-              <p>TSUM is Moscow’s signature luxury department store: more than 110 years old and, at 70,000 m², the largest department store in Eastern Europe, carrying brands from Dior and Chanel to Rolex and Baccarat. Alongside the store, it runs standalone boutiques for multiple brands.</p>
+              <p>TSUM is Moscow’s signature luxury department store: more than 110 years old and, at 70,000 m², the largest department store in Eastern Europe, carrying brands from Dior and Chanel to Rolex and Baccarat. Alongside the store, it runs standalone boutiques for multiple brands, and the apps also served DLT, its sister department store in St Petersburg, and Mercury’s multi-brand boutiques.</p>
               <p>Its success relies on the personal connection between customers and style assistants on the shop floor, so any new tool had to support those conversations rather than get in their way.</p>
             </div>
           </section>
@@ -279,11 +279,16 @@
       <section class="section" aria-labelledby="results">
         <h2 id="results">Results</h2>
         <dl class="results">
-          <div><dt>of the customer journey optimised</dt><dd>80%</dd></div>
+          <div><dt>more items sold per sales assistant, year on year</dt><dd>+10%</dd></div>
+          <div><dt>devices in use across TSUM and DLT, with 350–380 daily users</dt><dd>550</dd></div>
+          <div><dt>barcode scans and 5,000 product searches a day</dt><dd>8,000</dd></div>
+          <div><dt>of all item transfer orders placed through the app</dt><dd>34%</dd></div>
           <div><dt>iOS apps for sales, warehouse and delivery staff</dt><dd>17</dd></div>
-          <div><dt>of devices making thousands of product queries a day</dt><dd>100s</dd></div>
           <div><dt>mobile checkout on iOS in the country</dt><dd>1st</dd></div>
         </dl>
+        <div class="text">
+          <p>The sales uplift held up against a natural control group: sections using the app grew 13–18% (section 3001 went from 4.36 to 5.01 items per assistant a day), while sections where it wasn’t used, such as cosmetics and VIP, dropped 1–4%.</p>
+        </div>
       </section>
 
       <section class="section" aria-labelledby="inquiry">
@@ -298,7 +303,7 @@
       <section class="section" aria-labelledby="testing">
         <h2 id="testing">Process highlights: User testing</h2>
         <div class="text">
-          <p>Testing surfaced three lessons:</p>
+          <p>We interviewed sales staff and gathered their feedback every two weeks. Testing surfaced three lessons:</p>
           <p>— Match the real world: assistants didn’t recognise the “Reserve” feature, because on the floor everyone called it “lay-by”. “Reserve” was only the status name in the back-end database.</p>
           <p>— Small shortcuts matter: even a quick action like clearing an input field saved a lot of time when repeated all day.</p>
           <p>— You are not the user, and neither is your stakeholder: the floor manager’s view of the job was not the store assistant’s.</p>
@@ -315,13 +320,15 @@
             <tr><th scope="col">App</th><th scope="col">What it does</th><th scope="col">What it replaced</th></tr>
           </thead>
           <tbody>
-            <tr><td>Pocket salesperson’s assistant</td><td>Stock, sizes, similar items and reservations, on an iPod touch in every assistant’s pocket</td><td>Reserving items on paper, checking sizes by hand, trips to storage, customers waiting for options</td></tr>
-            <tr><td>Cashdesk that follows the customer</td><td>Payment, returns, receipt printing and parking validation anywhere in the store</td><td>Queues, a limited number of cashiers, separate loyalty card and parking payments</td></tr>
-            <tr><td>Big screen for interior design collections</td><td>Catalogues, shop transfers and customer wish lists on iPad for 9 shops, including Baccarat, Daum &amp; Lalique, Gallery Royal and Fabergé</td><td>Paper catalogues, checking they were up to date, customers remembering their choices</td></tr>
+            <tr><td>Pocket salesperson’s assistant</td><td>Product details, stock, orders, similar items, sales and special deals on an iPod touch in every assistant’s pocket. Search by category, brand, colour, size, season and location, and order another size or colour mid-conversation</td><td>Reserving items on paper, checking sizes by hand, trips to storage, customers waiting for options</td></tr>
+            <tr><td>Cashdesk that follows the customer</td><td>Payment, returns and parking validation anywhere in the store, integrated with a Sberbank card terminal and a fiscal receipt printer. Wireless printing of receipts, bank and loyalty slips and parking tickets; loyalty, virtual and FixBonus cards. 45 payment sets on four floors, with 80% of sales staff trained</td><td>Queues, a limited number of cashiers, separate loyalty card and parking payments</td></tr>
+            <tr><td>Big screen for interior design collections</td><td>Catalogues, recommendations, stock and orders on iPad in 9 boutiques across 5 locations, including Baccarat, Daum &amp; Lalique, Gallery Royal and Fabergé. Customer favourites export to PDF as a presentation</td><td>Paper catalogues, checking they were up to date, customers remembering their choices</td></tr>
             <tr><td>Connection with loyal customers</td><td>Detailed customer profiles, purchase and event history, personal preferences</td><td>Profiles in the desktop ERP, Excel reports, paper call lists, preferences recorded by hand</td></tr>
-            <tr><td>Online order delivery</td><td>Delivery routes and orders, sales and PLU confirmations, payment and loyalty</td><td>Paper invoices and route lists, comparing stickers, checking items by hand</td></tr>
+            <tr><td>Online order delivery</td><td>Delivery routes and orders, barcode checks of order contents, sales and PLU confirmations, loyalty cards, and payment by card or cash over LTE</td><td>Paper invoices and route lists, comparing stickers, checking items by hand</td></tr>
             <tr><td>Distribution for delivery</td><td>Every online order checked with a scanner</td><td>Printing delivery papers, paper invoices, looking for storage cells</td></tr>
-            <tr><td>Packing</td><td>One scanner button to pack an order, with an iPod touch and scanner kit for all storage room staff</td><td>Paper packing lists, filling in papers by hand, checking item lists</td></tr>
+            <tr><td>Packing and goods acceptance</td><td>One scanner button to pack an e-shop order, with an iPod touch and scanner kit for all storage room staff, plus goods acceptance at the depot</td><td>Paper packing lists, filling in papers by hand, checking item lists</td></tr>
+            <tr><td>Mobile sticker printing</td><td>Availability checks, current prices and price updates for sales and special offers, printed on the spot with PathFinder and iPod sticker sets</td><td>—</td></tr>
+            <tr><td>Customer demand register</td><td>Captures what customers ask for when it isn’t on the shelf: items that were in stock before, items in the brand catalogue, or just an idea of what they want (Mercury boutiques)</td><td>Requests for unavailable items that went unrecorded</td></tr>
             <tr><td>White-label boutique apps</td><td>Apps for independent boutiques such as Brioni, Loro Piana, Valentino, Dolce &amp; Gabbana and Ralph Lauren: separate databases and business processes, one development and support system</td><td>Each boutique running its own separate processes</td></tr>
           </tbody>
         </table>
@@ -359,7 +366,6 @@
           <li><img src="assets/slide-01-cover.jpg" width="1200" height="899" loading="lazy" alt="TSUM Fashion Store: mobile apps for luxury department store staff"></li>
           <li><img src="assets/slide-02-tsum-store.jpg" width="1200" height="899" loading="lazy" alt="TSUM department store: Moscow’s signature fashion store for over 110 years, 70,000 square metres"></li>
           <li><img src="assets/slide-03-tsum-brands.jpg" width="1200" height="899" loading="lazy" alt="TSUM’s brands and services, from Dolce &amp; Gabbana and Chanel to mobile checkout and salespersons’ mobile assistants"></li>
-          <li><img src="assets/slide-04-journey-map.jpg" width="1200" height="899" loading="lazy" alt="80% of the customer journey optimised with 17 iOS apps, from buying and packing to checkout"></li>
           <li><img src="assets/slide-05-pocket-assistant.jpg" width="1200" height="899" loading="lazy" alt="Pocket salesperson’s assistant: an iPod in every pocket, replacing paper reservations and trips to storage"></li>
           <li><img src="assets/slide-06-cashdesk.jpg" width="1200" height="899" loading="lazy" alt="Cashdesk that follows the customer: mobile checkout anywhere in the store"></li>
           <li><img src="assets/slide-07-interior-collections.jpg" width="1200" height="899" loading="lazy" alt="Big screen for interior design collections: iPad catalogues for 9 shops"></li>
