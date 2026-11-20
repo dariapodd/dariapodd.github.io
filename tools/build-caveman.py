@@ -126,6 +126,35 @@ html = re.sub(r'\b(href|src)="([^"]*)"', up, html)
 html = html.replace('url("fonts/', 'url("../fonts/')
 html = html.replace(" data-autoopen", "")
 
+# ---- Rocks (caveman/rocks.js): low-poly stones floating over the first project, in % of the
+# block so they scale with it. Positions from Figma 40:2 (1920-wide frame, project block 973 tall).
+ROCK_CSS = """
+  /* ---------- Rocks: floating low-poly stones (rocks.js) ---------- */
+  .rock {
+    position: absolute;
+    z-index: 5;               /* nearest layer: over text, screenshots and diamonds */
+    aspect-ratio: 1;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .rock canvas { display: block; width: 100%; height: 100%; }
+  .rock--a { left: 68.9%; top: -36.9%; width: 26.7%; }    /* straddles the intro and project 1, right */
+  .rock--b { left: -10.3%; top: 78%; width: 34.5%; }      /* off the bottom-left corner of project 1 */
+  @media (max-width: 1279px) { .rock { display: none; } }  /* no room once projects stack */
+"""
+ROCKS = """
+      <div class="rock rock--a" data-seed="7" data-tilt="-34" data-stretch="1.55" aria-hidden="true"></div>
+      <div class="rock rock--b" data-seed="23" data-tilt="45" data-stretch="1.8" aria-hidden="true"></div>"""
+for old, new in [
+    ("</style>\n</head>", ROCK_CSS + "</style>\n</head>"),
+    ('<section class="project project--black" aria-labelledby="project-1">',
+     '<section class="project project--black" aria-labelledby="project-1">' + ROCKS),
+    ("</body>", '<script src="rocks.js" defer></script>\n</body>'),
+]:
+    if html.count(old) != 1:
+        sys.exit(f"build-caveman: expected one {old[:40]!r} for the rocks")
+    html = html.replace(old, new)
+
 doctype, rest = html.split("\n", 1)
 banner = "<!-- Generated from /index.html by tools/build-caveman.py. Do not edit. -->"
 (root / "caveman").mkdir(exist_ok=True)

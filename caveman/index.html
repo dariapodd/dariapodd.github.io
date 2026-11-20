@@ -626,6 +626,19 @@
       padding-bottom: 15.6px;
     }
   }
+
+  /* ---------- Rocks: floating low-poly stones (rocks.js) ---------- */
+  .rock {
+    position: absolute;
+    z-index: 5;               /* nearest layer: over text, screenshots and diamonds */
+    aspect-ratio: 1;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .rock canvas { display: block; width: 100%; height: 100%; }
+  .rock--a { left: 68.9%; top: -36.9%; width: 26.7%; }    /* straddles the intro and project 1, right */
+  .rock--b { left: -10.3%; top: 78%; width: 34.5%; }      /* off the bottom-left corner of project 1 */
+  @media (max-width: 1279px) { .rock { display: none; } }  /* no room once projects stack */
 </style>
 </head>
 <body>
@@ -656,6 +669,8 @@
 
   <main>
     <section class="project project--black" aria-labelledby="project-1">
+      <div class="rock rock--a" data-seed="7" data-tilt="-34" data-stretch="1.55" aria-hidden="true"></div>
+      <div class="rock rock--b" data-seed="23" data-tilt="45" data-stretch="1.8" aria-hidden="true"></div>
       <div class="project-body" aria-hidden="true"></div>
       <div class="project-num" aria-hidden="true">1</div>
 
@@ -954,5 +969,6 @@
 </script>
 <!-- Visitor stats (GoatCounter: no cookies). Skips localhost and browsers marked on /not-me/ -->
 <script data-goatcounter="https://dariapodd.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script src="rocks.js" defer></script>
 </body>
 </html>
