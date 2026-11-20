@@ -193,6 +193,9 @@
     .shot img { border-radius: 24px; corner-shape: squircle; }
   }
 
+  /* Closing note: 48px under the last caption rather than a full 120px section gap */
+  .note { margin: -72px 0 0; color: rgba(255, 255, 255, 0.6); font: 300 14px/1.4 "Chakra Petch", system-ui, sans-serif; }
+
   /* ---------- Narrow screens ---------- */
   @media (max-width: 1100px) {
     .columns { flex-direction: column; gap: 64px; }
@@ -201,6 +204,7 @@
   @media (max-width: 800px) {
     .page { padding-top: 112px; }
     .case { gap: 80px; }
+    .note { margin-top: -32px; }   /* still 48px under the last caption */
     .intro { gap: 40px; }
     /* The table becomes a list of cards */
     .apps thead { display: none; }
@@ -347,6 +351,7 @@
         <figcaption class="caption">Customer-facing shopping website — wedding planner.</figcaption>
       </figure>
 
+      <p class="note">Note: all UI designs are white-labelled and all images are re-generated.</p>
     </article>
   </main>
 
