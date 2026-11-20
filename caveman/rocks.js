@@ -80,8 +80,13 @@
 
   // Sand texture (photo: paulo costa, Unsplash). Each face takes the patch of the photo
   // under it, projected flat along the axis it faces most, so it isn't stretched.
-  const TEXTURE = new Image();
-  TEXTURE.src = new URL("assets/rock-texture.jpg", document.currentScript.src).href;
+  // data-texture picks another photo (same 576×768 size), e.g. red sandstone by Matt Artz, Unsplash
+  const here = document.currentScript.src, textures = new Map();
+  function texture(name) {
+    const src = new URL(`assets/${name || "rock-texture.jpg"}`, here).href;
+    if (!textures.has(src)) { const img = new Image(); img.src = src; textures.set(src, img); }
+    return textures.get(src);
+  }
   function faceUVs(shape, seed) {
     const W = 576, H = 768, s = Math.min(W, H) * 0.45;   // texture size; how much of it a rock spans
     const shift = [[0.5, 0.5], [0.35, 0.6], [0.6, 0.4]].map(([a, b]) => [a * W + (seed % 5) * 9, b * H - (seed % 3) * 11]);
@@ -103,6 +108,7 @@
     return {
       el, canvas, ctx: canvas.getContext("2d"), shape,
       uv: faceUVs(shape, seed),
+      texture: texture(el.dataset.texture),
       tilt: (+el.dataset.tilt || 0) * Math.PI / 180,
       phase: seed % 7,
       visible: true,
@@ -136,7 +142,7 @@
       lit.push({ f, z: a[2] + b[2] + d[2], k: 0.18 + 0.82 * k });
     }
     lit.sort((p, q) => p.z - q.z);                               // far faces first
-    const textured = TEXTURE.complete && TEXTURE.naturalWidth > 0;
+    const TEXTURE = r.texture, textured = TEXTURE.complete && TEXTURE.naturalWidth > 0;
     for (const { f, k } of lit) {
       const scr = f.map(i => [c + pts[i][0] * scale, c - pts[i][1] * scale]);
       const path = (grow) => {
@@ -224,5 +230,5 @@
   // First paint straight away, before any animation frame; again once the texture arrives
   place();
   for (const r of rocks) draw(r, r.phase);
-  TEXTURE.addEventListener("load", () => { for (const r of rocks) draw(r, r.phase + time * TURN); });
+  for (const r of rocks) r.texture.addEventListener("load", () => draw(r, r.phase + time * TURN));
 })();
