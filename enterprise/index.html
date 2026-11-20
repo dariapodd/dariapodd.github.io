@@ -427,7 +427,7 @@
     width: 50%;            /* 720 / 1440 */
     aspect-ratio: 720 / 580;
     object-fit: cover;
-    border-radius: 12px;
+    border-radius: 12px 0 0 12px;   /* in Figma it runs past the edge: no rounded corners on the right */
     transform: translateY(-50%);
     overflow: hidden;
   }
@@ -623,6 +623,7 @@
     }
     .project-shot--track, .project-shot--fashion, .project-shot--deaf { transform: none; }
     .project-shot--fashion { border-radius: 16px; }
+    .project-shot--deaf { border-radius: 12px; }
   }
   /* Centre capitals exactly in buttons: the line box normally reserves room for accents
      above and descenders below, which leaves caps ~1px high. Trimming the box to the cap
