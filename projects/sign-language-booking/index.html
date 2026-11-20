@@ -127,7 +127,7 @@
   }
 
   /* Body copy: Chakra Petch Light, 16/22.4, 12px between paragraphs */
-  .text, .lead, .caption, .apps, .awards {
+  .text, .lead, .caption, .apps, .awards, .review {
     color: #fff;
     font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
   }
@@ -192,6 +192,13 @@
   @supports (corner-shape: squircle) {
     .shot img { border-radius: 24px; corner-shape: squircle; }
   }
+
+  /* Stakeholder review: quote, then the author in bold */
+  .review { margin: 0; display: flex; flex-direction: column; gap: 12px; max-width: 513px; }
+  .review blockquote { margin: 0; }
+  .review blockquote p { margin: 0; }
+  .review blockquote p + p { margin-top: 12px; }
+  .review figcaption { font-weight: 600; }
 
   /* ---------- My process (Figma 300:295): six stages under an arrow ---------- */
   .process-arrow { position: relative; height: 1px; margin-right: 6px; background: var(--ink); }
@@ -346,6 +353,17 @@
         <img src="assets/prototype.jpg" width="2172" height="1078" loading="lazy" alt="Overview of the interactive prototype’s screens and flows">
         <figcaption class="caption">Main interactive prototype.</figcaption>
       </figure>
+
+      <section class="section" aria-labelledby="review">
+        <h2 id="review">Stakeholder review</h2>
+        <figure class="review">
+          <blockquote>
+            <p>Daria is technically brilliant in her specialist area of digital design – when applying her craft of design she is creative, customer centric, and considerate of the overarching strategic business objective – her contribution in this area significantly supported the outcomes for the project, and were greatly appreciated. Daria also demonstrated great experience and insight in research to support design, and in product management – having in many regards fulfilled the role as product / project manager in addition to her design role.</p>
+            <p>Daria is technically strong (as outlined above) and her assertiveness and outcome focus are also strengths which should be leveraged to support future successful outcomes for our clients. Based on her contribution to this project, it is my firm view that Daria is outperforming relative to her peers.</p>
+          </blockquote>
+          <figcaption>— D., Founder</figcaption>
+        </figure>
+      </section>
 
       <p class="note">Note: all UI designs are white-labelled and all images are re-generated.</p>
     </article>
