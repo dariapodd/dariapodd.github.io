@@ -10,6 +10,8 @@
   const STONE = [148, 128, 104];    // warm grey-brown, lit
   const SHADOW = [46, 40, 34];      // colour of faces turned fully away from the light
   const LIGHT = norm([-0.45, 0.7, 0.55]);   // from the top left, in front
+  // Facet inner shadow: [px reaching into the face, opacity], widest and faintest first
+  const INNER_SHADOW = [[7, 0.08], [4, 0.1], [2, 0.14], [0.8, 0.22]];
   const still = matchMedia("(prefers-reduced-motion: reduce)");
 
   function norm(v) { const l = Math.hypot(...v); return v.map(x => x / l); }
@@ -170,6 +172,18 @@
         path(0.6);
         ctx.fill();
       }
+      // Inner shadow: a soft dark band just inside the face's edges, so each facet reads
+      // as its own chipped plane. Clipped to the face, so only the inner half of each stroke shows.
+      ctx.save();
+      path(0);
+      ctx.clip();
+      for (const [w, a] of INNER_SHADOW) {
+        ctx.lineWidth = w * 2;
+        ctx.strokeStyle = `rgba(${SHADOW}, ${a})`;
+        path(0);
+        ctx.stroke();
+      }
+      ctx.restore();
     }
   }
 
