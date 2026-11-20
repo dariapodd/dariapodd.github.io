@@ -160,6 +160,9 @@
     transition: opacity 0.15s ease, transform 0.15s ease;
   }
   .hinted:hover .tip, .hinted:focus-visible .tip { opacity: 1; transform: none; }
+  @supports (corner-shape: squircle) {
+    .hinted .tip { border-radius: 16px; corner-shape: squircle; }
+  }
 </style>
 </head>
 <body>

@@ -638,6 +638,23 @@
       padding-bottom: 15.6px;
     }
   }
+
+  /* iOS-style squircles for every remaining rounded corner, where supported. As elsewhere,
+     the radius doubles so the curve reads the same size as the plain rounded corner. */
+  @supports (corner-shape: squircle) {
+    .logos li, .logos img { border-radius: 4px; corner-shape: squircle; }
+    .logos img.wordmark { border-radius: 0; }
+    .logos .tip, .project-award .tip { border-radius: 16px; corner-shape: squircle; }
+    .project-award, .project-award picture, .project-award picture::after { border-radius: 8px; corner-shape: squircle; }
+    .project-shot--track, .project-shot--portal { border-radius: 24px; corner-shape: squircle; }
+    .project-shot--deaf { border-radius: 24px 0 0 24px; corner-shape: squircle; }
+    .project-shot--fashion { border-radius: 32px 0 0 32px; corner-shape: squircle; }
+    .more-thumb, .more-thumb-link { border-radius: 12px; corner-shape: squircle; }
+    @media (max-width: 1279px) {
+      .project-shot--deaf { border-radius: 24px; }
+      .project-shot--fashion { border-radius: 32px; }
+    }
+  }
 </style>
 </head>
 <body>

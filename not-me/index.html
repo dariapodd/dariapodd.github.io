@@ -44,6 +44,9 @@
   }
   button:hover { font-weight: 600; }
   a { color: var(--accent); }
+  @supports (corner-shape: squircle) {
+    button { border-radius: 24px; corner-shape: squircle; }
+  }
 </style>
 </head>
 <body>
