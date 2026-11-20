@@ -8,6 +8,8 @@
   const script = document.currentScript;
   const base = new URL(".", script.src);            // site root, wherever the page lives
   const current = script.dataset.current;
+  // Remember this style for the session, so article pages link back to it (back.js)
+  try { if (current) sessionStorage.setItem("portfolio-style", current); } catch (e) {}
 
   const STYLES = [
     { id: "enterprise", name: "enterprise", desc: "Normal, recommended", href: "enterprise/", thumb: "enterprise.jpg" },
