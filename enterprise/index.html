@@ -467,6 +467,7 @@
 
   /* ---------- Recommendations (Figma 234:452): two columns, quote over name ---------- */
   .recs, .more { padding: 0 var(--text-left) 120px; }
+  .recs { padding-top: 120px; }   /* gap after the last project (projects themselves sit flush) */
   .recs h2, .more h2 {
     margin: 0 0 44px;
     font-size: 48px;
@@ -756,15 +757,15 @@
       <div class="project-content">
         <h2 id="project-5">Social startup for the Deaf community</h2>
         <div class="project-desc">
-          <p><strong>E2E Product Design.</strong> For the Deaf community and Auslan interpreters: user research, focus groups, questionnaires, personas, journey mapping, data analysis, stakeholder pitches, lo-fi, hi-fi, UI and handover. iOS PoC app delivered.</p>
+          <p>E2E Product Design – user research, focus groups, questionnaires, personas, journey mapping, data analysis, stakeholder pitches, lo-fi, hi-fi, UI and handover. iOS PoC app delivered.</p>
         </div>
-        <span class="button button--soon" aria-disabled="true">case study coming soon</span>
+        <a class="button" href="../projects/sign-language-booking/">learn more ↗</a>
       </div>
 
       <div class="micro micro--solid" data-shape="hand" aria-hidden="true"></div>
-      <div class="project-shot project-shot--deaf">
+      <a class="project-shot project-shot--deaf project-shot-link" href="../projects/sign-language-booking/" tabindex="-1" aria-hidden="true">
         <img src="../enterprise/assets/project-9-deaf-community-phone.png" width="1440" height="1160" loading="lazy" alt="Booking app on a phone: search results listing Auslan interpreters and paraprofessionals with their hourly rates">
-      </div>
+      </a>
     </section>
 
     <section class="project project--grey" aria-labelledby="project-6">

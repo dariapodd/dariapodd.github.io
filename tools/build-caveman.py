@@ -59,7 +59,7 @@ COPY = [
      "<p><strong>Agent skill.</strong> Keep words, hero names, swap rules and style in one place. Whole story-book go to other tongue in about 10 hours. Same voice all way.</p>"),
 
     ('<h2 id="project-5">Social startup for the Deaf community</h2>', '<h2 id="project-5">Hand-talk tribe app</h2>'),
-    ("<p><strong>E2E Product Design.</strong> For the Deaf community and Auslan interpreters: user research, focus groups, questionnaires, personas, journey mapping, data analysis, stakeholder pitches, lo-fi, hi-fi, UI and handover. iOS PoC app delivered.</p>",
+    ("<p>E2E Product Design – user research, focus groups, questionnaires, personas, journey mapping, data analysis, stakeholder pitches, lo-fi, hi-fi, UI and handover. iOS PoC app delivered.</p>",
      "<p><strong>Whole hunt, start to end.</strong> For Deaf tribe and Auslan hand-talkers. Ask questions, listen to groups, draw people and journeys, count data, pitch to chiefs. Draw rough screens, then pretty screens, give to builders. iOS app made.</p>"),
 
     ('<h2 id="project-6">Large education client</h2>', '<h2 id="project-6">Big learning cave</h2>'),

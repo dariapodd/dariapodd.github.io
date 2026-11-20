@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Social startup for the Deaf community: Daria Podrezova</title>
+<meta name="description" content="Case study: an on-demand booking app connecting Deaf people with sign language interpreters, from user research and focus groups to an iOS proof of concept.">
+<link rel="icon" href="../../favicon-64.png" type="image/png" sizes="64x64">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="../../fonts/KodeMono.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+  /* Kode Mono, self-hosted (full character set). License: fonts/OFL.txt */
+  @font-face {
+    font-family: "Kode Mono";
+    src: url("../../fonts/KodeMono.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+  }
+
+  /* Same tokens as the homepage */
+  :root {
+    --bg: #1e1d19;
+    --bg-mid: #2c2b29;
+    --bg-glow: #393938;
+    --ink: #dddcc8;
+    --accent: #00ffcc;
+    --rule: #3d414a;
+
+    --nav-fs: 16px;
+    --margin-line: 26px;
+    --content-left: 160px;
+    --text-left: calc(var(--margin-line) + 1px + var(--content-left));
+    --gutter: 53px;
+  }
+  @media (max-width: 700px) {
+    :root { --content-left: 26px; }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    position: relative;
+    min-height: 100vh;
+    /* Figma: a tall radial glow down the middle of the page */
+    background: radial-gradient(960px 2887px at 50% 50%, var(--bg-glow), var(--bg-mid) 50%, var(--bg)) var(--bg);
+    color: var(--ink);
+    font-family: "Kode Mono", ui-monospace, monospace;
+  }
+  /* Vertical margin line, the full height of the page */
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--margin-line);
+    width: 1px;
+    background: var(--rule);
+    pointer-events: none;
+  }
+
+  /* ---------- Resume button (as on the homepage) ---------- */
+  .resume {
+    position: fixed;
+    z-index: 10;
+    top: 32px;
+    right: 32px;
+    padding: 12.5px 32px 11.5px;
+    border-radius: 12px;
+    background: rgba(28, 71, 56, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .resume:hover { font-weight: 600; }
+  @supports (corner-shape: squircle) {
+    .resume { border-radius: 24px; corner-shape: squircle; }
+  }
+  @supports (text-box: trim-both cap alphabetic) {
+    .resume { text-box: trim-both cap alphabetic; padding-top: 15.6px; padding-bottom: 15.6px; }
+  }
+
+  /* ---------- Page ---------- */
+  .page {
+    padding: 131px var(--gutter) 217px var(--text-left);
+  }
+  .back {
+    display: inline-block;
+    padding: 16px 0;
+    color: var(--accent);
+    font-size: var(--nav-fs);
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .back:hover { font-weight: 600; }
+
+  .case {
+    display: flex;
+    flex-direction: column;
+    gap: 120px;
+    max-width: 1086px;
+    padding-top: 48px;
+  }
+
+  h1, h2 {
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  h1 { font-size: 60px; line-height: 1.2; }
+  h2 { font-size: 48px; line-height: 1.2; }
+  @media (max-width: 700px) {
+    h1 { font-size: 36px; }
+    h2 { font-size: 32px; }
+  }
+
+  /* Body copy: Chakra Petch Light, 16/22.4, 12px between paragraphs */
+  .text, .lead, .caption, .apps, .awards {
+    color: #fff;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .text { max-width: 513px; }
+  .text p { margin: 0; }
+  .text p + p { margin-top: 12px; }
+
+  /* ---------- Intro: problem and solution side by side ---------- */
+  .intro { display: flex; flex-direction: column; gap: 80px; }
+  .meta {
+    margin: 0;
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .columns { display: flex; gap: 80px; align-items: flex-start; }
+  .columns > section { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 36px; }
+  .columns .text { max-width: none; }
+  .lead { font-weight: 500; font-size: 20px; line-height: normal; }
+  .lead p { margin: 0; }
+  .lead p + p { margin-top: 24px; }
+  /* Platforms it's built on (Figma 263:1830) */
+  .tech-logos { display: flex; align-items: center; gap: 50px; opacity: 0.4; }
+  .tech-logos img { display: block; }
+  /* Recognition (Figma 284:26) */
+  .awards { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 16px; font-size: 14px; line-height: normal; margin-top: -4px; }
+  .awards li { display: flex; flex-direction: column; gap: 4px; }
+  .awards strong { font-weight: inherit; color: #fff; }
+  .awards span { color: var(--ink); }
+
+  /* ---------- Sections ---------- */
+  .section { display: flex; flex-direction: column; gap: 36px; }
+
+  /* Results: four big numbers */
+  .results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px 32px; margin: 0; }
+  .results div { display: flex; flex-direction: column; gap: 8px; }
+  .results dt { order: 2; color: #fff; font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif; }
+  .results dd { order: 1; margin: 0; color: var(--accent); font: 400 60px/1 "Kode Mono", ui-monospace, monospace; }
+
+  /* The apps, and what each one replaced */
+  .apps { width: 100%; border-collapse: collapse; }
+  .apps th {
+    padding: 0 24px 12px 0;
+    border-bottom: 1px solid var(--rule);
+    color: rgba(221, 220, 200, 0.6);
+    font: 400 14px/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+  .apps td { padding: 16px 24px 16px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .apps td:first-child { width: 24%; color: var(--ink); font-weight: 600; }
+  .apps td:nth-child(2) { width: 40%; }
+  .apps td:last-child { color: rgba(255, 255, 255, 0.65); }
+
+  /* ---------- Figures ---------- */
+  figure.shot { margin: 0; display: flex; flex-direction: column; gap: 16px; }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 12px; }
+  .caption { text-align: center; }
+  @supports (corner-shape: squircle) {
+    .shot img { border-radius: 24px; corner-shape: squircle; }
+  }
+
+  /* ---------- My process (Figma 300:295): six stages under an arrow ---------- */
+  .process-arrow { position: relative; height: 1px; margin-right: 6px; background: var(--ink); }
+  .process-arrow::after {
+    content: "";
+    position: absolute;
+    right: -1px;
+    top: -6px;
+    width: 12px;
+    height: 12px;
+    border-top: 1px solid var(--ink);
+    border-right: 1px solid var(--ink);
+    transform: rotate(45deg);
+  }
+  .process { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; align-items: start; margin: 0; padding: 0; list-style: none; }
+  .process > li { display: flex; flex-direction: column; gap: 8px; }
+  .process ol { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .process h3, .process li li {
+    margin: 0;
+    padding: 16px;
+    border-radius: 6px;
+    background: #454340;
+    color: #f9f9f9;
+    font: 400 14px/1.2 "Chakra Petch", system-ui, sans-serif;
+  }
+  .process h3 { background: #645e5e; }
+  @supports (corner-shape: squircle) {
+    .process h3, .process li li { border-radius: 12px; corner-shape: squircle; }
+  }
+
+  /* ---------- Narrow screens ---------- */
+  @media (max-width: 1100px) {
+    .columns { flex-direction: column; gap: 64px; }
+    .process { grid-template-columns: repeat(3, 1fr); row-gap: 24px; }
+  }
+  @media (max-width: 800px) {
+    .page { padding-top: 112px; }
+    .case { gap: 80px; }
+    .intro { gap: 40px; }
+  }
+  @media (max-width: 600px) {
+    .process { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+  <a class="resume" href="../../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
+
+  <main class="page">
+    <a class="back" href="../../enterprise/#project-5">← Back to projects</a>
+
+    <article class="case">
+      <header class="intro">
+        <h1>Social startup for the Deaf community: disability services</h1>
+        <p class="meta">End-to-end product design · iOS</p>
+        <div class="columns">
+          <section aria-labelledby="problem">
+            <h2 id="problem">The problem</h2>
+            <div class="lead">
+              <p>Deaf people often need a sign language interpreter on short notice, e.g. for a medical appointment. Current booking process with an agency is slow, rigid, and doesn’t match how life actually works.</p>
+            </div>
+          </section>
+          <section aria-labelledby="solution">
+            <h2 id="solution">The solution</h2>
+            <div class="text">
+              <p>On-demand booking platform connecting Deaf users with verified sign language interpreters (like Uber).</p>
+            </div>
+            <div class="tech-logos">
+              <img src="assets/apple.svg" width="43" height="51" alt="Apple iOS">
+            </div>
+          </section>
+        </div>
+      </header>
+
+      <section class="section" aria-labelledby="role">
+        <h2 id="role">My role</h2>
+        <div class="text">
+          <p>E2E Product Design – user research, focus groups, questionnaires, personas, journey mapping, data analysis, stakeholder pitches, lo-fi, hi-fi, UI and handover. iOS PoC app delivered.</p>
+        </div>
+      </section>
+
+      <figure class="shot">
+        <img src="assets/app-on-the-go.jpg" width="2172" height="1684" alt="Booking screen on a phone held in a hand: schedule a booking for later, with start time, duration, call type and Deaf participants">
+        <figcaption class="caption">The app allowing to book interpreters on-the-go.</figcaption>
+      </figure>
+
+      <section class="section" aria-labelledby="decisions">
+        <h2 id="decisions">Process highlights: decision-making</h2>
+        <div class="text">
+          <p>We wanted to learn how Deaf users pick a good interpreter. During user testing, we asked participants to think aloud about their decision process and to share their impressions of the faces they saw.</p>
+          <p>They hesitated to accept anyone without a photo, and preferred a video preview of the interpreter signing, as signing styles differ a lot.</p>
+          <p>Focus groups proved extremely good for questions about decision-making: visual alignment scales let us discuss differences on the spot. For example, cost-related decisions differed a lot depending on who pays for disability services: the users themselves, their employer, the NDIS and so on.</p>
+        </div>
+      </section>
+
+      <figure class="shot">
+        <img src="assets/interpreter-search.jpg" width="2172" height="1684" loading="lazy" alt="Interpreter search results on a phone: photos, names, qualification, availability and hourly rates">
+        <figcaption class="caption">How do Deaf users select a good interpreter? This was one of our research questions.</figcaption>
+      </figure>
+
+      <section class="section" aria-labelledby="process">
+        <h2 id="process">My process</h2>
+        <div class="process-arrow" aria-hidden="true"></div>
+        <ol class="process">
+          <li><h3>Research plan</h3><ol><li>Business model canvas</li><li>Informal user interview notes</li><li>Draft personas</li><li>Research questions</li><li>Hypotheses list</li><li>Session plan</li></ol></li>
+          <li><h3>Desktop research</h3><ol><li>Competitor analysis</li><li>Policy research</li></ol></li>
+          <li><h3>User research</h3><ol><li>User focus group×3</li><li>Provider interviews×5</li><li>Insights analysis (affinity map)</li><li>User survey (SurveyMonkey)</li><li>Provider survey (SurveyMonkey)</li><li>Data analysis</li></ol></li>
+          <li><h3>Design</h3><ol><li>Personas</li><li>Future-state journey map</li><li>Booking process flows</li><li>UI references / moodboard</li><li>Figma prototype (6 iterations)</li></ol></li>
+          <li><h3>Validation</h3><ol><li>8×user testing sessions</li><li>1×user focus group</li><li>1×provider focus group</li><li>Insights summary</li></ol></li>
+          <li><h3>PoC</h3><ol><li>Technical requirements</li><li>Working iOS PoC</li><li>Development roadmap</li><li>Pitch deck</li></ol></li>
+        </ol>
+      </section>
+
+      <figure class="shot">
+        <img src="assets/interpreter-view.jpg" width="2172" height="1684" loading="lazy" alt="Interpreter’s availability screen on a phone: start now, duration, confirm or stop">
+        <figcaption class="caption">Interpreter view allowing to utilise breaks between appointments</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="assets/hearing-note.jpg" width="2172" height="1684" loading="lazy" alt="Phone showing a full-screen note: “Hi! I’m deaf so I will be using an interpreter on this device. Please speak to them – like on a regular phone call.”">
+        <figcaption class="caption">A note for hearing people: in case they’re confused during an appointment</figcaption>
+      </figure>
+
+      <section class="section" aria-labelledby="trust">
+        <h2 id="trust">Process highlights: establishing trust</h2>
+        <div class="text">
+          <p>For these conversations, it was very important to establish trust and psychological safety.</p>
+          <p>One trick that worked well: we added a signed video version of the questions to our SurveyMonkey survey. Deaf users can certainly read, but the video proved that our team has someone who actually signs and understands the domain well.</p>
+        </div>
+      </section>
+
+      <figure class="shot">
+        <img src="assets/research-notes.jpg" width="2172" height="680" loading="lazy" alt="Boards of workshop, focus group and interview notes on sticky notes">
+        <figcaption class="caption">Examples of artefacts: user research notes.</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="assets/interview-scripts.jpg" width="2172" height="784" loading="lazy" alt="Focus group and interview scripts, homework and agendas">
+        <figcaption class="caption">Examples of artefacts: interview scripts, pre-work analysis.</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="assets/research-summaries.jpg" width="2172" height="1006" loading="lazy" alt="Research summaries, persona boards and a tech capabilities map">
+        <figcaption class="caption">Examples of artefacts: research summaries, personas, tech capabilities mapping.</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="assets/prototype.jpg" width="2172" height="1078" loading="lazy" alt="Overview of the interactive prototype’s screens and flows">
+        <figcaption class="caption">Main interactive prototype</figcaption>
+      </figure>
+
+    </article>
+  </main>
+
+<!-- Visitor stats (GoatCounter: no cookies). Skips localhost and browsers marked on /not-me/ -->
+<script data-goatcounter="https://dariapodd.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
