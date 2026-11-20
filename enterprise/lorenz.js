@@ -316,7 +316,7 @@
   const overBox = (e) => {
     const r = host.getBoundingClientRect();
     return r.width && e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom
-      && !e.target.closest("a, button, [tabindex], .style-menu");
+      && !e.target.closest("a, button, [tabindex], .welcome");
   };
   hero.addEventListener("pointermove", (e) => {
     if (drag) {

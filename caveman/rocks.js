@@ -235,7 +235,7 @@
   const DRAG_RAD_PER_PX = 0.01;
   let held = null;
   const rockAt = (e) => rocks.find(r => {
-    if (!("drag" in r.el.dataset) || e.target.closest("a, button, [tabindex], .style-menu, .welcome")) return false;
+    if (!("drag" in r.el.dataset) || e.target.closest("a, button, [tabindex], .welcome")) return false;
     const b = r.el.getBoundingClientRect(), pad = 24;
     return b.width && e.clientX >= b.left - pad && e.clientX <= b.right + pad && e.clientY >= b.top - pad && e.clientY <= b.bottom + pad;
   });
