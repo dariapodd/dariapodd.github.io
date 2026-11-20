@@ -391,9 +391,9 @@
   .project-award img { display: block; width: 100%; height: auto; }
   .project-award picture::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 13.1px rgba(255, 255, 255, 0.3); pointer-events: none; }
 
-  /* Second screenshot that fades in while the project is hovered (light mode of the same app) */
+  /* Second screenshot that fades in while the screenshot itself is hovered (light mode of the same app) */
   .project-shot-link .shot-alt { position: absolute; inset: 0; opacity: 0; transition: opacity 0.4s ease; }
-  .project:hover .project-shot-link .shot-alt { opacity: 1; }
+  .project-shot-link:hover .shot-alt { opacity: 1; }
   @media (prefers-reduced-motion: reduce) { .project-shot-link .shot-alt { transition: none; } }
 
   /* Positions below are the Figma frame's, as % of the 1920×960 block */
