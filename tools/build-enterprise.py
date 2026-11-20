@@ -19,7 +19,7 @@ def up(m):
         path = ""
     return f'{attr}="../{path}"'
 
-html = re.sub(r'\b(href|src)="([^"]*)"', up, html)
+html = re.sub(r'\b(href|src|srcset)="([^"]*)"', up, html)   # srcset: single-URL ones only
 html = html.replace('url("fonts/', 'url("../fonts/')
 html = html.replace(" data-autoopen", "")   # menu stays closed here
 

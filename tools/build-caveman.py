@@ -35,10 +35,10 @@ COPY = [
 
     # ---- Projects
     ('<h2 id="project-1">4-dimensional spatial collaboration</h2>', '<h2 id="project-1">Magic 4D rail map</h2>'),
-    ("<p>Immersive Spatial Collaboration Tool for railway asset management. I’ve led complex prototyping and design system development; collaborated on user research, workshops and delivery support.</p>",
-     "<p>Rail tribe. Many tracks, many tunnels, many things to fix. Daria lead big prototype and design system for magic 4D map. Talk to people. Run workshops. Help build.</p>"),
-    ("<p><strong>Result:</strong> faster asset inspections and planning, and less time/cost spent on field visits.</p>",
-     "<p><strong>Result:</strong> fewer walks to track. Check and plan faster. Save time. Save shiny coins.</p>"),
+    ("<p>Immersive Spatial Collaboration Tool for railway asset management. I’ve led complex prototyping and design system development; collaborated on user research and delivery support. <strong>Result:</strong> efficient planning, less time/cost spent on field visits.</p>",
+     "<p>Rail tribe. Many tracks, many tunnels, many things to fix. Daria lead big prototype and design system for magic 4D map. Talk to people. Help build. <strong>Result:</strong> fewer walks to track. Plan faster. Save time. Save shiny coins.</p>"),
+    ('alt="Made For Awards 2024 winner trophy: Breakthrough Product"',
+     'alt="Shiny trophy: Made For Awards 2024, Breakthrough Product"'),
 
     ('<h2 id="project-2">Government/<wbr>health portal</h2>', '<h2 id="project-2">Chief approval cave</h2>'),
     ("<p>Audit and redesign of a complex certification/approval flow with multiple organisations and departments involved, following a recent ServiceNow implementation.</p>",
@@ -124,7 +124,7 @@ def up(m):
         path = ""
     return f'{attr}="../{path}"'
 
-html = re.sub(r'\b(href|src)="([^"]*)"', up, html)
+html = re.sub(r'\b(href|src|srcset)="([^"]*)"', up, html)   # srcset: single-URL ones only
 html = html.replace('url("fonts/', 'url("../fonts/')
 html = html.replace(" data-autoopen", "")
 
@@ -141,7 +141,7 @@ ROCK_CSS = """
   }
   .rock canvas { display: block; width: 100%; height: 100%; }
   .rock--a { left: max(69.2%, 1080px); top: -88%; width: 26.7%; }   /* up in the intro, on the asteroid belt; clear of the headline */
-  .rock--b { left: -10.3%; top: 52%; width: 34.5%; }      /* off the bottom-left corner of project 1, clear of project 2 */
+  .rock--b { left: -10.3%; top: 35%; width: 34.5%; }      /* off the bottom-left corner of project 1, clear of project 2 */
   @media (max-width: 1279px) { .rock { display: none; } }  /* no room once projects stack */
 """
 ROCKS = """

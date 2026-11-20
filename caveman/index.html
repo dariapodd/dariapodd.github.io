@@ -301,7 +301,6 @@
   .project {
     position: relative;
     aspect-ratio: 2 / 1;
-    margin-bottom: 120px;
     overflow-x: clip; /* screenshot runs off the right edge without making the page scroll sideways */
   }
 
@@ -385,6 +384,16 @@
   .project-quote figcaption { font-weight: 600; }
 
   .project-content .button { margin-top: 44px; }
+
+  /* Award badge under a project's description (Figma 184:31): 175px, white inner glow */
+  .project-award { display: block; position: relative; width: 175px; margin: 24px 0 0; border-radius: 4px; overflow: hidden; }
+  .project-award img { display: block; width: 100%; height: auto; }
+  .project-award::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 13.1px rgba(255, 255, 255, 0.3); pointer-events: none; }
+
+  /* Second screenshot that fades in while the project is hovered (light mode of the same app) */
+  .project-shot-link .shot-alt { position: absolute; inset: 0; opacity: 0; transition: opacity 0.4s ease; }
+  .project:hover .project-shot-link .shot-alt { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .project-shot-link .shot-alt { transition: none; } }
 
   /* Positions below are the Figma frame's, as % of the 1920×960 block */
   .project-shot {
@@ -637,7 +646,7 @@
   }
   .rock canvas { display: block; width: 100%; height: 100%; }
   .rock--a { left: max(69.2%, 1080px); top: -88%; width: 26.7%; }   /* up in the intro, on the asteroid belt; clear of the headline */
-  .rock--b { left: -10.3%; top: 52%; width: 34.5%; }      /* off the bottom-left corner of project 1, clear of project 2 */
+  .rock--b { left: -10.3%; top: 35%; width: 34.5%; }      /* off the bottom-left corner of project 1, clear of project 2 */
   @media (max-width: 1279px) { .rock { display: none; } }  /* no room once projects stack */
 </style>
 </head>
@@ -677,18 +686,19 @@
       <div class="project-content">
         <h2 id="project-1">Magic 4D rail map</h2>
         <div class="project-desc project-desc--wide">
-          <p>Rail tribe. Many tracks, many tunnels, many things to fix. Daria lead big prototype and design system for magic 4D map. Talk to people. Run workshops. Help build.</p>
-          <p><strong>Result:</strong> fewer walks to track. Check and plan faster. Save time. Save shiny coins.</p>
-          <figure class="project-quote">
-            <blockquote>Daria has managed to deliver an outstanding product that is of a much higher quality than most other enterprise applications. Daria has a strong user-centric sense but also a strong business sense.</blockquote>
-            <figcaption>— P., Project Manager</figcaption>
-          </figure>
+          <p>Rail tribe. Many tracks, many tunnels, many things to fix. Daria lead big prototype and design system for magic 4D map. Talk to people. Help build. <strong>Result:</strong> fewer walks to track. Plan faster. Save time. Save shiny coins.</p>
+          <!-- Animated trophy; a still frame for people who prefer reduced motion -->
+          <picture class="project-award">
+            <source srcset="../projects/spatial-collaboration/assets/award.jpg" media="(prefers-reduced-motion: reduce)">
+            <img src="../projects/spatial-collaboration/assets/award.webp" width="480" height="480" loading="lazy" alt="Shiny trophy: Made For Awards 2024, Breakthrough Product">
+          </picture>
         </div>
         <a class="button" href="../projects/spatial-collaboration/">more hunt →</a>
       </div>
 
       <a class="project-shot project-shot--track project-shot-link" href="../projects/spatial-collaboration/" tabindex="-1" aria-hidden="true">
         <img src="../enterprise/assets/project-1-tunnel-bw.jpg" width="1532" height="1014" alt="Track maintenance app: layer list, 360° imagery inside a rail tunnel, and a map with access roads and exclusion zones">
+        <img class="shot-alt" src="../enterprise/assets/project-1-track-light.jpg" width="1532" height="1014" loading="lazy" alt="">
       </a>
       <div class="micro micro--sphere" aria-hidden="true"></div>
     </section>
