@@ -141,14 +141,14 @@ ROCK_CSS = """
   }
   .rock canvas { display: block; width: 100%; height: 100%; }
   .rock--a { left: max(69.2%, 1080px); top: -88%; width: 26.7%; }   /* up in the intro, on the asteroid belt; clear of the headline */
-  .rock--b { left: -10.3%; top: 35%; width: 34.5%; }      /* off the bottom-left corner of project 1, clear of project 2 */
+  .rock--b { left: 79.2%; top: 53.5%; width: 34.5%; }         /* mirrored, off the bottom-right corner of project 1 */
   @media (max-width: 1279px) { .rock { display: none; } }  /* no room once projects stack */
   html.is-rock-grab, html.is-rock-grab * { cursor: grab; }   /* over a rock you can turn */
   html.is-rock-dragging, html.is-rock-dragging * { cursor: grabbing; user-select: none; }
 """
 ROCKS = """
       <div class="rock rock--a" data-seed="7" data-tilt="-34" data-shape="point" data-texture="rock-texture-red.jpg" data-drag aria-hidden="true"></div>
-      <div class="rock rock--b" data-seed="23" data-tilt="45" data-shape="foliate" aria-hidden="true"></div>"""
+      <div class="rock rock--b" data-seed="23" data-tilt="-45" data-shape="foliate" aria-hidden="true"></div>"""
 for old, new in [
     ("</style>\n</head>", ROCK_CSS + "</style>\n</head>"),
     ('<section class="project project--black" aria-labelledby="project-1">',
