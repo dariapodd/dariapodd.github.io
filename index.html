@@ -219,8 +219,8 @@
   }
   .logos img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
 
-  /* Hover / keyboard-focus hint under each logo: company + relationship */
-  .logos .tip {
+  /* Hover / keyboard-focus hint under each logo (company + relationship) and the award badge */
+  .logos .tip, .project-award .tip {
     position: absolute;
     z-index: 6;
     top: calc(100% + 10px);
@@ -240,18 +240,20 @@
     transform: translateY(-4px);
     transition: opacity 0.15s ease, transform 0.15s ease;
   }
-  .logos .tip b {
+  .logos .tip b, .project-award .tip b {
     font: 400 14px/1.2 "Kode Mono", ui-monospace, monospace;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--ink);
   }
-  .logos .tip span {
+  .logos .tip span, .project-award .tip span {
     font: 300 14px/1.4 "Chakra Petch", system-ui, sans-serif;
     color: rgba(255, 255, 255, 0.8);
   }
   .logos li:hover .tip,
-  .logos li:focus-visible .tip {
+  .logos li:focus-visible .tip,
+  .project-award:hover .tip,
+  .project-award:focus-visible .tip {
     opacity: 1;
     transform: none;
   }
@@ -384,9 +386,10 @@
   .project-content .button { margin-top: 44px; }
 
   /* Award badge under a project's description (Figma 184:31): 175px, white inner glow */
-  .project-award { display: block; position: relative; width: 175px; margin: 24px 0 0; border-radius: 4px; overflow: hidden; }
+  .project-award { position: relative; width: 175px; margin: 24px 0 0; border-radius: 4px; outline-offset: 3px; }
+  .project-award picture { display: block; position: relative; border-radius: 4px; overflow: hidden; }
   .project-award img { display: block; width: 100%; height: auto; }
-  .project-award::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 13.1px rgba(255, 255, 255, 0.3); pointer-events: none; }
+  .project-award picture::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 13.1px rgba(255, 255, 255, 0.3); pointer-events: none; }
 
   /* Second screenshot that fades in while the project is hovered (light mode of the same app) */
   .project-shot-link .shot-alt { position: absolute; inset: 0; opacity: 0; transition: opacity 0.4s ease; }
@@ -670,11 +673,14 @@
         <h2 id="project-1">4-dimensional spatial collaboration</h2>
         <div class="project-desc project-desc--wide">
           <p>Immersive Spatial Collaboration Tool for railway asset management. I’ve led complex prototyping and design system development; collaborated on user research and delivery support. <strong>Result:</strong> efficient planning, less time/cost spent on field visits.</p>
-          <!-- Animated trophy; a still frame for people who prefer reduced motion -->
-          <picture class="project-award">
-            <source srcset="projects/spatial-collaboration/assets/award.jpg" media="(prefers-reduced-motion: reduce)">
-            <img src="projects/spatial-collaboration/assets/award.webp" width="480" height="480" loading="lazy" alt="Made For Awards 2024 winner trophy: Breakthrough Product">
-          </picture>
+          <!-- Animated trophy; a still frame for people who prefer reduced motion. Hint on hover/focus. -->
+          <div class="project-award" tabindex="0">
+            <picture>
+              <source srcset="projects/spatial-collaboration/assets/award.jpg" media="(prefers-reduced-motion: reduce)">
+              <img src="projects/spatial-collaboration/assets/award.webp" width="480" height="480" loading="lazy" alt="Global EY Design Studio award, won in 2024 for Breakthrough Product">
+            </picture>
+            <span class="tip" aria-hidden="true"><b>Global EY Design Studio award</b><span>Won in 2024 for Breakthrough Product</span></span>
+          </div>
         </div>
         <a class="button" href="projects/spatial-collaboration/">learn more ↗</a>
       </div>

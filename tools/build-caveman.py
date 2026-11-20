@@ -37,8 +37,10 @@ COPY = [
     ('<h2 id="project-1">4-dimensional spatial collaboration</h2>', '<h2 id="project-1">Magic 4D rail map</h2>'),
     ("<p>Immersive Spatial Collaboration Tool for railway asset management. I’ve led complex prototyping and design system development; collaborated on user research and delivery support. <strong>Result:</strong> efficient planning, less time/cost spent on field visits.</p>",
      "<p>Rail tribe. Many tracks, many tunnels, many things to fix. Daria lead big prototype and design system for magic 4D map. Talk to people. Help build. <strong>Result:</strong> fewer walks to track. Plan faster. Save time. Save shiny coins.</p>"),
-    ('alt="Made For Awards 2024 winner trophy: Breakthrough Product"',
-     'alt="Shiny trophy: Made For Awards 2024, Breakthrough Product"'),
+    ('alt="Global EY Design Studio award, won in 2024 for Breakthrough Product"',
+     'alt="Shiny trophy: Global EY Design Studio award, 2024, Breakthrough Product"'),
+    ("<span>Won in 2024 for Breakthrough Product</span>",
+     "<span>Big tribe give Daria trophy in 2024. New thing nobody make before.</span>"),
 
     ('<h2 id="project-2">Government/<wbr>health portal</h2>', '<h2 id="project-2">Chief approval cave</h2>'),
     ("<p>Audit and redesign of a complex certification/approval flow with multiple organisations and departments involved, following a recent ServiceNow implementation.</p>",
