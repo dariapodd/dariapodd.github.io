@@ -139,7 +139,7 @@ ROCK_CSS = """
   }
   .rock canvas { display: block; width: 100%; height: 100%; }
   .rock--a { left: 68.9%; top: -36.9%; width: 26.7%; }    /* straddles the intro and project 1, right */
-  .rock--b { left: -10.3%; top: 78%; width: 34.5%; }      /* off the bottom-left corner of project 1 */
+  .rock--b { left: -10.3%; top: 52%; width: 34.5%; }      /* off the bottom-left corner of project 1, clear of project 2 */
   @media (max-width: 1279px) { .rock { display: none; } }  /* no room once projects stack */
 """
 ROCKS = """
