@@ -9,7 +9,7 @@
 
   const STYLES = [
     { id: "enterprise", name: "enterprise", desc: "Normal, recommended", href: "enterprise/" },
-    { id: "caveman", name: "caveman", soon: true,
+    { id: "caveman", name: "caveman", href: "caveman/",
       desc: 'Very succinct, inspired by <a href="https://dev.to/onsen/caveman-claude-the-token-cutting-skill-thats-changing-ai-workflows-4hmc" target="_blank" rel="noopener">this skill</a>' },
     { id: "startup", name: "startup", soon: true, desc: "The one with emojis" },
     { id: "elevator-pitch", name: "elevator pitch simulator", desc: "Imagine yourself in a lift in an endlessly tall building...", href: "elevator-pitch/" },
@@ -82,7 +82,7 @@
       margin: 0;
       padding: 8px 12px;
       border-radius: 8px;
-      background: #00ffcc;
+      background: var(--menu-accent, #00ffcc);   /* pages can recolour it */
       color: #000;
       text-align: center;
     }
@@ -122,6 +122,16 @@
     .style-menu a.item:focus-visible .name { font-weight: 600; }
     .style-menu .item.is-soon { opacity: 0.45; cursor: default; }
     .style-menu .desc a { color: inherit; text-decoration: underline; }
+    /* An item whose description has its own link: the name is the item's link, stretched over
+       the whole item, and the description's link sits above it */
+    .style-menu .item.has-links { position: relative; }
+    .style-menu .item-link { color: inherit; text-decoration: none; outline: none; }
+    .style-menu .item-link::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+    .style-menu .item.has-links .desc a { position: relative; z-index: 1; }
+    .style-menu .item.has-links:hover,
+    .style-menu .item.has-links:focus-within { background: #353330; }
+    .style-menu .item.has-links:hover .name,
+    .style-menu .item.has-links:focus-within .name { font-weight: 600; }
     /* 8px corners with Figma-style smoothing → 16px squircle where supported */
     @supports (corner-shape: squircle) {
       .style-menu .intro-box, .style-menu .item { border-radius: 16px; corner-shape: squircle; }
@@ -144,7 +154,12 @@
       if (s.soon) return `<li><div class="${cls}" aria-disabled="true" title="Coming soon">${inner}</div></li>`;
       const target = s.newTab ? ' target="_blank" rel="noopener"' : "";
       const currentAttr = s.id === current ? ' aria-current="page"' : "";
-      return `<li><a class="${cls}" href="${new URL(s.href, base).href}"${target}${currentAttr}>${inner}</a></li>`;
+      const href = new URL(s.href, base).href;
+      // A link can't hold another link: when the description has one, only the name links
+      if (s.desc.includes("<a ")) {
+        return `<li><div class="${cls} has-links"><a class="name item-link" href="${href}"${target}${currentAttr}>${s.name}</a><span class="desc">${s.desc}</span></div></li>`;
+      }
+      return `<li><a class="${cls}" href="${href}"${target}${currentAttr}>${inner}</a></li>`;
     }).join("")}</ul>`;
   nav.append(menu);
   const dim = document.createElement("div");
@@ -154,7 +169,7 @@
 
   toggle.setAttribute("aria-expanded", "false");
   toggle.setAttribute("aria-controls", menu.id);
-  const links = [...menu.querySelectorAll("a.item")];
+  const links = [...menu.querySelectorAll("a.item, a.item-link")];
 
   // Line the panel up with the start of the selector link
   const place = () => menu.style.setProperty("--menu-left", Math.min(toggle.offsetLeft, Math.max(0, nav.clientWidth - menu.offsetWidth)) + "px");
@@ -174,7 +189,7 @@
     if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
     e.preventDefault();
     const i = links.indexOf(document.activeElement);
-    const start = links.findIndex(a => a.classList.contains("is-current"));
+    const start = links.findIndex(a => a.closest(".item").classList.contains("is-current"));
     const next = i === -1 ? links[Math.max(0, start)]
       : links[(i + (e.key === "ArrowDown" ? 1 : -1) + links.length) % links.length];
     next.focus();

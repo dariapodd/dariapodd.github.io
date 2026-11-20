@@ -23,7 +23,11 @@
   // Points
   const SIZE = 1, ALPHA = 0.38, FADE = 1, RADIUS = 30;
   const INK = [221 / 255, 220 / 255, 200 / 255];   // #dddcc8, as the wireframe
-  const TEAL = [0, 1, 204 / 255];                   // #00ffcc
+  // Dot colour: the page's --accent (teal #00ffcc, reddish on the caveman page)
+  const TEAL = (() => {
+    const hex = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim().match(/^#([0-9a-f]{6})$/i);
+    return hex ? [0, 2, 4].map(i => parseInt(hex[1].slice(i, i + 2), 16) / 255) : [0, 1, 204 / 255];
+  })();
   // Dot
   const DOT_TIME = 3600;   // seconds from the start of the path to its end
   const DOT_SIZE = 3, TAIL = 50;
