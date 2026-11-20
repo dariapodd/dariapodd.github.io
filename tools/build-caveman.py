@@ -140,7 +140,7 @@ ROCK_CSS = """
     will-change: transform;
   }
   .rock canvas { display: block; width: 100%; height: 100%; }
-  .rock--a { left: max(76.1%, 1080px); top: -81.5%; width: 26.7%; }   /* up in the intro, on the asteroid belt; clear of the headline */
+  .rock--a { left: max(69.2%, 1080px); top: -88%; width: 26.7%; }   /* up in the intro, on the asteroid belt; clear of the headline */
   .rock--b { left: -10.3%; top: 52%; width: 34.5%; }      /* off the bottom-left corner of project 1, clear of project 2 */
   @media (max-width: 1279px) { .rock { display: none; } }  /* no room once projects stack */
 """
