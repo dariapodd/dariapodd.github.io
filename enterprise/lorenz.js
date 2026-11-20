@@ -46,6 +46,7 @@
   const strays = Math.round(POINTS * STRAY);
   const traced = POINTS - strays;
   const cloud = new Float32Array(POINTS * 3);
+  const straySpread = new Float32Array(strays);   // how far each stray was flung from the path
   {
     const f = (x, y, z) => [SIGMA * (y - x), x * (RHO - z) - y, x * y - BETA * z];
     let x = X0, y = 0, z = Z0;
@@ -65,6 +66,7 @@
     for (let s = 0, k = traced * 3; s < strays; s++) {
       const src = (rand() * traced | 0) * 3;
       const spread = RADIUS * 0.35 * Math.pow(rand(), 2);
+      straySpread[s] = spread;
       cloud[k++] = cloud[src] + gauss() * spread;
       cloud[k++] = cloud[src + 1] + gauss() * spread;
       cloud[k++] = cloud[src + 2] + gauss() * spread;
@@ -92,6 +94,14 @@
     return out;
   }
   const beltDust = BELT ? belt(BELT_DUST, 0.11, 0.012, 7) : null;
+  // Belt mode keeps only the strays flung well clear of the path: the close ones would still
+  // trace the attractor's shape as a dense streak. The rest stay exactly where they were.
+  const WIDE = 3.5;
+  const wideStrays = BELT ? (() => {
+    const out = [];
+    for (let s = 0; s < strays; s++) if (straySpread[s] >= WIDE) out.push(...cloud.subarray((traced + s) * 3, (traced + s) * 3 + 3));
+    return new Float32Array(out);
+  })() : null;
   const beltChunks = BELT ? belt(BELT_CHUNKS, 0.1, 0.01, 11) : null;
 
   // ---- WebGL ----
@@ -150,8 +160,11 @@
   gl.bufferData(gl.ARRAY_BUFFER, cloud, gl.STATIC_DRAW);
   const dotBuf = gl.createBuffer();
   const dotPos = new Float32Array((TAIL + 1) * 3);
-  let dustBuf, chunkBuf;
+  let dustBuf, chunkBuf, strayBuf;
   if (BELT) {
+    strayBuf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, strayBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, wideStrays, gl.STATIC_DRAW);
     dustBuf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, dustBuf);
     gl.bufferData(gl.ARRAY_BUFFER, beltDust, gl.STATIC_DRAW);
@@ -242,10 +255,12 @@
     if (visible) requestAnimationFrame(frame);
     else running = false;
   }
-  // Belt mode: the attractor's scattered dots as they are, then the belt with its own camera
+  // Belt mode: the attractor's wide scattered dots as they are, then the belt with its own camera
   // (turning with the same yaw, so it orbits and can still be dragged), then the dot on its orbit
   function drawBelt(dpr, box, area) {
-    gl.drawArrays(gl.POINTS, traced, strays);
+    gl.bindBuffer(gl.ARRAY_BUFFER, strayBuf);
+    gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
+    gl.drawArrays(gl.POINTS, 0, wideStrays.length / 3);
     gl.uniformMatrix3fv(u.u_rot, false, rotation(yaw - YAW + BELT_YAW, pitch - PITCH + BELT_PITCH, BELT_ROLL));
     gl.uniform1f(u.u_dist, BELT_DIST);
     gl.uniform1f(u.u_focal, BELT_FOCAL);
