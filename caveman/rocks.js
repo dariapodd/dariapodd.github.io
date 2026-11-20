@@ -1,4 +1,4 @@
-// Floating low-poly rocks for the caveman page: flat-shaded faces, no texture.
+// Floating low-poly rocks for the caveman page: faceted, with a sand texture on each face.
 // Each .rock element gets a canvas. The rock turns slowly and drifts with the scroll faster
 // than the page (parallax), as if it floats in a layer nearer to the viewer.
 //   data-seed    shape (same seed, same rock)
@@ -57,14 +57,33 @@
     return { verts: verts.map(v => v.map(x => x / r)), faces };
   }
 
+  // Sand texture (photo: paulo costa, Unsplash). Each face takes the patch of the photo
+  // under it, projected flat along the axis it faces most, so it isn't stretched.
+  const TEXTURE = new Image();
+  TEXTURE.src = new URL("assets/rock-texture.jpg", document.currentScript.src).href;
+  function faceUVs(shape, seed) {
+    const W = 576, H = 768, s = Math.min(W, H) * 0.45;   // texture size; how much of it a rock spans
+    const shift = [[0.5, 0.5], [0.35, 0.6], [0.6, 0.4]].map(([a, b]) => [a * W + (seed % 5) * 9, b * H - (seed % 3) * 11]);
+    const map = new Map();
+    for (const f of shape.faces) {
+      const [a, b, d] = f.map(i => shape.verts[i]);
+      const n = cross(sub(b, a), sub(d, a)).map(Math.abs);
+      const axis = n.indexOf(Math.max(...n));                 // 0: x, 1: y, 2: z
+      const [i, j] = [[1, 2], [0, 2], [0, 1]][axis];
+      map.set(f, f.map(k => { const v = shape.verts[k]; return [shift[axis][0] + v[i] * s, shift[axis][1] - v[j] * s]; }));
+    }
+    return map;
+  }
+
   const rocks = [...document.querySelectorAll(".rock")].map(el => {
     const canvas = document.createElement("canvas");
     el.append(canvas);
+    const seed = +el.dataset.seed || 1, shape = rock(seed, +el.dataset.stretch || 1.5);
     return {
-      el, canvas, ctx: canvas.getContext("2d"),
-      shape: rock(+el.dataset.seed || 1, +el.dataset.stretch || 1.5),
+      el, canvas, ctx: canvas.getContext("2d"), shape,
+      uv: faceUVs(shape, seed),
       tilt: (+el.dataset.tilt || 0) * Math.PI / 180,
-      phase: (+el.dataset.seed || 0) % 7,
+      phase: seed % 7,
       visible: true,
     };
   });
@@ -96,19 +115,54 @@
       lit.push({ f, z: a[2] + b[2] + d[2], k: 0.18 + 0.82 * k });
     }
     lit.sort((p, q) => p.z - q.z);                               // far faces first
+    const textured = TEXTURE.complete && TEXTURE.naturalWidth > 0;
     for (const { f, k } of lit) {
-      const col = STONE.map((v, i) => Math.round(SHADOW[i] + (v - SHADOW[i]) * k));
-      ctx.fillStyle = ctx.strokeStyle = `rgb(${col})`;
-      ctx.beginPath();
-      f.forEach((i, j) => {
-        const [x, y] = pts[i];
-        j ? ctx.lineTo(c + x * scale, c - y * scale) : ctx.moveTo(c + x * scale, c - y * scale);
-      });
-      ctx.closePath();
-      ctx.fill();
-      ctx.lineWidth = 0.6;   // hides hairline seams between faces
-      ctx.stroke();
+      const scr = f.map(i => [c + pts[i][0] * scale, c - pts[i][1] * scale]);
+      const path = (grow) => {
+        // Grown a little from its middle so neighbouring faces overlap: no hairline seams
+        const mx = (scr[0][0] + scr[1][0] + scr[2][0]) / 3, my = (scr[0][1] + scr[1][1] + scr[2][1]) / 3;
+        ctx.beginPath();
+        scr.forEach(([x, y], j) => {
+          const dx = x - mx, dy = y - my, l = Math.hypot(dx, dy) || 1;
+          const px = x + dx / l * grow, py = y + dy / l * grow;
+          j ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+        });
+        ctx.closePath();
+      };
+      if (textured) {
+        // Texture: the face's patch of the photo, mapped onto the face as it turns
+        const uv = r.uv.get(f);
+        ctx.save();
+        path(0.6);
+        ctx.clip();
+        ctx.transform(...affine(uv, scr));
+        ctx.drawImage(TEXTURE, 0, 0);
+        ctx.restore();
+        // Light: darken faces turned from the light
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.fillStyle = `rgba(${SHADOW}, ${((1 - k) * 0.85).toFixed(3)})`;
+        path(0.6);
+        ctx.fill();
+      } else {
+        const col = STONE.map((v, i) => Math.round(SHADOW[i] + (v - SHADOW[i]) * k));
+        ctx.fillStyle = `rgb(${col})`;
+        path(0.6);
+        ctx.fill();
+      }
     }
+  }
+
+  // Matrix taking texture points (u, v) to screen points (x, y) for one triangle
+  function affine([[u0, v0], [u1, v1], [u2, v2]], [[x0, y0], [x1, y1], [x2, y2]]) {
+    const det = u0 * (v1 - v2) + u1 * (v2 - v0) + u2 * (v0 - v1) || 1e-6;
+    return [
+      (x0 * (v1 - v2) + x1 * (v2 - v0) + x2 * (v0 - v1)) / det,
+      (y0 * (v1 - v2) + y1 * (v2 - v0) + y2 * (v0 - v1)) / det,
+      (x0 * (u2 - u1) + x1 * (u0 - u2) + x2 * (u1 - u0)) / det,
+      (y0 * (u2 - u1) + y1 * (u0 - u2) + y2 * (u1 - u0)) / det,
+      (x0 * (u1 * v2 - u2 * v1) + x1 * (u2 * v0 - u0 * v2) + x2 * (u0 * v1 - u1 * v0)) / det,
+      (y0 * (u1 * v2 - u2 * v1) + y1 * (u2 * v0 - u0 * v2) + y2 * (u0 * v1 - u1 * v0)) / det,
+    ];
   }
 
   // Parallax: offset from where the rock sits in the page, so it moves faster than the content
@@ -146,7 +200,8 @@
   addEventListener("scroll", () => { place(); start(); }, { passive: true });
   addEventListener("resize", () => { for (const r of rocks) draw(r, r.phase + time * TURN); place(); start(); });
   still.addEventListener("change", start);
-  // First paint straight away, before any animation frame
+  // First paint straight away, before any animation frame; again once the texture arrives
   place();
   for (const r of rocks) draw(r, r.phase);
+  TEXTURE.addEventListener("load", () => { for (const r of rocks) draw(r, r.phase + time * TURN); });
 })();
