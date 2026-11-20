@@ -28,7 +28,7 @@ COPY = [
      'title="Choose another portfolio style">caveman portfolio<'),
     ("<h1>Hi, I’m Daria,<br>Product Designer,<br>Agentic AI &amp; enterprise<span",
      "<h1>Daria build prototype.<br>Client see, understand,<br>say yes<span"),
-    ("How I work: talk to people. Find the real problem. Map the workflow, simplify it. Prototype it so stakeholders see it, understand it, and say yes. I’m a communicator, explorer, builder and engineers’ friend. 14 years in design, a Master’s in Computer Science, and experience in project management and teaching.",
+    ("I’m a communicator, explorer, builder and engineers’ friend with 14 years in design, a Master’s in Computer Science, and experience in project management and teaching. How I work: talk to people. Find the real problem. Map the workflow, simplify it. Prototype it so stakeholders see it, understand it, and say yes.",
      "How Daria work? Talk to people. Find real problem. Map ugly workflow, make less ugly. Build prototype. Chiefs see. Chiefs understand. Chiefs say yes. Daria talk, explore, build, friend of builders. 14 winters in design. Big brain paper in Computer Science. Also lead projects, also teach young ones."),
     ('<a class="scroll-hint" href="#project-1">scroll down for projects and recommendations ↓</a>',
      '<a class="scroll-hint" href="#project-1">see my trophies ↓</a>'),
