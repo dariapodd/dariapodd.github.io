@@ -4,6 +4,7 @@
 //   data-seed    shape (same seed, same rock)
 //   data-tilt    in-plane angle in degrees (Figma rotation)
 //   data-shape   point or foliate (stone tool shapes)
+//   data-drag    drag over the rock to turn it (yaw and pitch)
 (() => {
   const PARALLAX = 0.25;            // extra drift per px from the viewport centre
   const TURN = 2 * Math.PI / 120;   // radians per second: one slow turn every 2 minutes
@@ -111,6 +112,7 @@
       texture: texture(el.dataset.texture),
       tilt: (+el.dataset.tilt || 0) * Math.PI / 180,
       phase: seed % 7,
+      yaw: 0, pitch: 0,              // added by dragging
       visible: true,
     };
   });
@@ -126,7 +128,8 @@
     ctx.clearRect(0, 0, size, size);
     const c = size / 2, scale = size / 2 - 2;
     const ca = Math.cos(angle), sa = Math.sin(angle);          // turn about the rock's long axis
-    const cb = Math.cos(0.35), sb = Math.sin(0.35);            // tipped a little towards the viewer
+    const tip = 0.35 + r.pitch;                                // tipped a little towards the viewer
+    const cb = Math.cos(tip), sb = Math.sin(tip);
     const ct = Math.cos(r.tilt), st = Math.sin(r.tilt);        // then leaned in the picture plane
     const pts = r.shape.verts.map(([x, y, z]) => {
       let x1 = x * ca + z * sa, z1 = -x * sa + z * ca;
@@ -209,7 +212,7 @@
     last = now;
     if (!still.matches) time += dt;
     place();
-    for (const r of rocks) if (r.visible) draw(r, r.phase + time * TURN);
+    for (const r of rocks) if (r.visible) draw(r, r.phase + r.yaw + time * TURN);
     if (rocks.some(r => r.visible) && !still.matches) requestAnimationFrame(frame);
     else running = false;
   }
@@ -225,10 +228,42 @@
   }, { rootMargin: "300px 0px" });
   rocks.forEach(r => io.observe(r.el));
   addEventListener("scroll", () => { place(); start(); }, { passive: true });
-  addEventListener("resize", () => { for (const r of rocks) draw(r, r.phase + time * TURN); place(); start(); });
+  addEventListener("resize", () => { for (const r of rocks) draw(r, r.phase + r.yaw + time * TURN); place(); start(); });
+
+  // Drag to turn: press over a data-drag rock (its box, a little enlarged) and move. The rock
+  // ignores the pointer itself, so the page listens; links and buttons keep their clicks.
+  const DRAG_RAD_PER_PX = 0.01;
+  let held = null;
+  const rockAt = (e) => rocks.find(r => {
+    if (!("drag" in r.el.dataset) || e.target.closest("a, button, [tabindex], .style-menu, .welcome")) return false;
+    const b = r.el.getBoundingClientRect(), pad = 24;
+    return b.width && e.clientX >= b.left - pad && e.clientX <= b.right + pad && e.clientY >= b.top - pad && e.clientY <= b.bottom + pad;
+  });
+  addEventListener("pointermove", (e) => {
+    if (held) {
+      held.rock.yaw += (e.clientX - held.x) * DRAG_RAD_PER_PX;
+      held.rock.pitch = Math.max(-1.2, Math.min(1.2, held.rock.pitch + (e.clientY - held.y) * DRAG_RAD_PER_PX));
+      held.x = e.clientX; held.y = e.clientY;
+      draw(held.rock, held.rock.phase + held.rock.yaw + time * TURN);
+      start();
+    } else if (e.pointerType !== "touch") {
+      document.documentElement.classList.toggle("is-rock-grab", !!rockAt(e));
+    }
+  });
+  addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "touch" || e.button !== 0) return;
+    const rock = rockAt(e);
+    if (!rock) return;
+    e.preventDefault();   // no text selection while turning
+    held = { rock, x: e.clientX, y: e.clientY };
+    document.documentElement.classList.add("is-rock-dragging");
+  });
+  const letGo = () => { held = null; document.documentElement.classList.remove("is-rock-dragging"); };
+  addEventListener("pointerup", letGo);
+  addEventListener("pointercancel", letGo);
   still.addEventListener("change", start);
   // First paint straight away, before any animation frame; again once the texture arrives
   place();
   for (const r of rocks) draw(r, r.phase);
-  for (const r of rocks) r.texture.addEventListener("load", () => draw(r, r.phase + time * TURN));
+  for (const r of rocks) r.texture.addEventListener("load", () => draw(r, r.phase + r.yaw + time * TURN));
 })();

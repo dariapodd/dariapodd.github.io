@@ -207,7 +207,7 @@
     last = now;
     phase = (phase + dt / DOT_TIME) % 1;
     orbit = (orbit + dt / ORBIT_TIME) % 1;
-    if (!drag) yaw = wrap(yaw + SPIN * dt);
+    if (BELT || !drag) yaw = wrap(yaw + SPIN * dt);    // the belt spins slowly; it can't be dragged
 
     const dpr = Math.min(devicePixelRatio || 1, 2);
     const w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
@@ -256,7 +256,7 @@
     else running = false;
   }
   // Belt mode: the attractor's wide scattered dots as they are, then the belt with its own camera
-  // (turning with the same yaw, so it orbits and can still be dragged), then the dot on its orbit
+  // (turning slowly with the same yaw, but not draggable), then the dot on its orbit
   function drawBelt(dpr, box, area) {
     gl.bindBuffer(gl.ARRAY_BUFFER, strayBuf);
     gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
@@ -309,7 +309,9 @@
   addEventListener("resize", start);
 
   // Drag to rotate, anywhere over the box. The canvas sits behind the text, so the hero
-  // listens instead; links and logos keep their clicks.
+  // listens instead; links and logos keep their clicks. Belt mode: no dragging (the
+  // caveman page's foreground rock takes the drag instead).
+  if (BELT) return;
   let drag = null;
   const overBox = (e) => {
     const r = host.getBoundingClientRect();
