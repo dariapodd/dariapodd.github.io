@@ -136,6 +136,30 @@
     .page { padding-top: 112px; }
     .gallery { gap: 32px; }
   }
+
+  /* An image with a hint on hover / keyboard focus (same look as the homepage hints) */
+  .hinted { position: relative; max-width: 100%; outline-offset: 4px; }
+  .hinted .tip {
+    position: absolute;
+    z-index: 6;
+    top: calc(100% + 10px);
+    left: 0;
+    width: max-content;
+    max-width: min(320px, calc(100vw - 2 * var(--gutter)));
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(25, 22, 19, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.35);
+    color: rgba(255, 255, 255, 0.8);
+    font: 300 14px/1.4 "Chakra Petch", system-ui, sans-serif;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  .hinted:hover .tip, .hinted:focus-visible .tip { opacity: 1; transform: none; }
 </style>
 </head>
 <body>
@@ -147,6 +171,10 @@
     <h1>Illustrations and icons</h1>
 
     <div class="gallery">
+      <div class="hinted" tabindex="0">
+        <img src="assets/hunter-valley-map.jpg" width="1538" height="1600" alt="Hunter Valley winery checklist (visual style and fact-checking): a framed poster with a map of the Hunter Valley wine region with its villages and roads, titled “Hunter Valley: Alice and Bob’s wine guide”, with a checklist of wineries below">
+        <span class="tip" aria-hidden="true">Hunter Valley winery checklist visual style, fact-checking</span>
+      </div>
       <img src="assets/phone-wallpapers.jpg" width="1600" height="900" alt="Five phone wallpapers with glowing red and blue geometric patterns: spirograph rings, a flower in a rounded diamond, concentric circles and radiating rays">
       <img src="assets/genre-covers.jpg" width="1600" height="909" alt="Grid of eighteen abstract cover illustrations for music genres, from EDM and Trance to Folk and Metal">
       <img src="assets/watercolour-cat.jpg" width="847" height="854" alt="Watercolour of a large, calm grey cat rising above a misty pine forest">
