@@ -156,15 +156,21 @@
       return { faces };
     },
     sparkle() {
-      // Four-pointed star, its outline pulled out to a point in front and behind
-      const w = 0.22;
-      const outline = [[0, 1], [-w, w], [-1, 0], [-w, -w], [0, -1], [w, -w], [1, 0], [w, w]];
-      const front = [0, 0, 0.3], back = [0, 0, -0.3], faces = [];
-      outline.forEach((p, i) => {
-        const q = outline[(i + 1) % outline.length], out = [q[1] - p[1], p[0] - q[0]];
-        const P = [p[0], p[1], 0], Q = [q[0], q[1], 0];
-        faces.push(face([P, Q, front], [out[0], out[1], 1]), face([Q, P, back], [out[0], out[1], -1]));
-      });
+      // Four-pointed star, its outline pulled out to a point in front and behind,
+      // with a second, small star to the south-east
+      const w = 0.22, faces = [];
+      const star = (cx, cy, s) => {
+        const outline = [[0, 1], [-w, w], [-1, 0], [-w, -w], [0, -1], [w, -w], [1, 0], [w, w]]
+          .map(([x, y]) => [cx + x * s, cy + y * s]);
+        const front = [cx, cy, 0.3 * s], back = [cx, cy, -0.3 * s];
+        outline.forEach((p, i) => {
+          const q = outline[(i + 1) % outline.length], out = [q[1] - p[1], p[0] - q[0]];
+          const P = [p[0], p[1], 0], Q = [q[0], q[1], 0];
+          faces.push(face([P, Q, front], [out[0], out[1], 1]), face([Q, P, back], [out[0], out[1], -1]));
+        });
+      };
+      star(0, 0, 1);
+      star(0.82, -0.82, 0.36);
       return { faces };
     },
     tesseract() {
