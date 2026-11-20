@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Automation for product designers: Daria Podrezova</title>
+<meta name="description" content="Slides from Daria Podrezova’s talk at a Codex Community event, June 2026: AI automation for product designers, be your own customer zero.">
+<link rel="icon" href="../../favicon-64.png" type="image/png" sizes="64x64">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preload" href="../../fonts/KodeMono.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+  /* Kode Mono, self-hosted (full character set). License: fonts/OFL.txt */
+  @font-face {
+    font-family: "Kode Mono";
+    src: url("../../fonts/KodeMono.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+  }
+
+  /* Same tokens as the homepage */
+  :root {
+    --bg: #1e1d19;
+    --bg-mid: #2c2b29;
+    --bg-glow: #393938;
+    --ink: #dddcc8;
+    --accent: #00ffcc;
+    --rule: #3d414a;
+
+    --nav-fs: 16px;
+    --margin-line: 26px;
+    --content-left: 160px;
+    --text-left: calc(var(--margin-line) + 1px + var(--content-left));
+    --gutter: 53px;
+  }
+  @media (max-width: 700px) {
+    :root { --content-left: 26px; }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    position: relative;
+    min-height: 100vh;
+    background: radial-gradient(960px 2887px at 50% 50%, var(--bg-glow), var(--bg-mid) 50%, var(--bg)) var(--bg);
+    color: var(--ink);
+    font-family: "Kode Mono", ui-monospace, monospace;
+  }
+  /* Vertical margin line, the full height of the page */
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--margin-line);
+    width: 1px;
+    background: var(--rule);
+    pointer-events: none;
+  }
+
+  /* ---------- Resume button (as on the homepage) ---------- */
+  .resume {
+    position: fixed;
+    z-index: 10;
+    top: 32px;
+    right: 32px;
+    padding: 12.5px 32px 11.5px;
+    border-radius: 12px;
+    background: rgba(28, 71, 56, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .resume:hover { font-weight: 600; }
+  @supports (corner-shape: squircle) {
+    .resume { border-radius: 24px; corner-shape: squircle; }
+  }
+  @supports (text-box: trim-both cap alphabetic) {
+    .resume { text-box: trim-both cap alphabetic; padding-top: 15.6px; padding-bottom: 15.6px; }
+  }
+
+  /* ---------- Page ---------- */
+  .page {
+    padding: 131px var(--gutter) 217px var(--text-left);
+  }
+  .back {
+    display: inline-block;
+    padding: 16px 0;
+    color: var(--accent);
+    font-size: var(--nav-fs);
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .back:hover { font-weight: 600; }
+
+  h1 {
+    margin: 48px 0 80px;
+    font-size: 60px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  @media (max-width: 700px) {
+    h1 { font-size: 36px; margin-bottom: 48px; }
+  }
+
+  /* A series of images down the column, each at most its natural size and 800px tall */
+  .gallery {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;   /* left-aligned with the heading */
+    gap: 64px;
+    max-width: 1086px;
+  }
+  .gallery img {
+    display: block;
+    max-width: 100%;
+    max-height: 800px;
+    width: auto;
+    height: auto;
+    border-radius: 12px;
+  }
+  @supports (corner-shape: squircle) {
+    .gallery img { border-radius: 24px; corner-shape: squircle; }
+  }
+  @media (max-width: 800px) {
+    .page { padding-top: 112px; }
+    .gallery { gap: 32px; }
+  }
+
+  /* Talk subtitle under the heading */
+  .meta {
+    margin: -56px 0 80px;
+    color: #fff;
+    font-size: var(--nav-fs);
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  @media (max-width: 700px) { .meta { margin: -24px 0 48px; } }
+  /* Slides fill the column */
+  .gallery img.slide { width: 100%; max-height: none; }
+</style>
+</head>
+<body>
+  <a class="resume" href="../../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
+
+  <main class="page">
+    <a class="back" href="../../enterprise/#more-title">← Back to projects</a>
+
+    <h1>AI Automation for product designers</h1>
+    <p class="meta">Codex Community event talk, June 2026</p>
+
+    <div class="gallery">
+      <img class="slide" src="assets/slide-01.jpg" width="2172" height="1222" alt="Title slide: AI automation for product designers: be your own customer zero. Daria Podrezova, UX/UI Design Manager, USYD tutor (Usability, HCI)">
+      <img class="slide" src="assets/slide-02.jpg" width="2172" height="1222" loading="lazy" alt="About me: 15 years of work experience from UI designer to UX/UI design manager, with examples of projects">
+      <img class="slide" src="assets/slide-03.jpg" width="2172" height="1222" loading="lazy" alt="Where is the best automation value? A chart from fuzzy to well-defined, predictable, repeatable processes, which are easier to automate and probably already automated">
+      <img class="slide" src="assets/slide-04.jpg" width="2172" height="1222" loading="lazy" alt="What is a good example of a fuzzy workflow? Every team has a different answer, but one feature is common: designers are good at studying users">
+      <img class="slide" src="assets/slide-05.jpg" width="2172" height="1222" loading="lazy" alt="What can we build? AI as a feature, AI as a tool, and AI to create new tools for ourselves">
+      <img class="slide" src="assets/slide-06.jpg" width="2172" height="1222" loading="lazy" alt="Value now or repeatable capability: a fish or a fishing rod">
+      <img class="slide" src="assets/slide-07.jpg" width="2172" height="1222" loading="lazy" alt="I am the ideal: a low-poly anglerfish on a dotted path">
+      <img class="slide" src="assets/slide-08.jpg" width="2172" height="1222" loading="lazy" alt="Example 1: a user journey map built programmatically. Lesson learned: building one map this way isn’t that valuable, but in a long project with many updates it compounds">
+      <img class="slide" src="assets/slide-09.jpg" width="2172" height="1222" loading="lazy" alt="Example 2: a structured output reused in a chain of transformations. Lesson learned: work between tools hides a lot of opportunities">
+      <img class="slide" src="assets/slide-10.jpg" width="2172" height="1222" loading="lazy" alt="Interlude: growing our own tools, a timer and a recipe app. Lesson learned: never spend 5 minutes doing a task when you can spend 5 hours automating it">
+      <img class="slide" src="assets/slide-11.jpg" width="2172" height="1222" loading="lazy" alt="Example 3: a road inspection workflow board. Lesson learned: you can adapt the tool to the workflow, and not the other way around">
+      <img class="slide" src="assets/slide-12.jpg" width="2172" height="1222" loading="lazy" alt="Interlude: growing our own tools. Lesson learned: disposable software, still quite a new thing for non-developers">
+      <img class="slide" src="assets/slide-13.jpg" width="2172" height="1222" loading="lazy" alt="Example 3: a scoring exercise. Lesson learned: what does this actually automate, and what happens after the workshop?">
+      <img class="slide" src="assets/slide-14.jpg" width="2172" height="1222" loading="lazy" alt="Example 4: an insurance experience map. Lesson learned: disposable software as a whiteboard">
+      <img class="slide" src="assets/slide-15.jpg" width="2172" height="1222" loading="lazy" alt="Spotted any automation opportunities? Ideas on cards: structured outputs, compounding workflows, repeatable transformations, cross-tool handoffs and more">
+      <img class="slide" src="assets/slide-16.jpg" width="2172" height="1222" loading="lazy" alt="Spotted any automation opportunities? More ideas on cards: traceability, triage and routing, gap detection, artefact sync, expert simulation and more">
+      <img class="slide" src="assets/slide-17.jpg" width="2172" height="1222" loading="lazy" alt="Process and automation may influence each other: a feedback loop where automating your own workflow reveals hidden assumptions in the process">
+      <img class="slide" src="assets/slide-18.jpg" width="2172" height="1222" loading="lazy" alt="Takeaway: the automation receptor. Exercise your automation receptor by analysing your own work processes and creating personalised tools">
+    </div>
+  </main>
+
+<!-- Visitor stats (GoatCounter: no cookies). Skips localhost and browsers marked on /not-me/ -->
+<script data-goatcounter="https://dariapodd.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
