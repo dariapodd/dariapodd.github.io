@@ -174,16 +174,16 @@
       return { faces };
     },
     tesseract() {
-      // Two nested cubes joined corner to corner (lines only)
+      // Two nested cubes joined corner to corner. Each cube is solid for visibility (an edge is
+      // near when one of its faces looks at the viewer, so the outline always stays bright);
+      // a joining line takes the faces of the outer corner it starts from.
       const corner = (s, i) => [i & 1 ? s : -s, i & 2 ? s : -s, i & 4 ? s : -s];
       const lines = [];
       for (let i = 0; i < 8; i++) {
-        for (const bit of [1, 2, 4]) if (!(i & bit)) {
-          lines.push([corner(1, i), corner(1, i | bit)], [corner(0.45, i), corner(0.45, i | bit)]);
-        }
-        lines.push([corner(1, i), corner(0.45, i)]);
+        const [x, y, z] = corner(1, i);
+        lines.push([corner(1, i), corner(0.45, i), [[x, 0, 0], [0, y, 0], [0, 0, z]]]);
       }
-      return { faces: [], lines };
+      return { faces: [...box([-1, -1, -1], [1, 1, 1]), ...box([-0.45, -0.45, -0.45], [0.45, 0.45, 0.45])], lines };
     },
     hand() {
       // Open hand, palm to the viewer, thumb out to the right. Fingers are square-section
@@ -218,7 +218,7 @@
   // centred and scaled to fit the unit sphere so it never leaves its box while turning
   function build(name) {
     const { faces, lines = [] } = SHAPES[name]();
-    const all = [...faces.flatMap(f => f.pts), ...lines.flat()];
+    const all = [...faces.flatMap(f => f.pts), ...lines.flatMap(([a, b]) => [a, b])];
     const lo = [0, 1, 2].map(k => Math.min(...all.map(p => p[k])));
     const hi = [0, 1, 2].map(k => Math.max(...all.map(p => p[k])));
     const c = [(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2];
@@ -233,7 +233,12 @@
         edges.get(key).normals.push(f.n);
       });
     }
-    return { edges: [...edges.values()], lines: lines.map(([a, b]) => ({ from: fit(a), to: fit(b) })) };
+    // A loose line that brings its own face normals is judged like an edge
+    for (const [a, b, normals] of lines) if (normals) edges.set(`line${edges.size}`, { from: fit(a), to: fit(b), normals });
+    return {
+      edges: [...edges.values()],
+      lines: lines.filter(l => !l[2]).map(([a, b]) => ({ from: fit(a), to: fit(b) })),
+    };
   }
 
   for (const host of document.querySelectorAll(".micro--sphere, .micro--solid")) {
