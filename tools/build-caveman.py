@@ -143,8 +143,8 @@ ROCK_CSS = """
   @media (max-width: 1279px) { .rock { display: none; } }  /* no room once projects stack */
 """
 ROCKS = """
-      <div class="rock rock--a" data-seed="7" data-tilt="-34" data-stretch="1.55" aria-hidden="true"></div>
-      <div class="rock rock--b" data-seed="23" data-tilt="45" data-stretch="1.8" aria-hidden="true"></div>"""
+      <div class="rock rock--a" data-seed="7" data-tilt="-34" data-shape="point" aria-hidden="true"></div>
+      <div class="rock rock--b" data-seed="23" data-tilt="45" data-shape="foliate" aria-hidden="true"></div>"""
 for old, new in [
     ("</style>\n</head>", ROCK_CSS + "</style>\n</head>"),
     ('<section class="project project--black" aria-labelledby="project-1">',

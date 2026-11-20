@@ -1,9 +1,9 @@
-// Floating low-poly rocks for the caveman page: faceted, with a sand texture on each face.
+// Floating low-poly stone tools for the caveman page: faceted, with a sand texture on each face.
 // Each .rock element gets a canvas. The rock turns slowly and drifts with the scroll faster
 // than the page (parallax), as if it floats in a layer nearer to the viewer.
 //   data-seed    shape (same seed, same rock)
 //   data-tilt    in-plane angle in degrees (Figma rotation)
-//   data-stretch how much longer than wide
+//   data-shape   point or foliate (stone tool shapes)
 (() => {
   const PARALLAX = 0.25;            // extra drift per px from the viewport centre
   const TURN = 2 * Math.PI / 120;   // radians per second: one slow turn every 2 minutes
@@ -22,36 +22,57 @@
     return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
   }
 
-  // Icosahedron, split once (80 faces), corners pushed in and out at random, then stretched:
-  // a chunky, faceted stone
-  function rock(seed, stretch) {
+  // Knapped stone tool, built as rings of points from the base to the tip, every point nudged
+  // at random so the faces read as flake scars.
+  //   point    (Palaeolithic point) narrow, sharp tip, ridged front, flatter back
+  //   foliate  (foliate point) leaf-shaped, thin, lens-shaped cross-section, rounded base
+  function tool(seed, kind) {
     const rand = rng(seed);
-    const t = (1 + Math.sqrt(5)) / 2;
-    let verts = [[-1, t, 0], [1, t, 0], [-1, -t, 0], [1, -t, 0], [0, -1, t], [0, 1, t], [0, -1, -t], [0, 1, -t],
-      [t, 0, -1], [t, 0, 1], [-t, 0, -1], [-t, 0, 1]].map(norm);
-    let faces = [[0, 11, 5], [0, 5, 1], [0, 1, 7], [0, 7, 10], [0, 10, 11], [1, 5, 9], [5, 11, 4], [11, 10, 2],
-      [10, 7, 6], [7, 1, 8], [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9], [4, 9, 5], [2, 4, 11],
-      [6, 2, 10], [8, 6, 7], [9, 8, 1]];
-    const mid = new Map();
-    const middle = (a, b) => {
-      const key = a < b ? `${a},${b}` : `${b},${a}`;
-      if (!mid.has(key)) { verts.push(norm(verts[a].map((v, k) => v + verts[b][k]))); mid.set(key, verts.length - 1); }
-      return mid.get(key);
-    };
-    faces = faces.flatMap(([a, b, c]) => {
-      const ab = middle(a, b), bc = middle(b, c), ca = middle(c, a);
-      return [[a, ab, ca], [b, bc, ab], [c, ca, bc], [ab, bc, ca]];
-    });
-    // A few big flat cuts make it read as split stone rather than a lumpy ball
-    const cuts = Array.from({ length: 4 }, () => ({ n: norm([rand() - 0.5, rand() - 0.5, rand() - 0.5]), d: 0.55 + rand() * 0.25 }));
-    verts = verts.map(v => {
-      let p = v.map(x => x * (0.86 + rand() * 0.26));
-      for (const { n, d } of cuts) {
-        const over = dot(p, n) - d;
-        if (over > 0) p = p.map((x, k) => x - n[k] * over);
+    const jit = (a) => (rand() - 0.5) * 2 * a;
+    const foliate = kind === "foliate";
+    const ROWS = foliate ? 9 : 8;
+    // Half-width along the length (t: 0 base, 1 tip)
+    const width = foliate
+      ? (t) => 0.62 * Math.pow(Math.sin(Math.PI * (0.12 + 0.88 * t)), 0.5) * (1 - 0.5 * t)
+      : (t) => 0.46 * Math.pow(Math.sin(Math.PI * (0.18 + 0.82 * t)), 0.9) * (1 - 0.35 * t);
+    // Thickness, front and back, as a share of the width
+    const front = foliate ? 0.32 : 0.62, back = foliate ? 0.3 : 0.2;
+    // Cross-section: sharp edges at the sides, a ridge down the front
+    const ring = [[1, 0], [0.5, 0.82], [0, 1], [-0.5, 0.82], [-1, 0], [-0.5, -0.82], [0, -1], [0.5, -0.82]];
+    const verts = [], rows = [];
+    for (let r = 1; r < ROWS; r++) {
+      const t = r / ROWS, y = -1 + 2 * t, w = width(t), row = [];
+      for (const [cx, cz] of ring) {
+        const thick = cz >= 0 ? front : back;
+        row.push(verts.length);
+        verts.push([cx * w * (1 + jit(0.12)), y + jit(0.06), cz * w * thick * (1 + jit(0.3))]);
       }
-      return [p[0] * 0.62, p[1] * 0.62 * stretch, p[2] * 0.5];
-    });
+      rows.push(row);
+    }
+    const base = verts.push([jit(0.05), -1, jit(0.03)]) - 1;
+    const tip = verts.push([jit(0.03), 1.04, 0]) - 1;
+    const faces = [];
+    const n = ring.length;
+    for (let r = 0; r + 1 < rows.length; r++) {
+      for (let i = 0; i < n; i++) {
+        const a = rows[r][i], b = rows[r][(i + 1) % n], c = rows[r + 1][(i + 1) % n], d = rows[r + 1][i];
+        // Split each quad along a random diagonal: less regular, more like chipped stone
+        if (rand() < 0.5) faces.push([a, b, c], [a, c, d]); else faces.push([a, b, d], [b, c, d]);
+      }
+    }
+    for (let i = 0; i < n; i++) {
+      faces.push([base, rows[0][(i + 1) % n], rows[0][i]]);
+      faces.push([tip, rows[rows.length - 1][i], rows[rows.length - 1][(i + 1) % n]]);
+    }
+    // Wind every face outward (away from the long axis), so the far side can be skipped
+    for (const f of faces) {
+      const [p, q, s] = f.map(i => verts[i]);
+      const nrm = cross(sub(q, p), sub(s, p));
+      const mid = [(p[0] + q[0] + s[0]) / 3, 0, (p[2] + q[2] + s[2]) / 3];
+      const yMid = (p[1] + q[1] + s[1]) / 3;
+      const out = Math.abs(mid[0]) + Math.abs(mid[2]) < 1e-3 ? [0, Math.sign(yMid), 0] : mid;
+      if (dot(nrm, out) < 0) f.reverse();
+    }
     // Fit inside the unit circle whatever way it turns
     const r = Math.max(...verts.map(v => Math.hypot(...v)));
     return { verts: verts.map(v => v.map(x => x / r)), faces };
@@ -78,7 +99,7 @@
   const rocks = [...document.querySelectorAll(".rock")].map(el => {
     const canvas = document.createElement("canvas");
     el.append(canvas);
-    const seed = +el.dataset.seed || 1, shape = rock(seed, +el.dataset.stretch || 1.5);
+    const seed = +el.dataset.seed || 1, shape = tool(seed, el.dataset.shape);
     return {
       el, canvas, ctx: canvas.getContext("2d"), shape,
       uv: faceUVs(shape, seed),
