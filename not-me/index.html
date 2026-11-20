@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Visitor stats: this browser</title>
+<link rel="icon" href="../favicon-64.png" type="image/png" sizes="64x64">
+<style>
+  /* Kode Mono, self-hosted. License: fonts/OFL.txt */
+  @font-face {
+    font-family: "Kode Mono";
+    src: url("../fonts/KodeMono.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+  }
+  :root { --bg: #1e1d19; --ink: #dddcc8; --accent: #00ffcc; }
+  html, body { margin: 0; }
+  body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 32px 16px;
+    box-sizing: border-box;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 16px/1.5 "Kode Mono", ui-monospace, monospace;
+  }
+  main { max-width: 520px; display: flex; flex-direction: column; gap: 24px; }
+  h1 { margin: 0; font-size: 24px; font-weight: 400; letter-spacing: 0.07em; text-transform: uppercase; }
+  p { margin: 0; }
+  #state { color: #fff; }
+  button {
+    align-self: flex-start;
+    padding: 12px 24px;
+    border: 0;
+    border-radius: 12px;
+    background: rgba(28, 71, 56, 0.6);
+    color: var(--accent);
+    font: inherit;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  button:hover { font-weight: 600; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Visitor stats</h1>
+  <p id="state">Checking this browser…</p>
+  <button id="toggle" type="button" hidden></button>
+  <p>Do this once in each browser you use, on each device. Clearing site data for this site resets it. <a href="../">Back to the portfolio</a></p>
+</main>
+<script>
+  // GoatCounter's count.js skips counting while localStorage "skipgc" is "t"
+  const state = document.getElementById("state"), button = document.getElementById("toggle");
+  function show() {
+    let skipped = null;
+    try { skipped = localStorage.getItem("skipgc") === "t"; } catch (e) {}
+    if (skipped === null) {
+      state.textContent = "This browser blocks site storage, so it can't be excluded (try a normal, non-private window).";
+      button.hidden = true;
+      return;
+    }
+    state.textContent = skipped
+      ? "Your visits from this browser are NOT counted."
+      : "Your visits from this browser are being counted.";
+    button.textContent = skipped ? "Count me again" : "Stop counting me";
+    button.hidden = false;
+  }
+  button.addEventListener("click", () => {
+    try {
+      if (localStorage.getItem("skipgc") === "t") localStorage.removeItem("skipgc");
+      else localStorage.setItem("skipgc", "t");
+    } catch (e) {}
+    show();
+  });
+  // Opening the page excludes this browser straight away; the button can undo it
+  try { if (!sessionStorage.getItem("not-me-seen")) { localStorage.setItem("skipgc", "t"); sessionStorage.setItem("not-me-seen", "1"); } } catch (e) {}
+  show();
+</script>
+</body>
+</html>
