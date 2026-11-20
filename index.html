@@ -596,22 +596,20 @@
   }
 
   /* Wireframe globe (project 1) and a low-poly solid for each other project (sphere.js),
-     80px above the block's bottom edge, under the text; they turn once a minute */
+     centred in the project's tab in place of a number; they turn once a minute */
   .micro--sphere, .micro--solid {
-    left: var(--text-left);
-    bottom: 80px;
-    width: 40px;
-    height: 40px;
-  }
-  @media (min-width: 1280px) {
-    /* keep room for it under the text (globe + 48px gap), so it never meets the button */
-    .project:has(.micro--sphere, .micro--solid) .project-content { padding-bottom: calc(80px + 40px + 48px); }
+    --size: 56px;
+    z-index: 2;
+    top: calc((130px - var(--size)) / 2);
+    left: calc(var(--margin-line) + 1px + (max(var(--content-left), 96px) - var(--size)) / 2);
+    width: var(--size);
+    height: var(--size);
   }
 
   /* Below 1280px the text column is too narrow for the longest heading word
      ("collaboration", ~420px at 48px) to clear the screenshot: stack text and screenshot */
   @media (max-width: 1279px) {
-    .micro { display: none; }
+    .micro:not(.micro--sphere, .micro--solid) { display: none; }   /* the tab shapes stay */
     .project { aspect-ratio: auto; padding-bottom: 48px; }
     .project-content { width: auto; padding: 160px var(--gutter) 0 var(--text-left); }
     .project-shot {
@@ -668,7 +666,7 @@
   <main>
     <section class="project project--black" aria-labelledby="project-1">
       <div class="project-body" aria-hidden="true"></div>
-      <div class="project-num" aria-hidden="true">1</div>
+      <div class="project-num" aria-hidden="true"></div>
 
       <div class="project-content">
         <h2 id="project-1">4-dimensional spatial collaboration</h2>
@@ -695,7 +693,7 @@
 
     <section class="project project--grey" aria-labelledby="project-2">
       <div class="project-body" aria-hidden="true"></div>
-      <div class="project-num" aria-hidden="true">2</div>
+      <div class="project-num" aria-hidden="true"></div>
 
       <div class="project-content">
         <h2 id="project-2">Government/<wbr>health portal</h2>
@@ -714,7 +712,7 @@
 
     <section class="project project--black" aria-labelledby="project-3">
       <div class="project-body" aria-hidden="true"></div>
-      <div class="project-num" aria-hidden="true">3</div>
+      <div class="project-num" aria-hidden="true"></div>
 
       <div class="project-content">
         <h2 id="project-3">Luxury in-store retail apps</h2>
@@ -733,7 +731,7 @@
 
     <section class="project project--grey" aria-labelledby="project-4">
       <div class="project-body" aria-hidden="true"></div>
-      <div class="project-num" aria-hidden="true">4</div>
+      <div class="project-num" aria-hidden="true"></div>
 
       <div class="project-content">
         <h2 id="project-4">Literary translation workbench</h2>
@@ -751,7 +749,7 @@
 
     <section class="project project--black" aria-labelledby="project-5">
       <div class="project-body" aria-hidden="true"></div>
-      <div class="project-num" aria-hidden="true">5</div>
+      <div class="project-num" aria-hidden="true"></div>
 
       <div class="project-content">
         <h2 id="project-5">Social startup for the Deaf community</h2>
@@ -769,7 +767,7 @@
 
     <section class="project project--grey" aria-labelledby="project-6">
       <div class="project-body" aria-hidden="true"></div>
-      <div class="project-num" aria-hidden="true">6</div>
+      <div class="project-num" aria-hidden="true"></div>
 
       <div class="project-content">
         <h2 id="project-6">Large education client</h2>
@@ -785,7 +783,7 @@
 
     <section class="project project--black" aria-labelledby="project-7">
       <div class="project-body" aria-hidden="true"></div>
-      <div class="project-num" aria-hidden="true">7</div>
+      <div class="project-num" aria-hidden="true"></div>
 
       <div class="project-content">
         <h2 id="project-7">Government client</h2>
@@ -801,7 +799,7 @@
 
     <section class="project project--grey" aria-labelledby="project-8">
       <div class="project-body" aria-hidden="true"></div>
-      <div class="project-num" aria-hidden="true">8</div>
+      <div class="project-num" aria-hidden="true"></div>
 
       <div class="project-content">
         <h2 id="project-8">Figma &amp; AI enablement</h2>
@@ -817,7 +815,7 @@
 
     <section class="project project--black" aria-labelledby="project-9">
       <div class="project-body" aria-hidden="true"></div>
-      <div class="project-num" aria-hidden="true">9</div>
+      <div class="project-num" aria-hidden="true"></div>
 
       <div class="project-content">
         <h2 id="project-9">Spatial digital twin</h2>
