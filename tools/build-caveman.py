@@ -95,6 +95,8 @@ COPY = [
     (">view ↗</a>", ">look ↗</a>"),
 
     # ---- Style: reddish accent, Space Grotesk body text
+    ('<div class="micro micro--lorenz" aria-hidden="true"></div>',
+     '<div class="micro micro--lorenz" data-mode="belt" aria-hidden="true"></div>'),   # asteroid belt instead of the attractor
     ("--accent: #00ffcc;", f"--accent: {ACCENT};\n    --menu-accent: {ACCENT};   /* style menu's intro box */"),
     ("--accent-bg: rgba(0, 255, 204, 0.1);", f"--accent-bg: rgba({ACCENT_RGB}, 0.1);"),
     ("background: rgba(28, 71, 56, 0.6);   /* deep green at 60% (Figma) */",
@@ -143,7 +145,7 @@ ROCK_CSS = """
   @media (max-width: 1279px) { .rock { display: none; } }  /* no room once projects stack */
 """
 ROCKS = """
-      <div class="rock rock--a" data-seed="7" data-tilt="-34" data-shape="point" aria-hidden="true"></div>
+      <div class="rock rock--a" data-seed="7" data-tilt="-34" data-shape="point" data-texture="rock-texture-red.jpg" aria-hidden="true"></div>
       <div class="rock rock--b" data-seed="23" data-tilt="45" data-shape="foliate" aria-hidden="true"></div>"""
 for old, new in [
     ("</style>\n</head>", ROCK_CSS + "</style>\n</head>"),

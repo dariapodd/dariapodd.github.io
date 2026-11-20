@@ -5,9 +5,12 @@
 // cut off when rotated.
 // Transparent background; pauses only while off-screen. The dot is slow and small enough
 // to keep moving even with reduced motion on.
+// data-mode="belt" on the box (caveman page): the same scattered dots, but the attractor's
+// path is replaced by an asteroid belt seen nearly edge-on, and the dot travels its orbit.
 (() => {
   const host = document.querySelector(".micro--lorenz");
   if (!host) return;
+  const BELT = host.dataset.mode === "belt";
 
   // Attractor
   const SIGMA = 8.8, RHO = 25.4, BETA = 1.07, DT = 0.006;
@@ -68,6 +71,29 @@
     }
   }
 
+  // ---- Asteroid belt (belt mode): a flat ring of dust with bigger chunks in it ----
+  // Ring in the horizontal plane, radius 1 (scaled on screen by BELT_FOCAL)
+  const BELT_DUST = 24000, BELT_CHUNKS = 420;
+  const BELT_YAW = 20, BELT_PITCH = -12, BELT_ROLL = -10; // seen 12° from above, tilted down to the right
+  const BELT_DIST = 3, BELT_FOCAL = 6;                    // camera distance, lens (ring radii): ~1100px wide
+  const BELT_SHIFT = [0.42, -0.12];                       // centre offset, in box widths: up and right
+  const ORBIT_TIME = 240;                                 // seconds for the dot to go once round
+  function belt(n, spread, thick, seed) {
+    const r2 = rng(seed), g = () => Math.sqrt(-2 * Math.log(r2() || 1e-9)) * Math.cos(2 * Math.PI * r2());
+    const out = new Float32Array(n * 3);
+    for (let i = 0, k = 0; i < n; i++) {
+      const a = r2() * 2 * Math.PI;
+      // Dense in the middle of the band, thinning towards its edges
+      const r = 1 + g() * spread * (r2() < 0.8 ? 0.6 : 1.4);
+      out[k++] = Math.cos(a) * r;          // x
+      out[k++] = Math.sin(a) * r;          // y (Lorenz y: forward)
+      out[k++] = g() * thick;              // z (Lorenz z: up)
+    }
+    return out;
+  }
+  const beltDust = BELT ? belt(BELT_DUST, 0.11, 0.012, 7) : null;
+  const beltChunks = BELT ? belt(BELT_CHUNKS, 0.1, 0.01, 11) : null;
+
   // ---- WebGL ----
   const hero = host.parentElement;
   const canvas = document.createElement("canvas");
@@ -124,6 +150,15 @@
   gl.bufferData(gl.ARRAY_BUFFER, cloud, gl.STATIC_DRAW);
   const dotBuf = gl.createBuffer();
   const dotPos = new Float32Array((TAIL + 1) * 3);
+  let dustBuf, chunkBuf;
+  if (BELT) {
+    dustBuf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, dustBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, beltDust, gl.STATIC_DRAW);
+    chunkBuf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, chunkBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, beltChunks, gl.STATIC_DRAW);
+  }
 
   gl.enable(gl.BLEND);
   // Colour blends as usual; alpha accumulates, so the transparent canvas composites correctly
@@ -152,12 +187,13 @@
   }
 
   let yaw = YAW, pitch = PITCH;
-  let phase = 0, last = 0, visible = true, running = false;
+  let phase = 0, orbit = 0, last = 0, visible = true, running = false;
 
   function frame(now) {
     const dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
     last = now;
     phase = (phase + dt / DOT_TIME) % 1;
+    orbit = (orbit + dt / ORBIT_TIME) % 1;
     if (!drag) yaw = wrap(yaw + SPIN * dt);
 
     const dpr = Math.min(devicePixelRatio || 1, 2);
@@ -184,6 +220,7 @@
     gl.uniform3fv(u.u_ink, INK);
     gl.uniform1f(u.u_alpha, ALPHA);
     gl.uniform1f(u.u_fade, FADE);
+    if (BELT) { drawBelt(dpr, box, area); if (visible) requestAnimationFrame(frame); else running = false; return; }
     gl.drawArrays(gl.POINTS, 0, POINTS);
 
     // The dot and its fading tail: the path positions it just passed
@@ -205,6 +242,43 @@
     if (visible) requestAnimationFrame(frame);
     else running = false;
   }
+  // Belt mode: the attractor's scattered dots as they are, then the belt with its own camera
+  // (turning with the same yaw, so it orbits and can still be dragged), then the dot on its orbit
+  function drawBelt(dpr, box, area) {
+    gl.drawArrays(gl.POINTS, traced, strays);
+    gl.uniformMatrix3fv(u.u_rot, false, rotation(yaw - YAW + BELT_YAW, pitch - PITCH + BELT_PITCH, BELT_ROLL));
+    gl.uniform1f(u.u_dist, BELT_DIST);
+    gl.uniform1f(u.u_focal, BELT_FOCAL);
+    gl.uniform2f(u.u_centre,
+      (box.left + box.width * (0.5 + BELT_SHIFT[0]) - area.left) / area.width * 2 - 1,
+      1 - (box.top + box.height / 2 + box.width * BELT_SHIFT[1] - area.top) / area.height * 2);
+    gl.uniform1f(u.u_radius, 1.2);
+    gl.uniform1f(u.u_fade, 0.75);
+    for (const [buf, n, size, alpha] of [[dustBuf, BELT_DUST, SIZE, 0.32], [chunkBuf, BELT_CHUNKS, 2.6, 0.75]]) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
+      gl.uniform1f(u.u_size, size * dpr);
+      gl.uniform1f(u.u_alpha, alpha);
+      gl.drawArrays(gl.POINTS, 0, n);
+    }
+    // Dot and fading tail along the orbit
+    const step = 0.004;   // radians between tail points
+    for (let n = 0; n <= TAIL; n++) {
+      const a = orbit * 2 * Math.PI - n * step;
+      dotPos.set([Math.cos(a), Math.sin(a), 0], n * 3);
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, dotBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, dotPos, gl.DYNAMIC_DRAW);
+    gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
+    gl.uniform1f(u.u_size, DOT_SIZE * dpr);
+    gl.uniform3fv(u.u_ink, TEAL);
+    gl.uniform1f(u.u_fade, 0);
+    for (let n = TAIL; n >= 0; n--) {
+      gl.uniform1f(u.u_alpha, 1 - n / (TAIL + 1));
+      gl.drawArrays(gl.POINTS, n, 1);
+    }
+  }
+
   function start() {
     if (running) return;
     running = true;
