@@ -54,11 +54,11 @@ COPY = [
     ("<p><strong>Result: +10% items sold per sales assistant year on year, 550 devices making 8,000 barcode scans a day, and the country’s first mobile checkout on iOS.</strong></p>",
      "<p><strong>Result: each helper sell 10% more every winter. 550 glass stones scan 8,000 stripes a day. First pocket pay-stone in whole land.</strong></p>"),
 
-    ('<h2 id="project-4">Literary translation workbench</h2>', '<h2 id="project-4">Story tongue-swap stone</h2>'),
+    ('<h2 id="project-5">Literary translation workbench</h2>', '<h2 id="project-5">Story tongue-swap stone</h2>'),
     ("<p><strong>Agent skill.</strong> Manages terminology, character names, translation rules and style controls. Makes it possible to translate a fiction novel with consistent personal style choices in about 10 hours.</p>",
      "<p><strong>Agent skill.</strong> Keep words, hero names, swap rules and style in one place. Whole story-book go to other tongue in about 10 hours. Same voice all way.</p>"),
 
-    ('<h2 id="project-5">Social startup for the Deaf community</h2>', '<h2 id="project-5">Hand-talk tribe app</h2>'),
+    ('<h2 id="project-4">Social startup for the Deaf community</h2>', '<h2 id="project-4">Hand-talk tribe app</h2>'),
     ("<p>E2E Product Design – user research, focus groups, questionnaires, personas, journey mapping, data analysis, stakeholder pitches, lo-fi, hi-fi, UI and handover. iOS PoC app delivered.</p>",
      "<p><strong>Whole hunt, start to end.</strong> For Deaf tribe and Auslan hand-talkers. Ask questions, listen to groups, draw people and journeys, count data, pitch to chiefs. Draw rough screens, then pretty screens, give to builders. iOS app made.</p>"),
 
