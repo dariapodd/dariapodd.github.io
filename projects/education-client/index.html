@@ -252,10 +252,24 @@
   }
 
   /* ---------- Two-page magazine (book.js) ---------- */
-  .book { max-width: 1086px; }
+  /* Wider than the text column: two landscape slides need the room. Runs to the right margin. */
+  .book { width: min(1800px, calc(100vw - var(--text-left) - var(--gutter) - 20px)); }
+  /* Full screen: the spread as large as the window allows, controls underneath */
+  .book:fullscreen {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 32px;
+    box-sizing: border-box;
+    background: var(--bg);
+  }
+  .book:fullscreen .book-stage { width: min(100%, calc((100vh - 160px) * 3840 / 1080)); }
+  .book-face { background: #fff; }
   .book-stage {
     position: relative;
-    aspect-ratio: 420 / 297;           /* two A4 pages side by side */
+    aspect-ratio: 3840 / 1080;         /* two 16:9 slides side by side */
     perspective: 4000px;
     cursor: pointer;
     outline-offset: 6px;
@@ -276,7 +290,7 @@
     inset: 0;
     overflow: hidden;
     backface-visibility: hidden;
-    background: #f4f1ea;
+    background: #fff;
     box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.6);
   }
   .book-front { border-radius: 0 12px 12px 0; }
@@ -308,7 +322,10 @@
     .book-front { border-radius: 0 24px 24px 0; corner-shape: squircle; }
     .book-back { border-radius: 24px 0 0 24px; corner-shape: squircle; }
   }
-  /* Placeholder pages until the real ones arrive */
+  /* Without JavaScript the slides are a plain list */
+  .book-source { display: flex; flex-direction: column; gap: 24px; }
+  .book-source img { display: block; width: 100%; height: auto; border-radius: 12px; }
+  /* Placeholder pages */
   .book-placeholder {
     display: grid;
     place-items: center;
@@ -386,14 +403,59 @@
         <figcaption class="caption">Current-state assessment: key tasks.</figcaption>
       </figure>
 
-      <div class="book-source" data-book aria-label="Report pages">
-        <div class="book-placeholder">Cover</div>
-        <div class="book-placeholder">Page 1</div>
-        <div class="book-placeholder">Page 2</div>
-        <div class="book-placeholder">Page 3</div>
-        <div class="book-placeholder">Page 4</div>
-        <div class="book-placeholder">Page 5</div>
-        <div class="book-placeholder">Page 6</div>
+      <div class="book-source" data-book aria-label="Current-state analysis report">
+        <img src="assets/report/slide-01.jpg" width="1920" height="1080" loading="lazy" alt="Slide 1: Cover: Admin process experience, current-state analysis report">
+        <img src="assets/report/slide-02.jpg" width="1920" height="1080" loading="lazy" alt="Slide 2: Contents">
+        <img src="assets/report/slide-03.jpg" width="1920" height="1080" loading="lazy" alt="Slide 3: 01. Executive summary">
+        <img src="assets/report/slide-04.jpg" width="1920" height="1080" loading="lazy" alt="Slide 4: Executive summary">
+        <img src="assets/report/slide-05.jpg" width="1920" height="1080" loading="lazy" alt="Slide 5: 02. Context">
+        <img src="assets/report/slide-06.jpg" width="1920" height="1080" loading="lazy" alt="Slide 6: Context">
+        <img src="assets/report/slide-07.jpg" width="1920" height="1080" loading="lazy" alt="Slide 7: Aligned to the Digital Operations strategy">
+        <img src="assets/report/slide-08.jpg" width="1920" height="1080" loading="lazy" alt="Slide 8: Business capabilities: operations and service">
+        <img src="assets/report/slide-09.jpg" width="1920" height="1080" loading="lazy" alt="Slide 9: 03. Methodology">
+        <img src="assets/report/slide-10.jpg" width="1920" height="1080" loading="lazy" alt="Slide 10: 3.1 Stakeholder engagement and sources of insight for the current state">
+        <img src="assets/report/slide-11.jpg" width="1920" height="1080" loading="lazy" alt="Slide 11: Alignment to personas">
+        <img src="assets/report/slide-12.jpg" width="1920" height="1080" loading="lazy" alt="Slide 12: Activities overview">
+        <img src="assets/report/slide-13.jpg" width="1920" height="1080" loading="lazy" alt="Slide 13: Activities overview (continued)">
+        <img src="assets/report/slide-14.jpg" width="1920" height="1080" loading="lazy" alt="Slide 14: Support team workshops">
+        <img src="assets/report/slide-15.jpg" width="1920" height="1080" loading="lazy" alt="Slide 15: Key user and stakeholder groups">
+        <img src="assets/report/slide-16.jpg" width="1920" height="1080" loading="lazy" alt="Slide 16: Document review">
+        <img src="assets/report/slide-17.jpg" width="1920" height="1080" loading="lazy" alt="Slide 17: Systems walkthrough">
+        <img src="assets/report/slide-18.jpg" width="1920" height="1080" loading="lazy" alt="Slide 18: 3.2 Coordinator experience aspects and analysis approach">
+        <img src="assets/report/slide-19.jpg" width="1920" height="1080" loading="lazy" alt="Slide 19: User journey">
+        <img src="assets/report/slide-20.jpg" width="1920" height="1080" loading="lazy" alt="Slide 20: Admin process improvement aspects">
+        <img src="assets/report/slide-21.jpg" width="1920" height="1080" loading="lazy" alt="Slide 21: Our approach">
+        <img src="assets/report/slide-22.jpg" width="1920" height="1080" loading="lazy" alt="Slide 22: Alignment to business capabilities">
+        <img src="assets/report/slide-23.jpg" width="1920" height="1080" loading="lazy" alt="Slide 23: 04. Key findings">
+        <img src="assets/report/slide-24.jpg" width="1920" height="1080" loading="lazy" alt="Slide 24: Fragmented systems and processes create an admin burden that takes coordinators away from high-value service delivery">
+        <img src="assets/report/slide-25.jpg" width="1920" height="1080" loading="lazy" alt="Slide 25: Adapted participant insights">
+        <img src="assets/report/slide-26.jpg" width="1920" height="1080" loading="lazy" alt="Slide 26: Adapted insights: future state">
+        <img src="assets/report/slide-27.jpg" width="1920" height="1080" loading="lazy" alt="Slide 27: Key pain points and system-related challenges">
+        <img src="assets/report/slide-28.jpg" width="1920" height="1080" loading="lazy" alt="Slide 28: What drives complexity across admin workflows?">
+        <img src="assets/report/slide-29.jpg" width="1920" height="1080" loading="lazy" alt="Slide 29: Root causes">
+        <img src="assets/report/slide-30.jpg" width="1920" height="1080" loading="lazy" alt="Slide 30: Key systems and applications">
+        <img src="assets/report/slide-31.jpg" width="1920" height="1080" loading="lazy" alt="Slide 31: Department system variation">
+        <img src="assets/report/slide-32.jpg" width="1920" height="1080" loading="lazy" alt="Slide 32: Support team perspectives">
+        <img src="assets/report/slide-33.jpg" width="1920" height="1080" loading="lazy" alt="Slide 33: 4.1 Key findings by Coordinator experience aspect">
+        <img src="assets/report/slide-34.jpg" width="1920" height="1080" loading="lazy" alt="Slide 34: Aspect 01: Process design and review">
+        <img src="assets/report/slide-35.jpg" width="1920" height="1080" loading="lazy" alt="Slide 35: Aspect 02: Managing operations staff">
+        <img src="assets/report/slide-36.jpg" width="1920" height="1080" loading="lazy" alt="Slide 36: Aspect 03: Timetabling">
+        <img src="assets/report/slide-37.jpg" width="1920" height="1080" loading="lazy" alt="Slide 37: Aspect 04: Managing process materials">
+        <img src="assets/report/slide-38.jpg" width="1920" height="1080" loading="lazy" alt="Slide 38: Aspect 05: Understanding user progress">
+        <img src="assets/report/slide-39.jpg" width="1920" height="1080" loading="lazy" alt="Slide 39: Aspect 06: Managing reviews">
+        <img src="assets/report/slide-40.jpg" width="1920" height="1080" loading="lazy" alt="Slide 40: Aspect 07: Service adjustments">
+        <img src="assets/report/slide-41.jpg" width="1920" height="1080" loading="lazy" alt="Slide 41: Aspect 08: Validation and results">
+        <img src="assets/report/slide-42.jpg" width="1920" height="1080" loading="lazy" alt="Slide 42: What’s most affected?">
+        <img src="assets/report/slide-43.jpg" width="1920" height="1080" loading="lazy" alt="Slide 43: 4.2 Key findings: other considerations">
+        <img src="assets/report/slide-44.jpg" width="1920" height="1080" loading="lazy" alt="Slide 44: Other considerations: process, policy and staffing">
+        <img src="assets/report/slide-45.jpg" width="1920" height="1080" loading="lazy" alt="Slide 45: Adapted participant insights">
+        <img src="assets/report/slide-46.jpg" width="1920" height="1080" loading="lazy" alt="Slide 46: 05. Next steps">
+        <img src="assets/report/slide-47.jpg" width="1920" height="1080" loading="lazy" alt="Slide 47: Next steps">
+        <img src="assets/report/slide-48.jpg" width="1920" height="1080" loading="lazy" alt="Slide 48: 06. Supporting artefacts">
+        <img src="assets/report/slide-49.jpg" width="1920" height="1080" loading="lazy" alt="Slide 49: Summary of activities and workshops">
+        <img src="assets/report/slide-50.jpg" width="1920" height="1080" loading="lazy" alt="Slide 50: Full list of participants involved">
+        <img src="assets/report/slide-51.jpg" width="1920" height="1080" loading="lazy" alt="Slide 51: Key systems and applications (definitions)">
+        <img src="assets/report/slide-52.jpg" width="1920" height="1080" loading="lazy" alt="Slide 52: Key systems and applications (definitions, continued)">
       </div>
 
       <p class="note">Note: all UI designs are white-labelled and all images are re-generated.</p>

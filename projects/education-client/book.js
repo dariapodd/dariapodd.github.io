@@ -10,6 +10,21 @@
   const pages = [...source.children];
   if (pages.length < 2) return;
 
+  // Load page images on demand: only the spreads around the one in view. Without this script
+  // the images load lazily in a plain list instead.
+  const imgOf = (el) => (el.tagName === "IMG" ? el : el.querySelector("img"));
+  pages.forEach((el, i) => {
+    const img = imgOf(el);
+    if (img && i > 3 && !img.complete) { img.dataset.src = img.getAttribute("src"); img.removeAttribute("src"); }
+    if (img) img.removeAttribute("loading");
+  });
+  function loadAround(s) {
+    for (let i = Math.max(0, 2 * s - 3); i <= Math.min(pages.length - 1, 2 * s + 4); i++) {
+      const img = imgOf(pages[i]);
+      if (img && img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; }
+    }
+  }
+
   // Sheet n: front = page 2n (cover, 2, 4…), back = page 2n+1 (1, 3, 5…)
   const sheets = [];
   for (let i = 0; i < pages.length; i += 2) sheets.push([pages[i], pages[i + 1] || null]);
@@ -24,6 +39,7 @@
       <button class="deck-btn book-prev" type="button" aria-label="Previous pages"><span aria-hidden="true">←</span></button>
       <p class="deck-count" aria-live="polite"></p>
       <button class="deck-btn book-next" type="button" aria-label="Next pages"><span aria-hidden="true">→</span></button>
+      <button class="deck-btn book-full" type="button" aria-label="Full screen" aria-pressed="false"><span aria-hidden="true">⤢</span></button>
     </div>`;
   const stage = book.querySelector(".book-stage");
   const els = sheets.map(([front, back]) => {
@@ -46,10 +62,11 @@
   const last = Math.ceil((pages.length - 1) / 2);
   let spread = 0;
 
+  // Numbered like the original deck: the cover is slide 1, so spread s shows slides 2s and 2s+1
   function label(s) {
     if (s === 0) return "Cover";
-    const left = 2 * s - 1, right = 2 * s;
-    return right < pages.length ? `${left}–${right}` : `${left}`;
+    const left = 2 * s, right = 2 * s + 1;
+    return right <= pages.length ? `${left}–${right}` : `${left}`;
   }
 
   // Turned sheets stack on the left (last turned on top), the rest on the right (next on top);
@@ -83,16 +100,31 @@
       sheet.querySelector(".book-back").setAttribute("aria-hidden", String(!showsBack));
     });
     stack();
+    loadAround(s);
     spread = s;
     stage.classList.toggle("is-closed", s === 0);
     stage.classList.toggle("is-end", s === last);
-    count.textContent = s === 0 ? "Cover" : `Pages ${label(s)}`;
+    count.textContent = s === 0 ? "Cover" : `Slides ${label(s)}`;
     prev.disabled = s === 0;
     next.disabled = s === last;
   }
 
   prev.addEventListener("click", () => show(spread - 1));
   next.addEventListener("click", () => show(spread + 1));
+
+  // Full screen, where the browser allows it (hidden otherwise)
+  const full = book.querySelector(".book-full");
+  if (!document.fullscreenEnabled) full.hidden = true;
+  full.addEventListener("click", () => {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else book.requestFullscreen().catch(() => {});
+  });
+  document.addEventListener("fullscreenchange", () => {
+    const on = document.fullscreenElement === book;
+    full.setAttribute("aria-pressed", String(on));
+    full.setAttribute("aria-label", on ? "Exit full screen" : "Full screen");
+    full.querySelector("span").textContent = on ? "⤡" : "⤢";
+  });
   stage.addEventListener("click", (e) => {
     if (moved) return;
     const r = stage.getBoundingClientRect();
