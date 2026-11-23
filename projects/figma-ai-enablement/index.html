@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Figma &amp; AI enablement: Daria Podrezova</title>
+<meta name="description" content="Case study: 68 advanced prototyping sessions since 2022 for a team of about 50 designers, from auto layout to coded prototypes with VS Code and Cursor.">
+<link rel="icon" href="../../favicon-64.png" type="image/png" sizes="64x64">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="../../fonts/KodeMono.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+  /* Kode Mono, self-hosted (full character set). License: fonts/OFL.txt */
+  @font-face {
+    font-family: "Kode Mono";
+    src: url("../../fonts/KodeMono.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+  }
+
+  /* Same tokens as the homepage */
+  :root {
+    --bg: #1e1d19;
+    --bg-mid: #2c2b29;
+    --bg-glow: #393938;
+    --ink: #dddcc8;
+    --accent: #00ffcc;
+    --rule: #3d414a;
+
+    --nav-fs: 16px;
+    --margin-line: 26px;
+    --content-left: 160px;
+    --text-left: calc(var(--margin-line) + 1px + var(--content-left));
+    --gutter: 53px;
+  }
+  @media (max-width: 700px) {
+    :root { --content-left: 26px; }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    position: relative;
+    min-height: 100vh;
+    /* Figma: a tall radial glow down the middle of the page */
+    background: radial-gradient(960px 2887px at 50% 50%, var(--bg-glow), var(--bg-mid) 50%, var(--bg)) var(--bg);
+    color: var(--ink);
+    font-family: "Kode Mono", ui-monospace, monospace;
+  }
+  /* Vertical margin line, the full height of the page */
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--margin-line);
+    width: 1px;
+    background: var(--rule);
+    pointer-events: none;
+  }
+
+  /* ---------- Resume button (as on the homepage) ---------- */
+  .resume {
+    position: fixed;
+    z-index: 10;
+    top: 32px;
+    right: 32px;
+    padding: 12.5px 32px 11.5px;
+    border-radius: 12px;
+    background: rgba(28, 71, 56, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .resume:hover { font-weight: 600; }
+  @supports (corner-shape: squircle) {
+    .resume { border-radius: 24px; corner-shape: squircle; }
+  }
+  @supports (text-box: trim-both cap alphabetic) {
+    .resume { text-box: trim-both cap alphabetic; padding-top: 15.6px; padding-bottom: 15.6px; }
+  }
+
+  /* ---------- Page ---------- */
+  .page {
+    padding: 131px var(--gutter) 217px var(--text-left);
+  }
+  .back {
+    display: inline-block;
+    padding: 16px 0;
+    color: var(--accent);
+    font-size: var(--nav-fs);
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .back:hover { font-weight: 600; }
+
+  .case {
+    display: flex;
+    flex-direction: column;
+    gap: 120px;
+    max-width: 1086px;
+    padding-top: 48px;
+  }
+
+  h1, h2 {
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  h1 { font-size: 60px; line-height: 1.2; }
+  h2 { font-size: 48px; line-height: 1.2; }
+  @media (max-width: 700px) {
+    h1 { font-size: 36px; }
+    h2 { font-size: 32px; }
+  }
+
+  /* Body copy: Chakra Petch Light, 16/22.4, 12px between paragraphs */
+  .text, .lead, .caption, .apps, .awards, .review {
+    color: #fff;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .text { max-width: 513px; }
+  .text p { margin: 0; }
+  .text p + p { margin-top: 12px; }
+
+  /* ---------- Intro: problem and solution side by side ---------- */
+  .intro { display: flex; flex-direction: column; gap: 80px; }
+  .meta {
+    margin: 0;
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .columns { display: flex; gap: 80px; align-items: flex-start; }
+  .columns > section { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 36px; }
+  .columns .text { max-width: none; }
+  .lead { font-weight: 500; font-size: 20px; line-height: normal; }
+  .lead p { margin: 0; }
+  .lead p + p { margin-top: 24px; }
+  /* Platforms it's built on (Figma 263:1830) */
+  .tech-logos { display: flex; align-items: center; gap: 50px; opacity: 0.4; }
+  .tech-logos img { display: block; }
+  /* Recognition (Figma 284:26) */
+  .awards { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 16px; font-size: 14px; line-height: normal; margin-top: -4px; }
+  .awards li { display: flex; flex-direction: column; gap: 4px; }
+  .awards strong { font-weight: inherit; color: #fff; }
+  .awards span { color: var(--ink); }
+
+  /* ---------- Sections ---------- */
+  .section { display: flex; flex-direction: column; gap: 36px; }
+
+  /* Results: four big numbers */
+  .results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px 32px; margin: 0; }
+  .results div { display: flex; flex-direction: column; gap: 8px; }
+  .results dt { order: 2; color: #fff; font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif; }
+  .results dd { order: 1; margin: 0; color: var(--accent); font: 400 60px/1 "Kode Mono", ui-monospace, monospace; }
+
+  /* The apps, and what each one replaced */
+  .apps { width: 100%; border-collapse: collapse; }
+  .apps th {
+    padding: 0 24px 12px 0;
+    border-bottom: 1px solid var(--rule);
+    color: rgba(221, 220, 200, 0.6);
+    font: 400 14px/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+  .apps td { padding: 16px 24px 16px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .apps td:first-child { width: 24%; color: var(--ink); font-weight: 600; }
+  .apps td:nth-child(2) { width: 40%; }
+  .apps td:last-child { color: rgba(255, 255, 255, 0.65); }
+
+  /* ---------- Figures ---------- */
+  figure.shot { margin: 0; display: flex; flex-direction: column; gap: 16px; }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 12px; }
+  .caption { text-align: center; }
+  @supports (corner-shape: squircle) {
+    .shot img { border-radius: 24px; corner-shape: squircle; }
+  }
+
+  /* Closing note: 48px under the last caption rather than a full 120px section gap */
+  .note { margin: -72px 0 0; color: rgba(255, 255, 255, 0.6); font: 300 14px/1.4 "Chakra Petch", system-ui, sans-serif; }
+
+  /* ---------- Narrow screens ---------- */
+  @media (max-width: 1100px) {
+    .columns { flex-direction: column; gap: 64px; }
+    .results { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 800px) {
+    .page { padding-top: 112px; }
+    .case { gap: 80px; }
+    .note { margin-top: -32px; }   /* still 48px under the last caption */
+    .intro { gap: 40px; }
+    /* The table becomes a list of cards */
+    .apps thead { display: none; }
+    .apps, .apps tbody, .apps tr, .apps td { display: block; width: auto !important; }
+    .apps tr { padding: 16px 0; border-bottom: 1px solid var(--rule); }
+    .apps td { padding: 0; border: 0; }
+    .apps td + td { margin-top: 8px; }
+    .apps td:last-child::before { content: "Replaced: "; color: rgba(221, 220, 200, 0.6); }
+  }
+  @media (max-width: 500px) {
+    .results { grid-template-columns: 1fr; }
+  }
+  /* NDA disclaimer, right under the meta line */
+  .meta-block { display: flex; flex-direction: column; gap: 4px; }
+  .disclaimer { margin: 0; color: rgba(221, 220, 200, 0.8); font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif; }
+
+  /* Reviews: quote, then the author in bold */
+  .review { margin: 0; display: flex; flex-direction: column; gap: 12px; max-width: 513px; }
+  .review blockquote { margin: 0; }
+  .review blockquote p { margin: 0; }
+  .review figcaption { font-weight: 600; }
+  .reviews { display: flex; flex-direction: column; gap: 48px; }
+  .text a { color: var(--accent); text-decoration: none; }
+  .text a:hover { font-weight: 600; }
+  /* All sessions: a numbered list in columns */
+  .sessions { columns: 3 220px; column-gap: 40px; margin: 0; padding: 0; list-style: none; font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif; }
+  .sessions li { break-inside: avoid; padding: 4px 0; }
+  .sessions b { display: inline-block; min-width: 3.4em; color: var(--accent); font: 400 14px/1.4 "Kode Mono", ui-monospace, monospace; }
+</style>
+</head>
+<body>
+  <a class="resume" href="../../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
+
+  <main class="page">
+    <a class="back" href="../../enterprise/#project-7">← Back to projects</a>
+
+    <article class="case">
+      <header class="intro">
+        <h1>Figma &amp; AI enablement</h1>
+        <div class="meta-block">
+          <p class="meta">Leading Design community learning sessions · 2022–2026 · Figma, VS Code, Cursor · ~50 designers (APAC)</p>
+          <p class="disclaimer">Note: this case study has some internal branding and content white-labelled due to NDA restrictions.</p>
+        </div>
+        <div class="columns">
+          <section aria-labelledby="problem">
+            <h2 id="problem">The problem</h2>
+            <div class="lead">
+              <p>Figma ships new features almost every month, and AI tools are changing how designs become prototypes and code. A team of about 50 designers across several cities and countries needed to keep up without each person working it out alone.</p>
+            </div>
+          </section>
+          <section aria-labelledby="solution">
+            <h2 id="solution">The solution</h2>
+            <div class="text">
+              <p>A recurring series of advanced prototyping sessions, run since 2022: 68 so far. They range from auto layout and everyday tricks to mixed-mode prototyping with VS Code and Cursor alongside Figma: building journey maps automatically, filling existing designs with real data, making animations and saving time by using automations.</p>
+            </div>
+          </section>
+        </div>
+      </header>
+
+      <section class="section" aria-labelledby="results">
+        <h2 id="results">Results</h2>
+        <dl class="results">
+          <div><dt>sessions since 2022</dt><dd>68</dd></div>
+          <div><dt>designers across the APAC team</dt><dd>~50</dd></div>
+          <div><dt>guest speakers</dt><dd>~10</dd></div>
+        </dl>
+      </section>
+
+      <section class="section" aria-labelledby="role">
+        <h2 id="role">My role</h2>
+        <div class="text">
+          <p>Wrote all session content, ran sessions. Organised guest speakers: developers showing agentic development built on our Figma designs, and designers showing how they changed their workflows for advanced prototyping. For some speakers it was their first time presenting to the community:</p>
+        </div>
+        <figure class="review">
+          <blockquote><p>I still remember when you invited me to join the AI + Design workshop and share how AI could help us prototype and bring design and development closer together. […] it was actually the first time I really realised how meaningful it can be to share what we’ve learned and discovered with others.</p></blockquote>
+          <figcaption>— Z., Front-end Developer</figcaption>
+        </figure>
+      </section>
+
+      <section class="section" aria-labelledby="projects">
+        <h2 id="projects">Process highlights: sharing what I learned on projects</h2>
+        <div class="text">
+          <p>Many sessions came straight from client work. When a project needed a new technique, I built it there first, then turned it into a session so the whole team could reuse it.</p>
+          <p>On a large education client, there was little documentation of how many tasks an admin role actually carried. We collected data from internal documents, checklists, guidelines, onboarding materials and personal trackers, went through the major systems, mapped every task onto the project lifecycle and built a small coded calendar prototype to show how overlapping projects pile up. That technique became session 68, Populating calendar with data scraping.</p>
+          <p><a href="../education-client/#workload">See the workload model in the education case study →</a></p>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="sessions">
+        <h2 id="sessions">Sessions</h2>
+        <ol class="sessions">
+          <li><b>1</b>Auto layout I</li>
+          <li><b>2</b>Auto layout II</li>
+          <li><b>3</b>Loop animations</li>
+          <li><b>4</b>Auto layout III</li>
+          <li><b>5</b>Design ops I</li>
+          <li><b>6</b>Design systems I</li>
+          <li><b>6a</b>Dev hand-off</li>
+          <li><b>7</b>Design systems II</li>
+          <li><b>8</b>Design systems support</li>
+          <li><b>9</b>Figma and accessibility</li>
+          <li><b>10</b>Responsive layouts</li>
+          <li><b>11–12</b>Nesting and hierarchy</li>
+          <li><b>13</b>Connections</li>
+          <li><b>14</b>Presentations</li>
+          <li><b>15</b>Variables I: Styling</li>
+          <li><b>16</b>Tables</li>
+          <li><b>17</b>Variants I: Setup and editing</li>
+          <li><b>18</b>Variants II: Animations</li>
+          <li><b>19</b>Nested animations and multi-edit</li>
+          <li><b>20</b>Scrolling and sticking</li>
+          <li><b>21</b>Parallax</li>
+          <li><b>22</b>Variables II: Prototyping</li>
+          <li><b>23</b>Variables III: Conditions</li>
+          <li><b>24</b>Variables IV: Filters</li>
+          <li><b>25</b>New release overview</li>
+          <li><b>26</b>Bento grids I</li>
+          <li><b>27</b>Responsive prototype mode</li>
+          <li><b>28</b>Breakpoints I</li>
+          <li><b>29</b>Breakpoints II: Variable modes</li>
+          <li><b>30</b>Maps / 2D animations</li>
+          <li><b>31</b>Typography I</li>
+          <li><b>32</b>Typography II: Variables</li>
+          <li><b>33</b>Responsive grids</li>
+          <li><b>34</b>Typography III: Variables</li>
+          <li><b>35</b>Variables V: Expressions</li>
+          <li><b>–</b>2024 Wrapped</li>
+          <li><b>36</b>Tokens (crash course)</li>
+          <li><b>37</b>Replacing components</li>
+          <li><b>38</b>GenAI placeholder data</li>
+          <li><b>40</b>Block wrapping</li>
+          <li><b>41</b>Fancy props</li>
+          <li><b>42</b>Nested animation</li>
+          <li><b>43</b>Grid</li>
+          <li><b>44</b>Buzz</li>
+          <li><b>45</b>Draw</li>
+          <li><b>47–50</b>Components refresher</li>
+          <li><b>54</b>Styles refresher</li>
+          <li><b>55</b>2025 Recap</li>
+          <li><b>56</b>Grids and fractional units</li>
+          <li><b>58</b>Code prototyping I</li>
+          <li><b>59</b>Code prototyping II</li>
+          <li><b>60</b>Slots</li>
+          <li><b>61</b>Automated UJM with branding</li>
+          <li><b>62</b>Diff</li>
+          <li><b>64</b>Grids update</li>
+          <li><b>65</b>Make with shared styles</li>
+          <li><b>66</b>Generate plugins</li>
+          <li><b>67</b>Motion</li>
+          <li><b>68</b>Populating calendar with data scraping</li>
+        </ol>
+      </section>
+
+      <section class="section" aria-labelledby="reviews">
+        <h2 id="reviews">What people said</h2>
+        <div class="reviews">
+        <figure class="review">
+          <blockquote><p>Daria led the building and evolving of our Design, Figma and AI prototyping capability across a large national team of designers.</p></blockquote>
+          <figcaption>— D., Design Manager</figcaption>
+        </figure>
+        <figure class="review">
+          <blockquote><p>You have single-handedly raised everyone’s skillsets in continually showcasing the latest and greatest in Figma and vibe-coding.</p></blockquote>
+          <figcaption>— J., Design Manager</figcaption>
+        </figure>
+        <figure class="review">
+          <blockquote><p>Even though I’m all the way in Brissie, the Figma learning sessions always made me feel like I was part of the broader design community across cities.</p></blockquote>
+          <figcaption>— C., Designer</figcaption>
+        </figure>
+        <figure class="review">
+          <blockquote><p>Your Figma sessions have also been so helpful and interesting (there’s always something I didn’t know it could do).</p></blockquote>
+          <figcaption>— M., Designer</figcaption>
+        </figure>
+        <figure class="review">
+          <blockquote><p>I’ve always looked forward to the Figma learning sessions and think you’re such a powerhouse.</p></blockquote>
+          <figcaption>— M., Designer</figcaption>
+        </figure>
+        <figure class="review">
+          <blockquote><p>Special shout out to the great funny example content you come up with for your Figma sessions!</p></blockquote>
+          <figcaption>— B., Designer</figcaption>
+        </figure>
+        <figure class="review">
+          <blockquote><p>Thank you for […] encouraging the use of all of Figma’s new fancy features and debugging my Figma files when things go horribly wrong with components.</p></blockquote>
+          <figcaption>— L., Senior Designer</figcaption>
+        </figure>
+        </div>
+      </section>
+    </article>
+  </main>
+
+<script src="../../back.js"></script>
+<!-- Visitor stats (GoatCounter: no cookies). Skips localhost and browsers marked on /not-me/ -->
+<script data-goatcounter="https://dariapodd.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
