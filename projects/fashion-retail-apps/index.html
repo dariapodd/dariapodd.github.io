@@ -217,6 +217,9 @@
   @media (max-width: 500px) {
     .results { grid-template-columns: 1fr; }
   }
+  /* NDA disclaimer, right under the meta line */
+  .meta-block { display: flex; flex-direction: column; gap: 4px; }
+  .disclaimer { margin: 0; color: rgba(221, 220, 200, 0.8); font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif; }
 </style>
 </head>
 <body>
@@ -228,7 +231,10 @@
     <article class="case">
       <header class="intro">
         <h1>Sales automation apps for luxury fashion retail</h1>
-        <p class="meta">UI/UX and BA · iOS+Dynamics</p>
+        <div class="meta-block">
+          <p class="meta">UI/UX and BA · iOS+Dynamics</p>
+          <p class="disclaimer">Note: this case study has branding removed and content white-labelled due to NDA restrictions.</p>
+        </div>
         <div class="columns">
           <section aria-labelledby="problem">
             <h2 id="problem">The problem</h2>
@@ -350,8 +356,6 @@
         <img src="assets/wedding-planner.jpg" width="2172" height="1142" loading="lazy" alt="Customer-facing shopping website for wedding planning">
         <figcaption class="caption">Customer-facing shopping website — wedding planner.</figcaption>
       </figure>
-
-      <p class="note">Note: all UI designs are white-labelled and all images are re-generated.</p>
     </article>
   </main>
 

@@ -250,6 +250,9 @@
   @media (max-width: 600px) {
     .process { grid-template-columns: repeat(2, 1fr); }
   }
+  /* NDA disclaimer, right under the meta line */
+  .meta-block { display: flex; flex-direction: column; gap: 4px; }
+  .disclaimer { margin: 0; color: rgba(221, 220, 200, 0.8); font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif; }
 </style>
 </head>
 <body>
@@ -261,7 +264,10 @@
     <article class="case">
       <header class="intro">
         <h1>Social startup for the Deaf community: disability services</h1>
-        <p class="meta">End-to-end product design · iOS</p>
+        <div class="meta-block">
+          <p class="meta">End-to-end product design · iOS</p>
+          <p class="disclaimer">Note: this case study has branding removed and content white-labelled due to NDA restrictions.</p>
+        </div>
         <div class="columns">
           <section aria-labelledby="problem">
             <h2 id="problem">The problem</h2>
@@ -391,8 +397,6 @@
         </figure>
         </div>
       </section>
-
-      <p class="note">Note: all UI designs are white-labelled and all images are re-generated.</p>
     </article>
   </main>
 
