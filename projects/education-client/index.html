@@ -250,6 +250,106 @@
   @media (max-width: 600px) {
     .process { grid-template-columns: repeat(2, 1fr); }
   }
+
+  /* ---------- Two-page magazine (book.js) ---------- */
+  .book { max-width: 1086px; }
+  .book-stage {
+    position: relative;
+    aspect-ratio: 420 / 297;           /* two A4 pages side by side */
+    perspective: 4000px;
+    cursor: pointer;
+    outline-offset: 6px;
+  }
+  .book-sheet {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 50%;
+    transform-origin: left center;     /* the spine */
+    transform-style: preserve-3d;
+    transition: transform 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+  }
+  .book-sheet.is-turned { transform: rotateY(-180deg); }
+  .book-face {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    backface-visibility: hidden;
+    background: #f4f1ea;
+    box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.6);
+  }
+  .book-front { border-radius: 0 12px 12px 0; }
+  .book-back { transform: rotateY(180deg); border-radius: 12px 0 0 12px; }
+  .book-back.is-blank { background: #e9e5dc; }
+  .book-face > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  /* Paper curving into the spine */
+  .book-face::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0) 7%);
+  }
+  .book-back::after { background: linear-gradient(270deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0) 7%); }
+  /* Shade on the turning page, darkest as it stands edge-on */
+  .book-face::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
+  }
+  .book-sheet.is-turning .book-face::before { opacity: 1; }
+  @supports (corner-shape: squircle) {
+    .book-front { border-radius: 0 24px 24px 0; corner-shape: squircle; }
+    .book-back { border-radius: 24px 0 0 24px; corner-shape: squircle; }
+  }
+  /* Placeholder pages until the real ones arrive */
+  .book-placeholder {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    color: #8a8478;
+    font: 400 20px/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  /* Arrows and page count */
+  .deck-controls { display: flex; align-items: center; justify-content: center; gap: 24px; margin-top: 32px; }
+  .deck-btn {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    background: rgba(0, 255, 204, 0.1);
+    color: var(--accent);
+    font: 400 20px/1 "Kode Mono", ui-monospace, monospace;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .deck-btn:hover:not(:disabled) { background: rgba(0, 255, 204, 0.2); font-weight: 600; }
+  .deck-btn:disabled { opacity: 0.3; cursor: default; }
+  .deck-count {
+    min-width: 10ch;
+    margin: 0;
+    color: var(--ink);
+    font: 400 var(--nav-fs)/1 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .book-sheet { transition: none; }
+    .book-face::before { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -286,9 +386,20 @@
         <figcaption class="caption">Current-state assessment: key tasks.</figcaption>
       </figure>
 
+      <div class="book-source" data-book aria-label="Report pages">
+        <div class="book-placeholder">Cover</div>
+        <div class="book-placeholder">Page 1</div>
+        <div class="book-placeholder">Page 2</div>
+        <div class="book-placeholder">Page 3</div>
+        <div class="book-placeholder">Page 4</div>
+        <div class="book-placeholder">Page 5</div>
+        <div class="book-placeholder">Page 6</div>
+      </div>
+
       <p class="note">Note: all UI designs are white-labelled and all images are re-generated.</p>
     </article>
   </main>
+<script src="book.js"></script>
 <script src="../../back.js"></script>
 <!-- Visitor stats (GoatCounter: no cookies). Skips localhost and browsers marked on /not-me/ -->
 <script data-goatcounter="https://dariapodd.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
