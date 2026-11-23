@@ -1,7 +1,7 @@
 // Workload modelling: a 6-week timeline of up to five overlapping projects (Figma 335:1406).
 // Each project runs through five phases; under its phase bars, every week lists the tasks the
 // coordinator has for that project that week. Overlap reads from the bars stacking up.
-// The model generates daily to-do items (max 10 per project per day) from a lifecycle curve:
+// The model generates daily to-do items from a lifecycle curve (scaled by LOAD):
 // a baseline peaking mid-cycle, with spikes at kick-off, the materials deadline, the mid-cycle
 // review, the review window and results. Seeded, so the picture is the same on every load.
 (() => {
@@ -14,6 +14,7 @@
   const WEEK1 = utc(2025, 12, 29);            // Monday of the week holding 1 January 2026
   const HOME = utc(2026, 9, 28);              // first Monday shown: the week holding 1 October
   const VIEW_WEEKS = 6, CAP = 10;
+  const LOAD = 0.12;                          // overall scale: about 2–3 tasks per project per week
 
   const PROJECTS = [
     { name: "Project A", start: utc(2026, 8, 3),   weeks: 16 },
@@ -77,6 +78,7 @@
       let f = 1.5 + 2 * gauss(t, 0.5, 0.3) + SPIKES.reduce((a, s) => a + s.amp * gauss(t, s.t, s.w), 0);
       const dow = new Date(day).getUTCDay();
       if (dow === 0 || dow === 6) f *= 0.15;
+      f *= LOAD;
       const n = Math.max(0, Math.min(CAP, Math.round(f + (r() - 0.5) * 1.6)));
       const ph = phaseAt(t);
       for (let k = 0; k < n; k++) {
