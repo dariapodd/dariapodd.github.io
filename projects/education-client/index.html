@@ -393,8 +393,13 @@
   .workload { display: flex; flex-direction: column; gap: 20px; }
   /* The prototype sits on a slightly lighter panel (Figma 335:1406) */
   .wl-panel {
-    --p1: #3987e5; --p2: #d95926; --p3: #199e70; --p4: #c98500; --p5: #d55181;
-    --wl-line: #3d3c36; --wl-ink-2: #a9a896; --wl-ink-3: #7d7c6e; --wl-surface: #252423;
+    /* Light mode: project colours are the light-surface steps (validated on #f4f3ee: worst adjacent
+       CVD ΔE 9.1, normal-vision ΔE 19.6; under 3:1 contrast, so every bar carries a text label) */
+    --p1: #2a78d6; --p2: #eb6834; --p3: #1baf7a; --p4: #eda100; --p5: #e87ba4;
+    --wl-surface: #f4f3ee; --wl-line: #dcdad0;
+    --wl-ink: #1e1d19; --wl-ink-2: #52514e; --wl-ink-3: #77766c;
+    --wl-accent: #007a64; --wl-accent-bg: rgba(0, 122, 100, 0.08);
+    color: var(--wl-ink);
     padding: 48px 24px;
     border-radius: 12px;
     background: var(--wl-surface);
@@ -409,12 +414,12 @@
   .wl-btn {
     display: grid; place-items: center;
     min-width: 40px; height: 40px; padding: 0 12px;
-    border: 1px solid var(--accent); border-radius: 20px;
-    background: rgba(0, 255, 204, 0.1); color: var(--accent);
+    border: 1px solid var(--wl-accent); border-radius: 20px;
+    background: var(--wl-accent-bg); color: var(--wl-accent);
     font: 400 14px/1 "Kode Mono", ui-monospace, monospace; letter-spacing: 0.08em; text-transform: uppercase;
     cursor: pointer;
   }
-  .wl-btn:hover { background: rgba(0, 255, 204, 0.2); font-weight: 600; }
+  .wl-btn:hover { background: rgba(0, 122, 100, 0.16); font-weight: 600; }
   .wl-range { width: 22ch; margin: 0; text-align: center; font: 400 14px/1.3 "Kode Mono", ui-monospace, monospace; letter-spacing: 0.06em; }
   .wl-range span { display: block; color: var(--wl-ink-3); font-size: 12px; }
 
@@ -430,8 +435,8 @@
   .wl-project input { position: absolute; opacity: 0; pointer-events: none; }
   .wl-check { display: grid; place-items: center; width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--c); flex: none; }
   .wl-project input:checked + .wl-check { background: var(--c); }
-  .wl-project input:checked + .wl-check::after { content: ""; width: 4px; height: 8px; margin-top: -2px; border: solid var(--bg); border-width: 0 2px 2px 0; transform: rotate(45deg); }
-  .wl-project input:focus-visible + .wl-check { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wl-project input:checked + .wl-check::after { content: ""; width: 4px; height: 8px; margin-top: -2px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .wl-project input:focus-visible + .wl-check { outline: 2px solid var(--wl-accent); outline-offset: 2px; }
   .wl-project small { color: var(--wl-ink-3); font: 400 12px/1 "Kode Mono", ui-monospace, monospace; }
 
   .wl-lanes { display: flex; flex-direction: column; gap: 8px; padding: 6px 0 24px; min-width: 0; }
@@ -442,7 +447,7 @@
     padding: 0 6px;
     border-left: 3px solid var(--c); border-radius: 4px;
     background: color-mix(in srgb, var(--c) 22%, var(--wl-surface));
-    color: var(--ink); font-size: 12px; white-space: nowrap;
+    color: var(--wl-ink); font-size: 12px; white-space: nowrap;
   }
   .wl-phase b { font-weight: 600; margin-right: 4px; }
   .wl-weeks { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
