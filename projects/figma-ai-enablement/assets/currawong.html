@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#83916d" />
+    <title>Biscuit Motion</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #83916d;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      #canvas {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        cursor: crosshair;
+        touch-action: manipulation;
+        user-select: none;
+      }
+
+      #stage {
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform-origin: 0 0;
+      }
+
+      .hint {
+        position: absolute;
+        z-index: 100000;
+        left: 50%;
+        top: 50%;
+        margin: 0;
+        transform: translate(-50%, -50%);
+        color: #fff;
+        font-size: 16px;
+        line-height: 1.2;
+        white-space: nowrap;
+        transition: opacity 158ms cubic-bezier(0.5, 0, 0.5, 1);
+        pointer-events: none;
+      }
+
+      #stage.has-played .hint {
+        opacity: 0;
+      }
+
+      .scene,
+      .beak,
+      .biscuit,
+      .bird,
+      .layer,
+      .rot-box,
+      .rot-inner,
+      .fill-img {
+        position: absolute;
+        pointer-events: none;
+      }
+
+      .scene {
+        width: 258.5px;
+        height: 132px;
+        transform-origin: 50% 50%;
+      }
+
+      .scene.mirrored {
+        transform: scaleX(-1);
+      }
+
+      .scene.mirrored .biscuit-face {
+        transform: scaleX(-1);
+        transform-origin: 50% 50%;
+      }
+
+      .beak {
+        z-index: 1;
+        transform-origin: 100% 50%;
+      }
+
+      .biscuit {
+        z-index: 2;
+        inset: 0;
+      }
+
+      .bird {
+        z-index: 3;
+      }
+
+      .rot-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        inset: 0;
+      }
+
+      .rot-inner {
+        position: relative;
+        flex: none;
+      }
+
+      .fill-img {
+        overflow: visible;
+      }
+
+      .fill-img img,
+      .rot-inner > img,
+      .layer > img,
+      .biscuit-face {
+        display: block;
+        width: 100%;
+        height: 100%;
+        user-select: none;
+        -webkit-user-drag: none;
+      }
+
+      .rot-inner > img,
+      .layer > img {
+        position: absolute;
+        inset: 0;
+      }
+
+      .biscuit-face {
+        width: 258.5px;
+        height: 132px;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .hint {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main id="canvas" aria-label="Click anywhere to drop a biscuit">
+      <div id="stage">
+        <p class="hint" aria-hidden="true">click anywhere</p>
+        <p id="announcement" class="sr-only" aria-live="polite"></p>
+      </div>
+    </main>
+    <script>
+const canvas = document.querySelector('#canvas')
+const stage = document.querySelector('#stage')
+const announcement = document.querySelector('#announcement')
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+const FRAME_W = 1280
+const FRAME_H = 800
+const BISCUIT_W = 258.5
+const BISCUIT_H = 132
+const DURATION = 4991.341
+const FIGMA_BISCUIT = { left: 353, top: 268 }
+const BIRD_LEFT = 1311 - FIGMA_BISCUIT.left
+const BIRD_TOP = 151.005 - FIGMA_BISCUIT.top
+const BEAK_LEFT = 1338.18 - FIGMA_BISCUIT.left
+const BEAK_TOP = 343.57 - FIGMA_BISCUIT.top
+
+const DROP_SPRING = 'linear(0, 0.0985, 0.342, 0.6483, 0.9442, 1.1767, 1.3179, 1.364, 1.3302, 1.2427, 1.1314, 1.0233, 0.9377, 0.8853, 0.8675, 0.8791, 0.9105, 0.9509, 0.9904, 1.0219, 1.0414, 1.0482, 1.0443, 1.033, 1.0183, 1.0039, 0.9923, 0.9851, 0.9825, 0.9838, 0.9878, 0.9932, 0.9984, 1.0027, 1.0054, 1.0064, 1.0059, 1.0045, 1.0025, 1.0006, 0.9991, 0.9981, 0.9977, 0.9978, 0.9983, 0.9991, 0.9998, 1.0003, 1.0007, 1.0008, 1.0008)'
+const FLY_SPRING = 'linear(0, 0.0188, 0.0679, 0.1374, 0.2195, 0.308, 0.3978, 0.4856, 0.5686, 0.6452, 0.7142, 0.7753, 0.8283, 0.8735, 0.9113, 0.9423, 0.9671, 0.9866, 1.0014, 1.0123, 1.0198, 1.0247, 1.0274, 1.0283, 1.0281, 1.0268, 1.025, 1.0227, 1.0202, 1.0177, 1.0152, 1.0128, 1.0106, 1.0085, 1.0068, 1.0052, 1.0039, 1.0028, 1.0018, 1.0011, 1.0005, 1, 0.9997, 0.9995, 0.9993, 0.9992, 0.9992, 0.9992, 0.9992, 0.9993, 0.9993)'
+const SNAP = 'cubic-bezier(0.5, 0, 0.5, 1)'
+const options = {
+  duration: reduceMotion.matches ? 1200 : DURATION,
+  fill: 'forwards',
+}
+
+const px = value => `${value}px`
+const getScale = () => window.innerWidth / FRAME_W
+
+function layoutStage() {
+  const scale = getScale()
+  stage.style.width = px(FRAME_W)
+  stage.style.height = px(Math.max(FRAME_H, window.innerHeight / scale))
+  stage.style.transform = `scale(${scale})`
+}
+
+function el(tag, className, style, children = []) {
+  const node = document.createElement(tag)
+  if (className) node.className = className
+  if (style) Object.assign(node.style, style)
+  children.forEach(child => node.append(child))
+  return node
+}
+
+function img(src) {
+  const image = document.createElement('img')
+  image.src = src
+  image.alt = ''
+  image.draggable = false
+  return image
+}
+
+const layer = (style, children) => el('div', 'layer', style, children)
+const insetImg = (src, inset) => el('div', 'fill-img', { inset }, [img(src)])
+
+function rotated(width, height, degrees, children) {
+  return el('div', 'rot-box', null, [
+    el('div', 'rot-inner', { width: px(width), height: px(height), transform: `rotate(${degrees}deg)` }, children),
+  ])
+}
+
+function createBird() {
+  const pupil = layer({ left: px(10.87), top: px(12.76), width: px(37.765), height: px(37.765) }, [img('data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjM3Ljc2NDYiIGhlaWdodD0iMzcuNzY0NiIgdmlld0JveD0iMCAwIDM3Ljc2NDYgMzcuNzY0NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBpZD0iUHVwaWwiIGN4PSIxOC44ODIzIiBjeT0iMTguODgyMyIgcj0iMTguODgyMyIgZmlsbD0iYmxhY2siLz4KPC9zdmc+Cg==')])
+  const eye = layer({ left: px(349.74), top: px(68.23), width: px(55.948), height: px(53.15) }, [
+    layer({ left: '0', top: '0', width: px(57.346), height: px(57.346) }, [img('data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjU3LjM0NjIiIGhlaWdodD0iNTcuMzQ2MiIgdmlld0JveD0iMCAwIDU3LjM0NjIgNTcuMzQ2MiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBpZD0iSXJpcyIgY3g9IjI4LjY3MzEiIGN5PSIyOC42NzMxIiByPSIyOC42NzMxIiBmaWxsPSIjRkZEQjQ5Ii8+Cjwvc3ZnPgo=')]),
+    layer({ left: px(-9.79), top: px(-13.99), width: px(78.327), height: px(46.157) }, [img('data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9Ijc4LjMyNjYiIGhlaWdodD0iNDYuMTU2NyIgdmlld0JveD0iMCAwIDc4LjMyNjYgNDYuMTU2NyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggaWQ9IkV5ZWxpZCIgZD0iTTc4LjMyNjYgMTIuNTg4MkwwIDQ2LjE1NjdMNS40OTY2IDIzLjc3NzdMMzcuMTAyMSAwTDc4LjMyNjYgMTIuNTg4MloiIGZpbGw9ImJsYWNrIi8+Cjwvc3ZnPgo=')]),
+    pupil,
+    layer({ left: px(33.57), top: px(9.79), width: px(13.987), height: px(13.987) }, [img('data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjEzLjk4NjkiIGhlaWdodD0iMTMuOTg2OSIgdmlld0JveD0iMCAwIDEzLjk4NjkgMTMuOTg2OSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBpZD0iU2hpbmUiIGN4PSI2Ljk5MzQ0IiBjeT0iNi45OTM0NCIgcj0iNi45OTM0NCIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==')]),
+  ])
+
+  const bird = el('div', 'bird', { left: px(BIRD_LEFT), top: px(BIRD_TOP), width: px(1440.65), height: px(858.795) }, [
+    layer({ left: px(433.59), top: '0', width: px(1007.056), height: px(458.77) }, [insetImg('data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9Ijk2MC44OSIgaGVpZ2h0PSI0NTguNzciIHZpZXdCb3g9IjAgMCA5NjAuODkgNDU4Ljc3IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBpZD0iQm9keSIgZD0iTTkwOC4zNzQgMC4wMDA1MTg1MzNDODY5Ljk1MyAtMC4wNzY0NzI0IDgxMS42ODMgOC40MDE3NyA3MTAuMTIyIDM3LjczMDhDNTYwLjgzOCA4MC44NDE0IDYwMS43MTkgNzEuNjQzMiAzNjkuMjUzIDk2Ljg2OTNDMjQ4Ljg1MiAxMDkuOTM1IDEyOS42NTUgODkuNjU1NSA0Ni4xNTc4IDEzMi42MjdDLTQzLjY2MzcgMjAwLjg2IDIwLjg2MDIgMzA5LjM1NSA0Ni4xNTc4IDM0NS4xMTNDNzcuNzc5OSAzODkuODExIDIxOS4xNTkgNDI1LjU2OSAzMDkuMjEzIDQ0NC44MjNDNDI0LjcwMyA0NjkuNTE2IDU1NC42OTQgNDg1LjA2NiA3ODMuNjc4IDI3Ni4zNDdDODc0LjE4MiAxOTMuODUzIDkxOS40NDkgMTQxLjAzOCA5NTAuMTY1IDk5LjE5NzZDOTc2LjEwMiA2My44Njg0IDk1Mi4yMDEgMC4wODgzNDQxIDkwOC4zNzQgMC4wMDA1MTg1MzNaIiBmaWxsPSJibGFjayIvPgo8L3N2Zz4K', '0 4.58% 0 0')]),
+    layer({ left: px(11.44), top: px(95.73), width: px(714.186), height: px(275.665) }, [
+      rotated(707.737, 257.359, 1.49, [
+        layer({ left: '0', top: '0', width: px(707.737), height: px(253.348) }, [insetImg('data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjYzMi41NzgiIGhlaWdodD0iMjUzLjM0OCIgdmlld0JveD0iMCAwIDYzMi41NzggMjUzLjM0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggaWQ9IkhlYWQiIGQ9Ik0yNjkuMDQgMzkuODk3NEMyMzMuMzY4IDQ5LjQ1NDIgMTYxLjA1NyA5Ny42NDE5IDEwMS45MDcgMTIxLjcwMkwzLjg3NjI1IDE3MC4yMzFDLTMuNDU1ODcgMTczLjg2MSAwLjQ2NzI2NiAxODUuNjgxIDguNTM2OSAxODQuMzM0QzkxLjEwMjIgMTcwLjU0OCAxODUuMDY3IDE1OS4zOTUgMjUyLjIzIDE0NC41NDVDMzMxLjI2NyAyMjMuNDI2IDM3OS45MTQgMjEwLjI3NSA0MjMuMTA1IDIyOS42M0M1MTguMTU5IDI3Mi4yMjcgNTYzLjQ4OCAyNTMuNzM3IDYwNS43OTEgMjAzLjY0MkM2NDQuNTE3IDE1Ny43ODQgNjQxLjI4NSA4Ny4yMjUgNTk1Ljg5MSA0Ny45NTUyQzU1OC42NjYgMTUuNzUzMyA1MTcuNjgzIC01LjgzNjAxIDQ3OS41MDQgMS40MDEwNEMzOTkuNzIxIDE2LjUyNDcgMzM1Ljc1NiAyMi4wMjM3IDI2OS4wNCAzOS44OTc0WiIgZmlsbD0iYmxhY2siLz4KPC9zdmc+Cg==', '0 4.42% 0 6.2%')]),
+        eye,
+      ]),
+    ]),
+    layer({ left: px(615), top: px(333.19), width: px(513.351), height: px(451.081) }, [rotated(436.391, 346.875, -15.54, [img('data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjQzNi4zOTEiIGhlaWdodD0iMzQ2Ljg3NSIgdmlld0JveD0iMCAwIDQzNi4zOTEgMzQ2Ljg3NSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggaWQ9IlBhdyAxIiBkPSJNMzY0LjYyNCAxNzYuOUwyNDUuMDkyIDQxLjI5OTZMMjkwLjE3MiAwQzMyOS4xMDYgNDQuMjgyMyA0NTAuODIzIDE5MS42MyA0MzQuOTc3IDE5Mi43MzFDNDE1LjE2OCAxOTQuMTA4IDMyMy42NDEgMjE0LjA2OSAyNzMuMDk3IDIyOC41MjRDMjMyLjY2MSAyNDAuMDg4IDE3Mi4wMDcgMzAyLjYzNCAxNDYuNzM1IDMzMi40NjJDMTQ5LjY5NCAzMjUuNTc4IDE1OC42MTkgMzA3LjEzMSAxNzAuNjQxIDI4OC40MDlDMTgyLjY2MiAyNjkuNjg2IDE5Mi4wNDMgMjU1LjE0IDIxMC45NCAyNDIuOTc5QzE2MC4zOTUgMjQyLjk3OSAtMTYuNTExNiAzNjguOTQzIDEuMjQ3NDIgMzQzLjQ3NUMxOS4wMDY0IDMxOC4wMDcgMTc4LjE1NCAyMzEuMjc4IDE2MC4zOTUgMjI4LjUyNEMxNDYuMTg4IDIyNi4zMjIgMTA0LjM4NiAyMzUuNDA4IDUzLjg0MTQgMjQyLjk3OUMxMDEuNDI2IDIyMi41NTkgMTQxLjU0MyAyMDguMDEyIDE3OC4xNTQgMTk3LjU1QzIxNC43NjUgMTg3LjA4NyAzMTcuNzIyIDE3OS40MjQgMzY0LjYyNCAxNzYuOVoiIGZpbGw9ImJsYWNrIi8+Cjwvc3ZnPgo=')])]),
+    layer({ left: px(765.28), top: px(246.37), width: px(613.451), height: px(612.301) }, [rotated(440.437, 428.229, -41.18, [img('data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjQ0MC40MzciIGhlaWdodD0iNDI4LjIyOSIgdmlld0JveD0iMCAwIDQ0MC40MzcgNDI4LjIyOSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggaWQ9IlBhdyAyIiBkPSJNMzY3LjA5NCAyNTguNDE3TDI5OS41NDkgNDEuMjZMMzQ0LjkzNSAwQzM5MC40MzEgMTc2LjczMyA0NTMuODc4IDI3My4xMzMgNDM3LjkyNCAyNzQuMjMzQzQxNy45ODIgMjc1LjYwOSAzMjUuODM0IDI5NS41NTEgMjc0Ljk0NyAzMDkuOTkyQzIzNC4yMzcgMzIxLjU0NSAxNzMuMTcyIDM4NC4wMzEgMTQ3LjcyOSA0MTMuODNDMTUwLjcwOSA0MDYuOTUzIDE1OS42OTQgMzg4LjUyMyAxNzEuNzk3IDM2OS44MTlDMTgzLjkgMzUxLjExNCAxOTMuMzQ0IDMzNi41ODIgMjEyLjM2OSAzMjQuNDMzQzE2MS40ODIgMzI0LjQzMyAtMTYuNjIzNSA0NTAuMjc2IDEuMjU1ODcgNDI0LjgzMkMxOS4xMzUyIDM5OS4zODkgMTc5LjM2MSAzMTIuNzQzIDE2MS40ODIgMzA5Ljk5MkMxNDcuMTc5IDMwNy43OTEgMTA1LjA5MyAzMTYuODY5IDU0LjIwNjIgMzI0LjQzM0MxMDIuMTE0IDMwNC4wMzIgMTQyLjUwMyAyODkuNDk5IDE3OS4zNjEgMjc5LjA0N0MyMTYuMjIgMjY4LjU5NCAzMTkuODc1IDI2MC45MzggMzY3LjA5NCAyNTguNDE3WiIgZmlsbD0iYmxhY2siLz4KPC9zdmc+Cg==')])]),
+    layer({ left: px(1154.722), top: px(-501.376), width: px(857.558), height: px(756.321) }, [rotated(780.173, 663.267, -7.24, [img('data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9Ijc4MC4xNzMiIGhlaWdodD0iNjYzLjI2NyIgdmlld0JveD0iMCAwIDc4MC4xNzMgNjYzLjI2NyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgaWQ9IlRhaWwiPgo8cGF0aCBpZD0iVmVjdG9yIDEyIiBkPSJNNDQ5LjAzMyA1NS42MDIyQzM3OC41MzkgNTUuNjAyMiAxNjAuNDM2IDI5Mi45MTMgNjAuMTk3IDQxMS41NjlMNy4wNDY4NCA1MjAuNjY2TDYwLjE5NyA1ODAuODFDMzAwLjc3MiA0NTYuNzkzIDc3OS45NjIgMTk1Ljc1MSA3NzIuMTMgMTQzLjcyQzc2Mi4zMzkgNzguNjgwNiA1MzcuMTUgNTUuNjAyMiA0NDkuMDMzIDU1LjYwMjJaIiBmaWxsPSJibGFjayIvPgo8cGF0aCBpZD0iSW50ZXJzZWN0IiBkPSJNMjIxLjc0NiAzNzAuMzA3QzI4Ni4wODUgMzM1LjYyIDQxOC43MjggMzMzLjk0MSA0NzcuMDA2IDMzNy40MzhMNDkxLjAwNyAzNDUuOTUzQzM5OS42MTcgMzk5LjA3NiAyOTguMjM5IDQ1NC44NCAyMDYuODc2IDUwMy43MDlDMTg0LjcyMyA0NjEuMTAxIDE2OC45OTMgMzk4Ljc0OCAyMjEuNzQ2IDM3MC4zMDdaTTQ1Mi4zMTMgNTUuNjEzNkM1MzQuMTYxIDU2LjExOTYgNzIyLjQ3MyA3NS4zMTUxIDc2NC4xNzkgMTI2Ljc1N0M3MTAuODY1IDE0OS44MzQgNjQxLjQ5NiAxNzEuNzA5IDYxMy4zNzggMTUyLjExMkM1OTguNDM4IDE0MS42OTkgNjAyLjgzOCAxMjguMTg2IDYxNi4zNzEgMTE0LjUyMkM1ODMuODkyIDEyOC43MjQgNTUxLjUyNSAxMzUuNzc1IDUzMS41NTUgMTIyLjc0QzUxNS4zNTkgMTEyLjE2NyA1MTUuOTU1IDk4LjA3NTIgNTI0Ljg1MiA4My42NTQ2QzUwMi4wODkgOTYuNTY2MiA0NzcuNzI0IDEwMy43NTQgNDU2LjcyNSA5Ni4xNjQ0QzQyOS45NzQgODYuNDk1NCA0MzYuMTMzIDcwLjQ4MjkgNDUyLjMxMyA1NS42MTM2WiIgZmlsbD0id2hpdGUiLz4KPC9nPgo8L3N2Zz4K')])]),
+  ])
+  return { bird, pupil }
+}
+
+function createBeak() {
+  return el('div', 'beak', { left: px(BEAK_LEFT), top: px(BEAK_TOP), width: px(360), height: px(107.998) }, [
+    rotated(357.525, 98.611, -1.51, [insetImg('data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjMwMi44MDgiIGhlaWdodD0iOTguNjExNSIgdmlld0JveD0iMCAwIDMwMi44MDggOTguNjExNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggaWQ9IkJlYWtQYXJ0IiBkPSJNNC4zNzYzOSA2Ni43OTYyTDMwMi44MDggMEwyODkuMTIzIDk4LjYxMTVDMjU5LjMwNCA3NC41MDA3IDEzMC44NyA3NC4zNTk2IDUuODAxOTkgNzguMDE2NUMtMC45OTczNDkgNzguMjE1MyAtMi4yNjE2MSA2OC4yODE5IDQuMzc2MzkgNjYuNzk2MloiIGZpbGw9ImJsYWNrIi8+Cjwvc3ZnPgo=', '0 0 0 15.3%')]),
+  ])
+}
+
+function visualBounds(...roots) {
+  let left = Infinity
+  let right = -Infinity
+  roots.forEach(root => {
+    for (const node of [root, ...root.querySelectorAll('.layer, .rot-inner')]) {
+      const box = node.getBoundingClientRect()
+      left = Math.min(left, box.left)
+      right = Math.max(right, box.right)
+    }
+  })
+  return { left, right }
+}
+
+function extraOffscreenX(beak, bird, mirrored) {
+  const { left, right } = visualBounds(beak, bird)
+  const overflow = mirrored ? right : window.innerWidth - left
+  return Math.max(0, overflow + 2) / getScale()
+}
+
+function flyKeyframes(startX) {
+  const start = `${startX}px 0px`
+  return [
+    { offset: 0, translate: start, easing: 'linear' },
+    { offset: 0.31655, translate: start, easing: 'linear' },
+    { offset: 0.4626, translate: '-751px -210px', easing: 'linear' },
+    { offset: 0.49886, translate: '-751px -210px', easing: 'linear' },
+    { offset: 0.53553, translate: '-892px -120px', easing: FLY_SPRING },
+    { offset: 0.9787, translate: '174px -120px', easing: 'linear' },
+    { offset: 1, translate: '174px -120px' },
+  ]
+}
+
+function animateGrab(biscuit, beak, bird, pupil, startX) {
+  biscuit.style.willChange = 'opacity, translate'
+  beak.style.willChange = 'transform, translate'
+  bird.style.willChange = 'translate'
+  pupil.style.willChange = 'translate'
+
+  biscuit.animate([
+    { offset: 0, opacity: 0, easing: 'linear' },
+    { offset: 0.0217, opacity: 0, easing: DROP_SPRING },
+    { offset: 0.05175, opacity: 1, easing: 'linear' },
+    { offset: 1, opacity: 1 },
+  ], options)
+  biscuit.animate([
+    { offset: 0, translate: '0px -60px', easing: 'linear' },
+    { offset: 0.0217, translate: '0px -60px', easing: DROP_SPRING },
+    { offset: 0.26212, translate: '0px 0px', easing: 'linear' },
+    { offset: 0.53553, translate: '0px 0px', easing: FLY_SPRING },
+    { offset: 0.9787, translate: '1066px 0px', easing: 'linear' },
+    { offset: 1, translate: '1066px 0px' },
+  ], options)
+
+  const fly = flyKeyframes(startX)
+  const flight = bird.animate(fly, options)
+  beak.animate(fly, options)
+  beak.animate([
+    { offset: 0, transform: 'rotate(0deg)', easing: 'linear' },
+    { offset: 0.4626, transform: 'rotate(0deg)', easing: SNAP },
+    { offset: 0.49886, transform: 'rotate(-31.373deg)', easing: SNAP },
+    { offset: 0.53553, transform: 'rotate(-9.404deg)', easing: 'linear' },
+    { offset: 1, transform: 'rotate(-9.404deg)' },
+  ], options)
+  pupil.animate([
+    { offset: 0, translate: '0px 0px', easing: 'linear' },
+    { offset: 0.4626, translate: '0px 0px', easing: 'linear' },
+    { offset: 0.49886, translate: '-6.505px 1.096px', easing: 'linear' },
+    { offset: 1, translate: '-6.505px 1.096px' },
+  ], options)
+  return flight
+}
+
+function addDrop(x, y) {
+  const mirrored = x < FRAME_W / 2
+  const scene = el('div', mirrored ? 'scene mirrored' : 'scene', {
+    left: px(x - BISCUIT_W / 2),
+    top: px(y - BISCUIT_H / 2),
+    zIndex: String(Math.round(y)),
+  })
+  const face = img('data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI1OC41IiBoZWlnaHQ9IjEzMiIgdmlld0JveD0iMCAwIDI1OC41IDEzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgaWQ9IkJpc2N1aXQiPgo8ZyBpZD0iUmVjdGFuZ2xlIDciIGZpbHRlcj0idXJsKCNmaWx0ZXIwX2lfMF8xOCkiPgo8cGF0aCBkPSJNNjkuNDEzNCAxMC4xMDMyQzcyLjk3MDMgMy44NTcxIDc5LjYwNTMgMCA4Ni43OTMxIDBIMjI0LjA5NkMyMzkuNDM5IDAgMjQ5LjA2OCAxNi41NjM4IDI0MS40NzUgMjkuODk2OEwxODkuMDg3IDEyMS44OTdDMTg1LjUzIDEyOC4xNDMgMTc4Ljg5NSAxMzIgMTcxLjcwNyAxMzJIMzQuNDA0MkMxOS4wNjExIDEzMiA5LjQzMjE2IDExNS40MzYgMTcuMDI0NiAxMDIuMTAzTDY5LjQxMzQgMTAuMTAzMloiIGZpbGw9IiNGMkQ1QUMiLz4KPC9nPgo8ZWxsaXBzZSBpZD0iRWxsaXBzZSA0IiBjeD0iMTAyLjY2NyIgY3k9IjMxLjE2NjciIHJ4PSI1LjUiIHJ5PSIzLjY2NjY3IiBmaWxsPSIjRDZCOTkzIi8+CjxlbGxpcHNlIGlkPSJFbGxpcHNlIDUiIGN4PSIxMzcuNSIgY3k9IjMxLjE2NjciIHJ4PSI1LjUiIHJ5PSIzLjY2NjY3IiBmaWxsPSIjRDZCOTkzIi8+CjxlbGxpcHNlIGlkPSJFbGxpcHNlIDYiIGN4PSIxNzIuMzMzIiBjeT0iMzEuMTY2NyIgcng9IjUuNSIgcnk9IjMuNjY2NjciIGZpbGw9IiNENkI5OTMiLz4KPGVsbGlwc2UgaWQ9IkVsbGlwc2UgNyIgY3g9Ijg2LjE2NjciIGN5PSI1NSIgcng9IjUuNSIgcnk9IjMuNjY2NjciIGZpbGw9IiNENkI5OTMiLz4KPGVsbGlwc2UgaWQ9IkVsbGlwc2UgOCIgY3g9IjEyMSIgY3k9IjU1IiByeD0iNS41IiByeT0iMy42NjY2NyIgZmlsbD0iI0Q2Qjk5MyIvPgo8ZWxsaXBzZSBpZD0iRWxsaXBzZSA5IiBjeD0iMTU1LjgzMyIgY3k9IjU1IiByeD0iNS41IiByeT0iMy42NjY2NyIgZmlsbD0iI0Q2Qjk5MyIvPgo8ZWxsaXBzZSBpZD0iRWxsaXBzZSAxMCIgY3g9IjcxLjUiIGN5PSI3OC44MzMzIiByeD0iNS41IiByeT0iMy42NjY2NyIgZmlsbD0iI0Q2Qjk5MyIvPgo8ZWxsaXBzZSBpZD0iRWxsaXBzZSAxMSIgY3g9IjEwNi4zMzMiIGN5PSI3OC44MzMzIiByeD0iNS41IiByeT0iMy42NjY2NyIgZmlsbD0iI0Q2Qjk5MyIvPgo8ZWxsaXBzZSBpZD0iRWxsaXBzZSAxMiIgY3g9IjE0MS4xNjciIGN5PSI3OC44MzMzIiByeD0iNS41IiByeT0iMy42NjY2NyIgZmlsbD0iI0Q2Qjk5MyIvPgo8L2c+CjxkZWZzPgo8ZmlsdGVyIGlkPSJmaWx0ZXIwX2lfMF8xOCIgeD0iOC44NzQ3OSIgeT0iLTE0LjY2NjciIHdpZHRoPSIyMzUuMjUiIGhlaWdodD0iMTQ2LjY2NyIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVDb2xvck1hdHJpeCBpbj0iU291cmNlQWxwaGEiIHR5cGU9Im1hdHJpeCIgdmFsdWVzPSIwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAxMjcgMCIgcmVzdWx0PSJoYXJkQWxwaGEiLz4KPGZlT2Zmc2V0IGR4PSItNS41IiBkeT0iLTE0LjY2NjciLz4KPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMTEiLz4KPGZlQ29tcG9zaXRlIGluMj0iaGFyZEFscGhhIiBvcGVyYXRvcj0iYXJpdGhtZXRpYyIgazI9Ii0xIiBrMz0iMSIvPgo8ZmVDb2xvck1hdHJpeCB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMC4yNSAwIi8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW4yPSJzaGFwZSIgcmVzdWx0PSJlZmZlY3QxX2lubmVyU2hhZG93XzBfMTgiLz4KPC9maWx0ZXI+CjwvZGVmcz4KPC9zdmc+Cg==')
+  face.className = 'biscuit-face'
+  const biscuit = el('div', 'biscuit', { opacity: '0', translate: '0px -60px' }, [face])
+
+  stage.classList.add('has-played')
+  announcement.textContent = `A biscuit appeared and a currawong swooped in from the ${mirrored ? 'left' : 'right'}.`
+
+  const beak = createBeak()
+  const { bird, pupil } = createBird()
+  beak.style.visibility = 'hidden'
+  bird.style.visibility = 'hidden'
+  scene.append(beak, biscuit, bird)
+  stage.append(scene)
+
+  const startX = extraOffscreenX(beak, bird, mirrored)
+  beak.style.translate = `${startX}px 0px`
+  bird.style.translate = `${startX}px 0px`
+  beak.style.visibility = ''
+  bird.style.visibility = ''
+  animateGrab(biscuit, beak, bird, pupil, startX).finished
+    .then(() => scene.remove())
+    .catch(() => {})
+}
+
+layoutStage()
+window.addEventListener('resize', layoutStage)
+canvas.addEventListener('click', event => {
+  const scale = getScale()
+  addDrop(event.clientX / scale, event.clientY / scale)
+})
+
+// Portfolio embed: play by itself, dropping a biscuit at a random spot near the centre every second.
+// Pauses while the tab is hidden; off for people who prefer reduced motion.
+if (!reduceMotion.matches) {
+  setInterval(() => {
+    if (document.hidden) return
+    const visibleH = window.innerHeight / getScale()
+    const x = FRAME_W / 2 + (Math.random() - 0.5) * 360
+    const y = visibleH / 2 + (Math.random() - 0.5) * 220
+    addDrop(x, y)
+  }, 1000)
+}
+
+    </script>
+  </body>
+</html>

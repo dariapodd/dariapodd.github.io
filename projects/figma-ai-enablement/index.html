@@ -238,6 +238,19 @@
   .clip { overflow: hidden; border-radius: 12px; background: #fff; }
   .clip video { display: block; width: 100%; height: auto; }
   @supports (corner-shape: squircle) { .clip { border-radius: 24px; corner-shape: squircle; } }
+  /* Lesson examples: one row, every item the same height (width follows its aspect ratio) */
+  figure.examples { margin: 0; display: flex; flex-direction: column; gap: 16px; }
+  .examples-row { display: flex; gap: 12px; overflow-x: auto; }
+  .ex { position: relative; flex: calc(var(--ar)) 1 0; min-width: 160px; aspect-ratio: var(--ar); overflow: hidden; border-radius: 12px; background: #000; }
+  .ex img, .ex video, .ex iframe { display: block; width: 100%; height: 100%; object-fit: cover; border: 0; }
+  .ex span {
+    position: absolute; left: 8px; bottom: 8px;
+    padding: 4px 8px; border-radius: 6px;
+    background: rgba(0, 0, 0, 0.65); color: #fff;
+    font: 400 12px/1.2 "Kode Mono", ui-monospace, monospace; letter-spacing: 0.04em;
+    pointer-events: none;
+  }
+  @supports (corner-shape: squircle) { .ex { border-radius: 24px; corner-shape: squircle; } }
 </style>
 </head>
 <body>
@@ -375,6 +388,27 @@
           <li><b>67</b>Motion</li>
           <li><b>68</b>Populating calendar with data scraping</li>
         </ol>
+        <figure class="examples">
+          <div class="examples-row">
+            <div class="ex" style="--ar: 1200 / 674">
+              <img src="assets/dashboard-prototype.jpg" width="1200" height="674" loading="lazy" alt="Example dashboard prototype for a fictional fruit processing company, with gauges, toggles and charts">
+              <span>Prototype with live readings</span>
+            </div>
+            <div class="ex" style="--ar: 1200 / 685">
+              <img src="assets/code-prototyping-slides.jpg" width="1200" height="685" loading="lazy" alt="Code prototyping II lesson slides: recap, next steps and takeaways, with table and map examples">
+              <span>Code prototyping II</span>
+            </div>
+            <div class="ex" style="--ar: 492 / 480">
+              <video src="assets/2025-recap.mp4" width="492" height="480" autoplay muted loop playsinline preload="metadata" aria-label="2025 recap video: 20 sessions, 6 guest speakers and the most popular sessions"></video>
+              <span>2025 recap</span>
+            </div>
+            <div class="ex" style="--ar: 16 / 10">
+              <iframe src="assets/currawong.html" title="Motion example: a currawong swoops in to grab biscuits" loading="lazy"></iframe>
+              <span>Motion: Figma to code</span>
+            </div>
+          </div>
+          <figcaption class="caption">Examples of lesson content.</figcaption>
+        </figure>
       </section>
 
       <section class="section" aria-labelledby="reviews">
