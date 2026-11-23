@@ -252,8 +252,8 @@
   }
 
   /* ---------- Two-page magazine (book.js) ---------- */
-  /* Wider than the text column: two landscape slides need the room. Runs to the right margin. */
-  .book { width: min(1800px, calc(100vw - var(--text-left) - var(--gutter) - 20px)); }
+  /* Same width as the other images: the full case column */
+  .book { width: 100%; }
   .book-stage {
     position: relative;
     aspect-ratio: 3840 / 1080;         /* two 16:9 slides side by side */
