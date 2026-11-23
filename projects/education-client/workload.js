@@ -1,6 +1,6 @@
 // Workload modelling: a 6-week timeline of up to five overlapping projects (Figma 335:1406).
 // Each project runs through five phases; under its phase bars, every week lists the tasks the
-// coordinator has for that project that week. Overlap reads from the bars stacking up.
+// admin has for that project that week. Overlap reads from the bars stacking up.
 // The model generates daily to-do items from a lifecycle curve (scaled by LOAD):
 // a baseline peaking mid-cycle, with spikes at kick-off, the materials deadline, the mid-cycle
 // review, the review window and results. Seeded, so the picture is the same on every load.
