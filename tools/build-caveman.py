@@ -63,8 +63,8 @@ COPY = [
      "<p><strong>Whole hunt, start to end.</strong> For Deaf tribe and Auslan hand-talkers. Ask questions, listen to groups, draw people and journeys, count data, pitch to chiefs. Draw rough screens, then pretty screens, give to builders. iOS app made.</p>"),
 
     ('<h2 id="project-6">Large education client</h2>', '<h2 id="project-6">Big learning cave</h2>'),
-    ("<p><strong>UX/BA.</strong> Led current-state assessments, workshops, workflow mapping, prototyping, and prepared comprehensive strategic reports and maps used to inform major transformation initiatives.</p>",
-     "<p><strong>UX/BA.</strong> Daria look how things work now. Run workshops, map workflow, build prototype. Write big reports and maps. Chiefs use them for big change.</p>"),
+    ("<p><strong>Current-state assessment.</strong> Comprehensive assessment and process mapping of an internal coordination role at a major education client: one role, around 20 systems and many siloed departments, mapped end to end from the coordinator’s point of view for the first time.</p>",
+     "<p><strong>Look at cave now.</strong> One helper run errands between many caves, 20 magic stones, many tribes who not talk. Daria walk whole path with helper, draw first full map. Big report for chiefs.</p>"),
 
     ('<h2 id="project-7">Government client</h2>', '<h2 id="project-7">Chief scroll keeper</h2>'),
     ("<p><strong>UX Lead.</strong> AI-driven transcription, metadata automation and document management workflow PoC prototyped and implemented.</p>",
