@@ -80,11 +80,15 @@
     });
   }
 
-  function show(s) {
+  // instant: set the pages without the turn animation (used for the opening spread)
+  function show(s, instant = false) {
     s = Math.max(0, Math.min(last, s));
     els.forEach((sheet, k) => {
       const turned = k < s;
-      if (sheet.classList.contains("is-turned") !== turned) {
+      if (instant) {
+        sheet.style.transition = "none";
+        requestAnimationFrame(() => requestAnimationFrame(() => { sheet.style.transition = ""; }));
+      } else if (sheet.classList.contains("is-turned") !== turned) {
         sheet.classList.add("is-turning");
         const done = (e) => {
           if (e.target !== sheet) return;
@@ -138,5 +142,6 @@
     setTimeout(() => { moved = false; }, 0);
   });
 
-  show(0);
+  // Open on slides 2–3 rather than the closed cover
+  show(Math.min(1, last), true);
 })();
