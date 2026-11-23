@@ -132,6 +132,8 @@
     font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
   }
   .text { max-width: 513px; }
+  .text a { color: var(--accent); text-decoration: none; }
+  .text a:hover { font-weight: 600; }
   .text p { margin: 0; }
   .text p + p { margin-top: 12px; }
 
@@ -480,6 +482,15 @@
         </div>
         <figcaption class="caption">Main deliverable: current-state assessment report.</figcaption>
       </figure>
+
+      <section class="section" aria-labelledby="workload">
+        <h2 id="workload">Process highlights: workload modelling</h2>
+        <div class="text">
+          <p>How many tasks and to-do items does a coordinator actually have? There was little documentation on it, so we built the picture ourselves: we collected data from internal documents, checklists, guidelines, department onboarding materials and personal trackers, went through all the major systems on the list, and mapped every task onto the project lifecycle.</p>
+          <p>Overlap between projects was one of the biggest issues, so to assess it and communicate it to stakeholders we built a small coded prototype. It looks like a calendar by week: to-do items grouped by category and the events that trigger them, with up to five projects you can switch on to see how their peaks pile up. It helped us explain the problem and shaped the design of the future solution.</p>
+          <p><a href="workload/">Open the workload prototype →</a></p>
+        </div>
+      </section>
 
       <section class="section" aria-labelledby="challenge-landscape">
         <h2 id="challenge-landscape">Challenges: one role, many departments</h2>
