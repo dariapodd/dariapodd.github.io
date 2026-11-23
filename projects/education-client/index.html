@@ -132,8 +132,6 @@
     font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
   }
   .text { max-width: 513px; }
-  .text a { color: var(--accent); text-decoration: none; }
-  .text a:hover { font-weight: 600; }
   .text p { margin: 0; }
   .text p + p { margin-top: 12px; }
 
@@ -388,6 +386,77 @@
     .book-sheet { transition: none; }
     .book-face::before { display: none; }
   }
+
+  /* ---------- Workload model (workload.js, Figma 335:1406) ---------- */
+  /* Five project colours: categorical, validated on the dark surface
+     (worst adjacent CVD ΔE 8.4, normal-vision ΔE 19.3, all ≥ 3:1) */
+  .workload {
+    --p1: #3987e5; --p2: #d95926; --p3: #199e70; --p4: #c98500; --p5: #d55181;
+    --wl-line: #3d3c36; --wl-ink-2: #a9a896; --wl-ink-3: #7d7c6e; --wl-surface: #262520;
+    display: flex; flex-direction: column; gap: 20px;
+    font-family: "Chakra Petch", system-ui, sans-serif;
+  }
+  .wl-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 40px; }
+  .wl-stats { display: flex; flex-wrap: wrap; gap: 8px 40px; margin: 0; }
+  .wl-stats div { display: flex; flex-direction: column-reverse; }
+  .wl-stats dt { color: var(--wl-ink-3); font-size: 13px; }
+  .wl-stats dd { margin: 0; font: 400 24px/1.2 "Kode Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .wl-nav { display: flex; align-items: center; gap: 8px; }
+  .wl-btn {
+    display: grid; place-items: center;
+    min-width: 40px; height: 40px; padding: 0 12px;
+    border: 1px solid var(--accent); border-radius: 20px;
+    background: rgba(0, 255, 204, 0.1); color: var(--accent);
+    font: 400 14px/1 "Kode Mono", ui-monospace, monospace; letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer;
+  }
+  .wl-btn:hover { background: rgba(0, 255, 204, 0.2); font-weight: 600; }
+  .wl-range { width: 22ch; margin: 0; text-align: center; font: 400 14px/1.3 "Kode Mono", ui-monospace, monospace; letter-spacing: 0.06em; }
+  .wl-range span { display: block; color: var(--wl-ink-3); font-size: 12px; }
+
+  .wl-scroll { overflow-x: auto; border: 1px solid var(--wl-line); border-radius: 12px; }
+  .wl-cal { min-width: 960px; }
+  .wl-head, .wl-body { display: grid; grid-template-columns: 250px minmax(0, 1fr); }
+  .wl-head { grid-template-columns: 250px repeat(6, minmax(0, 1fr)); border-bottom: 1px solid var(--wl-line); }
+  .wl-head div { padding: 10px; color: var(--wl-ink-3); font: 400 12px/1 "Kode Mono", ui-monospace, monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+  .wl-projects { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 10px 10px 24px 18px; border: 0; border-right: 1px solid var(--wl-line); }
+  .wl-projects legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .wl-project { display: flex; align-items: center; gap: 8px; font-size: 14px; white-space: nowrap; cursor: pointer; user-select: none; }
+  .wl-project:hover { font-weight: 600; }
+  .wl-project input { position: absolute; opacity: 0; pointer-events: none; }
+  .wl-check { display: grid; place-items: center; width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--c); flex: none; }
+  .wl-project input:checked + .wl-check { background: var(--c); }
+  .wl-project input:checked + .wl-check::after { content: ""; width: 4px; height: 8px; margin-top: -2px; border: solid var(--bg); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .wl-project input:focus-visible + .wl-check { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wl-project small { color: var(--wl-ink-3); font: 400 12px/1 "Kode Mono", ui-monospace, monospace; }
+
+  .wl-lanes { display: flex; flex-direction: column; gap: 8px; padding: 6px 0 24px; min-width: 0; }
+  .wl-bars { position: relative; height: 18px; }
+  .wl-phase {
+    position: absolute; top: 0; bottom: 0;
+    display: flex; align-items: center; overflow: hidden;
+    padding: 0 6px;
+    border-left: 3px solid var(--c); border-radius: 4px;
+    background: color-mix(in srgb, var(--c) 22%, var(--wl-surface));
+    color: var(--ink); font-size: 12px; white-space: nowrap;
+  }
+  .wl-phase b { font-weight: 600; margin-right: 4px; }
+  .wl-weeks { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .wl-weeks ul { margin: 0; padding: 6px 8px 0 11px; list-style: none; font-size: 12px; line-height: 15px; }
+  .wl-weeks li + li { margin-top: 3px; }
+  .wl-empty { margin: 16px 11px; color: var(--wl-ink-3); font-size: 14px; }
+
+  .wl-sources { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+  .wl-sources h3 { margin: 0; font: 400 18px/1.2 "Kode Mono", ui-monospace, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+  .wl-sources p { margin: 0; max-width: 720px; color: var(--wl-ink-2); font-size: 14px; line-height: 1.5; }
+  .wl-sources ul { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .wl-sources li { padding: 6px 12px; border: 1px solid var(--wl-line); border-radius: 16px; font-size: 14px; }
+  @supports (corner-shape: squircle) {
+    .wl-scroll { border-radius: 24px; corner-shape: squircle; }
+  }
+  @media (forced-colors: active) {
+    .wl-check, .wl-phase { forced-color-adjust: none; }
+  }
 </style>
 </head>
 <body>
@@ -486,9 +555,20 @@
       <section class="section" aria-labelledby="workload">
         <h2 id="workload">Process highlights: workload modelling</h2>
         <div class="text">
-          <p>How many tasks and to-do items does a coordinator actually have? There was little documentation on it, so we built the picture ourselves: we collected data from internal documents, checklists, guidelines, department onboarding materials and personal trackers, went through all the major systems on the list, and mapped every task onto the project lifecycle.</p>
+          <p>How many tasks and to-do items does a coordinator actually have? There was little documentation on it, so we built the picture ourselves: we collected data from what coordinators and departments already used, went through all the major systems on the list, and mapped every task onto the project lifecycle.</p>
           <p>Overlap between projects was one of the biggest issues, so to assess it and communicate it to stakeholders we built a small coded prototype. It looks like a calendar by week: to-do items grouped by category and the events that trigger them, with up to five projects you can switch on to see how their peaks pile up. It helped us explain the problem and shaped the design of the future solution.</p>
-          <p><a href="workload/">Open the workload prototype →</a></p>
+        </div>
+        <div class="workload" data-workload aria-label="Workload model: six-week timeline of overlapping projects"></div>
+        <div class="wl-sources">
+          <h3>Data sources</h3>
+          <p>There was little documentation of the role’s workload, so the tasks and their timing were collected from what coordinators and departments already used:</p>
+          <ul>
+            <li>Internal documents</li>
+            <li>Checklists</li>
+            <li>Guidelines</li>
+            <li>Department onboarding materials</li>
+            <li>Personal trackers</li>
+          </ul>
         </div>
       </section>
 
@@ -543,6 +623,7 @@
     </article>
   </main>
 <script src="book.js"></script>
+<script src="workload.js"></script>
 <script src="../../back.js"></script>
 <!-- Visitor stats (GoatCounter: no cookies). Skips localhost and browsers marked on /not-me/ -->
 <script data-goatcounter="https://dariapodd.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
