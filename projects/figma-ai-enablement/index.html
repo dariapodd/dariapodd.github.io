@@ -234,6 +234,10 @@
   .sessions li { break-inside: avoid; padding: 4px 0; }
   .sessions .guest { color: rgba(221, 220, 200, 0.6); }
   .sessions b { display: inline-block; min-width: 3.4em; color: var(--accent); font: 400 14px/1.4 "Kode Mono", ui-monospace, monospace; }
+  /* Screen recording, already cropped to hide an internal project title */
+  .clip { overflow: hidden; border-radius: 12px; background: #fff; }
+  .clip video { display: block; width: 100%; height: auto; }
+  @supports (corner-shape: squircle) { .clip { border-radius: 24px; corner-shape: squircle; } }
 </style>
 </head>
 <body>
@@ -246,7 +250,7 @@
       <header class="intro">
         <h1>Figma &amp; AI enablement</h1>
         <div class="meta-block">
-          <p class="meta">Leading Design community learning sessions · 2022–2026 · Figma, VS Code, Cursor · ~50 designers (APAC)</p>
+          <p class="meta">Leading Design learning sessions · 2022–2026 · Figma, VS Code, Cursor · ~50 designers (APAC)</p>
           <p class="disclaimer">Note: this case study has some internal branding and content white-labelled due to NDA restrictions.</p>
         </div>
         <div class="columns">
@@ -293,6 +297,12 @@
           <p><a href="../education-client/#workload">See the workload model in the education case study →</a></p>
           <p>On the same project, the deliverables went through many rounds of updates. To show stakeholders how much our understanding of the user had changed between phases, I compared the preliminary Miro synthesis with the final branded journey map and highlighted every difference. That became session 62, Diff.</p>
         </div>
+        <figure class="shot">
+          <div class="clip">
+            <video src="assets/ujm-diff.mp4" width="1920" height="930" autoplay muted loop playsinline preload="metadata" aria-label="Screen recording: the branded journey map in Figma next to the preliminary Miro workshop board"></video>
+          </div>
+          <figcaption class="caption">Diff: the branded journey map next to the preliminary Miro synthesis, showing how much changed between phases.</figcaption>
+        </figure>
       </section>
 
       <section class="section" aria-labelledby="sessions">
