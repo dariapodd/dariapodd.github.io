@@ -315,7 +315,9 @@
     /* Clearing after the turn lands: 4x quicker than the shade builds up */
     transition: opacity 0.125s ease-out;
   }
-  .book-sheet.is-turning .book-face::before { opacity: 1; transition: opacity 0.5s ease-in; }
+  /* Only the page being turned away is shaded; the page arriving stays light */
+  .book-sheet.is-turning:not(.turn-back) .book-front::before,
+  .book-sheet.is-turning.turn-back .book-back::before { opacity: 1; transition: opacity 0.5s ease-in; }
   @supports (corner-shape: squircle) {
     .book-front { border-radius: 0 24px 24px 0; corner-shape: squircle; }
     .book-back { border-radius: 24px 0 0 24px; corner-shape: squircle; }

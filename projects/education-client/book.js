@@ -96,6 +96,8 @@
         requestAnimationFrame(() => requestAnimationFrame(() => { sheet.style.transition = ""; }));
       } else if (sheet.classList.contains("is-turned") !== turned) {
         sheet.classList.add("is-turning");
+        // Only the page leaving is shaded: the front going forward, the back going back
+        sheet.classList.toggle("turn-back", !turned);
         const done = (e) => {
           if (e.target !== sheet) return;
           sheet.classList.remove("is-turning");
