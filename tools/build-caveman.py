@@ -54,7 +54,7 @@ COPY = [
     ("<p><strong>Result: +10% items sold per sales assistant year on year, 550 devices making 8,000 barcode scans a day, and the country’s first mobile checkout on iOS.</strong></p>",
      "<p><strong>Result: each helper sell 10% more every winter. 550 glass stones scan 8,000 stripes a day. First pocket pay-stone in whole land.</strong></p>"),
 
-    ('<h2 id="project-5">Literary translation workbench</h2>', '<h2 id="project-5">Story tongue-swap stone</h2>'),
+    ('<h2 id="project-6">Literary translation workbench</h2>', '<h2 id="project-6">Story tongue-swap stone</h2>'),
     ("<p><strong>Agent skill.</strong> Manages terminology, character names, translation rules and style controls. Makes it possible to translate a fiction novel with consistent personal style choices in about 10 hours.</p>",
      "<p><strong>Agent skill.</strong> Keep words, hero names, swap rules and style in one place. Whole story-book go to other tongue in about 10 hours. Same voice all way.</p>"),
 
@@ -62,7 +62,7 @@ COPY = [
     ("<p>E2E Product Design – user research, focus groups, questionnaires, personas, journey mapping, data analysis, stakeholder pitches, lo-fi, hi-fi, UI and handover. iOS PoC app delivered.</p>",
      "<p><strong>Whole hunt, start to end.</strong> For Deaf tribe and Auslan hand-talkers. Ask questions, listen to groups, draw people and journeys, count data, pitch to chiefs. Draw rough screens, then pretty screens, give to builders. iOS app made.</p>"),
 
-    ('<h2 id="project-6">Large education client</h2>', '<h2 id="project-6">Big learning cave</h2>'),
+    ('<h2 id="project-5">Large education client</h2>', '<h2 id="project-5">Big learning cave</h2>'),
     ("<p><strong>Current-state assessment.</strong> Comprehensive assessment and process mapping of an internal coordination role at a major education client: one role, around 20 systems and many siloed departments, mapped end to end from the coordinator’s point of view for the first time.</p>",
      "<p><strong>Look at cave now.</strong> One helper run errands between many caves, 20 magic stones, many tribes who not talk. Daria walk whole path with helper, draw first full map. Big report for chiefs.</p>"),
 
