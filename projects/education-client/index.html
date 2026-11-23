@@ -396,6 +396,8 @@
     display: flex; flex-direction: column; gap: 20px;
     font-family: "Chakra Petch", system-ui, sans-serif;
   }
+  /* The prototype sits on a slightly lighter panel (Figma 335:1406) */
+  .wl-panel { padding: 48px 24px; border-radius: 12px; background: #262520; }
   .wl-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 40px; }
   .wl-stats { display: flex; flex-wrap: wrap; gap: 8px 40px; margin: 0; }
   .wl-stats div { display: flex; flex-direction: column-reverse; }
@@ -446,12 +448,13 @@
   .wl-weeks li + li { margin-top: 3px; }
   .wl-empty { margin: 16px 11px; color: var(--wl-ink-3); font-size: 14px; }
 
-  .wl-sources { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+  .wl-sources { display: flex; flex-direction: column; gap: 12px; margin-top: 40px; }
   .wl-sources h3 { margin: 0; font: 400 18px/1.2 "Kode Mono", ui-monospace, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
   .wl-sources ul { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
   .wl-sources li { padding: 6px 12px; border: 1px solid var(--wl-line); border-radius: 16px; font-size: 14px; }
   @supports (corner-shape: squircle) {
     .wl-scroll { border-radius: 24px; corner-shape: squircle; }
+    .wl-panel { border-radius: 24px; corner-shape: squircle; }
   }
   @media (forced-colors: active) {
     .wl-check, .wl-phase { forced-color-adjust: none; }
@@ -557,16 +560,18 @@
           <p>How many tasks and to-do items does a coordinator actually have? There was little documentation on it, so we built the picture ourselves: we collected data from what coordinators and departments already used, went through all the major systems on the list, and mapped every task onto the project lifecycle.</p>
           <p>Overlap between projects was one of the biggest issues, so to assess it and communicate it to stakeholders we built a small coded prototype. It looks like a calendar by week: to-do items grouped by category and the events that trigger them, with up to five projects you can switch on to see how their peaks pile up. It helped us explain the problem and shaped the design of the future solution.</p>
         </div>
-        <div class="workload" data-workload aria-label="Workload model: six-week timeline of overlapping projects"></div>
-        <div class="wl-sources">
-          <h3>Data sources</h3>
-          <ul>
-            <li>Internal documents</li>
-            <li>Checklists</li>
-            <li>Guidelines</li>
-            <li>Department onboarding materials</li>
-            <li>Personal trackers</li>
-          </ul>
+        <div class="wl-panel">
+          <div class="workload" data-workload aria-label="Workload model: six-week timeline of overlapping projects"></div>
+          <div class="wl-sources">
+            <h3>Data sources</h3>
+            <ul>
+              <li>Internal documents</li>
+              <li>Checklists</li>
+              <li>Guidelines</li>
+              <li>Department onboarding materials</li>
+              <li>Personal trackers</li>
+            </ul>
+          </div>
         </div>
       </section>
 
