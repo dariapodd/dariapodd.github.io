@@ -254,7 +254,6 @@
   /* ---------- Two-page magazine (book.js) ---------- */
   /* Wider than the text column: two landscape slides need the room. Runs to the right margin. */
   .book { width: min(1800px, calc(100vw - var(--text-left) - var(--gutter) - 20px)); }
-  .book-face { background: #fff; }
   .book-stage {
     position: relative;
     aspect-ratio: 3840 / 1080;         /* two 16:9 slides side by side */
@@ -278,7 +277,8 @@
     inset: 0;
     overflow: hidden;
     backface-visibility: hidden;
-    background: #fff;
+    /* No fill under the slide: a fill shows as a hairline where the rounded corners anti-alias */
+    background: transparent;
   }
   .book-front { border-radius: 0 12px 12px 0; }
   .book-back { transform: rotateY(180deg); border-radius: 12px 0 0 12px; }
