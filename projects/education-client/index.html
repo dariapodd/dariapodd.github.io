@@ -390,14 +390,16 @@
   /* ---------- Workload model (workload.js, Figma 335:1406) ---------- */
   /* Five project colours: categorical, validated on the dark surface
      (worst adjacent CVD ΔE 8.4, normal-vision ΔE 19.3, all ≥ 3:1) */
-  .workload {
+  .workload { display: flex; flex-direction: column; gap: 20px; }
+  /* The prototype sits on a slightly lighter panel (Figma 335:1406) */
+  .wl-panel {
     --p1: #3987e5; --p2: #d95926; --p3: #199e70; --p4: #c98500; --p5: #d55181;
-    --wl-line: #3d3c36; --wl-ink-2: #a9a896; --wl-ink-3: #7d7c6e; --wl-surface: #262520;
-    display: flex; flex-direction: column; gap: 20px;
+    --wl-line: #3d3c36; --wl-ink-2: #a9a896; --wl-ink-3: #7d7c6e; --wl-surface: #252423;
+    padding: 48px 24px;
+    border-radius: 12px;
+    background: var(--wl-surface);
     font-family: "Chakra Petch", system-ui, sans-serif;
   }
-  /* The prototype sits on a slightly lighter panel (Figma 335:1406) */
-  .wl-panel { padding: 48px 24px; border-radius: 12px; background: #262520; }
   .wl-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 40px; }
   .wl-stats { display: flex; flex-wrap: wrap; gap: 8px 40px; margin: 0; }
   .wl-stats div { display: flex; flex-direction: column-reverse; }
@@ -451,7 +453,9 @@
   .wl-sources { display: flex; flex-direction: column; gap: 12px; margin-top: 40px; }
   .wl-sources h3 { margin: 0; font: 400 18px/1.2 "Kode Mono", ui-monospace, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
   .wl-sources ul { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
-  .wl-sources li { padding: 6px 12px; border: 1px solid var(--wl-line); border-radius: 16px; font-size: 14px; }
+  /* Pills (Figma 335:2759), each with the file types the data came from */
+  .wl-sources li { display: flex; align-items: baseline; gap: 8px; padding: 6px 14px; border: 1px solid var(--wl-line); border-radius: 999px; font-size: 14px; }
+  .wl-sources li small { color: var(--wl-ink-3); font: 400 12px/1 "Kode Mono", ui-monospace, monospace; letter-spacing: 0.04em; }
   @supports (corner-shape: squircle) {
     .wl-scroll { border-radius: 24px; corner-shape: squircle; }
     .wl-panel { border-radius: 24px; corner-shape: squircle; }
@@ -565,11 +569,11 @@
           <div class="wl-sources">
             <h3>Data sources</h3>
             <ul>
-              <li>Internal documents</li>
-              <li>Checklists</li>
-              <li>Guidelines</li>
-              <li>Department onboarding materials</li>
-              <li>Personal trackers</li>
+              <li>Internal documents <small>.docx .pdf</small></li>
+              <li>Checklists <small>.xlsx</small></li>
+              <li>Guidelines <small>.htm</small></li>
+              <li>Department onboarding materials <small>.pptx .htm</small></li>
+              <li>Personal trackers <small>.xlsx .csv</small></li>
             </ul>
           </div>
         </div>
