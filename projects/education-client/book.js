@@ -3,7 +3,7 @@
 // in order: the cover first, then page 1, 2, 3… Spreads read: [ – | cover ], [ 1 | 2 ], [ 3 | 4 ]…
 // Each sheet of paper carries a right-hand page on its front and the next left-hand page on its
 // back; turning forward swings the right page over the spine to become the left one.
-// Arrows, ← → keys, clicking the left/right page, and swiping all turn pages.
+// « » jump to the cover and the last spread. Arrows, ← → keys, clicking the left/right page, and swiping all turn pages.
 (() => {
   const source = document.querySelector("[data-book]");
   if (!source) return;
@@ -36,9 +36,11 @@
   book.innerHTML = `
     <div class="book-stage" tabindex="0"></div>
     <div class="deck-controls">
+      <button class="deck-btn book-first" type="button" aria-label="First pages"><span aria-hidden="true">«</span></button>
       <button class="deck-btn book-prev" type="button" aria-label="Previous pages"><span aria-hidden="true">←</span></button>
       <p class="deck-count" aria-live="polite"></p>
       <button class="deck-btn book-next" type="button" aria-label="Next pages"><span aria-hidden="true">→</span></button>
+      <button class="deck-btn book-last" type="button" aria-label="Last pages"><span aria-hidden="true">»</span></button>
       <button class="deck-btn book-full" type="button" aria-label="Full screen" aria-pressed="false"><span aria-hidden="true">⤢</span></button>
     </div>`;
   const stage = book.querySelector(".book-stage");
@@ -57,6 +59,7 @@
 
   const count = book.querySelector(".deck-count");
   const prev = book.querySelector(".book-prev"), next = book.querySelector(".book-next");
+  const first = book.querySelector(".book-first"), lastBtn = book.querySelector(".book-last");
   // Spread s shows page 2s−1 on the left and page 2s on the right (cover = page 0), so the last
   // spread with anything on it is the one holding the final page
   const last = Math.ceil((pages.length - 1) / 2);
@@ -105,12 +108,14 @@
     stage.classList.toggle("is-closed", s === 0);
     stage.classList.toggle("is-end", s === last);
     count.textContent = s === 0 ? "Cover" : `Slides ${label(s)}`;
-    prev.disabled = s === 0;
-    next.disabled = s === last;
+    prev.disabled = first.disabled = s === 0;
+    next.disabled = lastBtn.disabled = s === last;
   }
 
   prev.addEventListener("click", () => show(spread - 1));
   next.addEventListener("click", () => show(spread + 1));
+  first.addEventListener("click", () => show(0));
+  lastBtn.addEventListener("click", () => show(last));
 
   // Full screen, where the browser allows it (hidden otherwise)
   const full = book.querySelector(".book-full");
