@@ -293,6 +293,16 @@
     background: #000;
     border-radius: 12px 0 0 12px;
   }
+  .book-end { left: 50%; background: #fff; border-radius: 0 12px 12px 0; }
+  /* The blank pages only show on their own spread (and while the neighbouring sheet turns):
+     under other pages their fill would show as a hairline at the rounded corners */
+  .book-base { visibility: hidden; }
+  .book-stage.is-closed .book-base:not(.book-end),
+  .book-stage:has(.is-first.is-turning) .book-base:not(.book-end),
+  .book-stage.is-end .book-end,
+  .book-stage:has(.is-last.is-turning) .book-end { visibility: visible; }
+  /* Same fold shading as a right-hand page */
+  .book-end::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(90deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0) 7%); }
   .book-face > img { display: block; width: 100%; height: 100%; object-fit: cover; }
   /* Paper curving into the spine */
   .book-face::after {
@@ -322,6 +332,7 @@
     .book-front { border-radius: 0 24px 24px 0; corner-shape: squircle; }
     .book-back { border-radius: 24px 0 0 24px; corner-shape: squircle; }
     .book-base { border-radius: 24px 0 0 24px; corner-shape: squircle; }
+    .book-end { border-radius: 0 24px 24px 0; }
   }
   /* Without JavaScript the slides are a plain list */
   .book-source { display: flex; flex-direction: column; gap: 24px; }

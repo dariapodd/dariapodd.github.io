@@ -49,6 +49,11 @@
   base.className = "book-base";
   base.setAttribute("aria-hidden", "true");
   stage.append(base);
+  // And a plain white back page opposite the last slide, under the right-hand stack
+  const end = document.createElement("div");
+  end.className = "book-base book-end";
+  end.setAttribute("aria-hidden", "true");
+  stage.append(end);
   const els = sheets.map(([front, back]) => {
     const sheet = document.createElement("div");
     sheet.className = "book-sheet";
@@ -60,6 +65,8 @@
     stage.append(sheet);
     return sheet;
   });
+  els[0].classList.add("is-first");
+  els[els.length - 1].classList.add("is-last");
   source.replaceWith(book);
 
   const count = book.querySelector(".deck-count");
