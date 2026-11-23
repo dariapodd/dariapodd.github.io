@@ -43,6 +43,12 @@
       <button class="deck-btn book-last" type="button" aria-label="Last pages"><span aria-hidden="true">»</span></button>
     </div>`;
   const stage = book.querySelector(".book-stage");
+  // Slide 0: a plain black page opposite the cover. It lies under the left-hand stack, so turned
+  // pages cover it from the first turn on
+  const base = document.createElement("div");
+  base.className = "book-base";
+  base.setAttribute("aria-hidden", "true");
+  stage.append(base);
   const els = sheets.map(([front, back]) => {
     const sheet = document.createElement("div");
     sheet.className = "book-sheet";
