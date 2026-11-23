@@ -41,7 +41,6 @@
       <p class="deck-count" aria-live="polite"></p>
       <button class="deck-btn book-next" type="button" aria-label="Next pages"><span aria-hidden="true">→</span></button>
       <button class="deck-btn book-last" type="button" aria-label="Last pages"><span aria-hidden="true">»</span></button>
-      <button class="deck-btn book-full" type="button" aria-label="Full screen" aria-pressed="false"><span aria-hidden="true">⤢</span></button>
     </div>`;
   const stage = book.querySelector(".book-stage");
   const els = sheets.map(([front, back]) => {
@@ -117,19 +116,6 @@
   first.addEventListener("click", () => show(0));
   lastBtn.addEventListener("click", () => show(last));
 
-  // Full screen, where the browser allows it (hidden otherwise)
-  const full = book.querySelector(".book-full");
-  if (!document.fullscreenEnabled) full.hidden = true;
-  full.addEventListener("click", () => {
-    if (document.fullscreenElement) document.exitFullscreen();
-    else book.requestFullscreen().catch(() => {});
-  });
-  document.addEventListener("fullscreenchange", () => {
-    const on = document.fullscreenElement === book;
-    full.setAttribute("aria-pressed", String(on));
-    full.setAttribute("aria-label", on ? "Exit full screen" : "Full screen");
-    full.querySelector("span").textContent = on ? "⤡" : "⤢";
-  });
   stage.addEventListener("click", (e) => {
     if (moved) return;
     const r = stage.getBoundingClientRect();

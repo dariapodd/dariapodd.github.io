@@ -254,18 +254,6 @@
   /* ---------- Two-page magazine (book.js) ---------- */
   /* Wider than the text column: two landscape slides need the room. Runs to the right margin. */
   .book { width: min(1800px, calc(100vw - var(--text-left) - var(--gutter) - 20px)); }
-  /* Full screen: the spread as large as the window allows, controls underneath */
-  .book:fullscreen {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 32px;
-    box-sizing: border-box;
-    background: var(--bg);
-  }
-  .book:fullscreen .book-stage { width: min(100%, calc((100vh - 160px) * 3840 / 1080)); }
   .book-face { background: #fff; }
   .book-stage {
     position: relative;
@@ -354,13 +342,20 @@
   .deck-btn:hover:not(:disabled) { background: rgba(0, 255, 204, 0.2); font-weight: 600; }
   .deck-btn:disabled { opacity: 0.3; cursor: default; }
   .deck-count {
-    min-width: 10ch;
+    /* Fixed to the longest label, "Slides 46–47" (12 monospace characters plus tracking), so the buttons don't shift */
+    width: calc(12 * (1ch + 0.1em));
+    flex: none;
+    white-space: nowrap;
     margin: 0;
     color: var(--ink);
     font: 400 var(--nav-fs)/1 "Kode Mono", ui-monospace, monospace;
     letter-spacing: 0.1em;
     text-align: center;
     text-transform: uppercase;
+  }
+  @media (max-width: 480px) {
+    .deck-controls { gap: 12px; }
+    .deck-btn { width: 40px; height: 40px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .book-sheet { transition: none; }
