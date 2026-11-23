@@ -3,7 +3,7 @@
 // in order: the cover first, then page 1, 2, 3… Spreads read: [ – | cover ], [ 1 | 2 ], [ 3 | 4 ]…
 // Each sheet of paper carries a right-hand page on its front and the next left-hand page on its
 // back; turning forward swings the right page over the spine to become the left one.
-// « » jump to the cover and the last spread. Arrows, ← → keys, clicking the left/right page, and swiping all turn pages.
+// ⏮ ⏭ jump to the cover and the last spread. Arrows, ← → keys, clicking the left/right page, and swiping all turn pages.
 (() => {
   const source = document.querySelector("[data-book]");
   if (!source) return;
@@ -36,11 +36,11 @@
   book.innerHTML = `
     <div class="book-stage" tabindex="0"></div>
     <div class="deck-controls">
-      <button class="deck-btn book-first" type="button" aria-label="First pages"><span aria-hidden="true">«</span></button>
+      <button class="deck-btn book-first" type="button" aria-label="First pages"><span aria-hidden="true">⏮︎</span></button>
       <button class="deck-btn book-prev" type="button" aria-label="Previous pages"><span aria-hidden="true">←</span></button>
       <p class="deck-count" aria-live="polite"></p>
       <button class="deck-btn book-next" type="button" aria-label="Next pages"><span aria-hidden="true">→</span></button>
-      <button class="deck-btn book-last" type="button" aria-label="Last pages"><span aria-hidden="true">»</span></button>
+      <button class="deck-btn book-last" type="button" aria-label="Last pages"><span aria-hidden="true">⏭︎</span></button>
     </div>`;
   const stage = book.querySelector(".book-stage");
   // Slide 0: a plain black page opposite the cover. It lies under the left-hand stack, so turned
