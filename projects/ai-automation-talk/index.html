@@ -147,6 +147,78 @@
     text-transform: uppercase;
   }
   @media (max-width: 700px) { .meta { margin: -24px 0 48px; } }
+  /* ---------- Magazine viewer (deck.js): one slide at a time, pages turn over the left edge ---------- */
+  .deck { max-width: 1086px; }
+  .deck-stage {
+    position: relative;
+    aspect-ratio: 2172 / 1222;
+    perspective: 4000px;   /* a gentle swing: the page stays close to the spread as it turns */
+    cursor: pointer;
+    outline-offset: 6px;
+    border-radius: 12px;
+    box-shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.6);   /* the magazine lifts off the page */
+  }
+  .deck-page {
+    position: absolute;
+    inset: 0;
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.9s cubic-bezier(0.645, 0.045, 0.355, 1);
+  }
+  .deck-page img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  /* A turned page has swung over the spine and out of sight */
+  .deck-page.is-turned { transform: rotateY(-180deg); }
+  /* Shade on the moving page: darkest mid-turn, as it stands edge-on to the light */
+  .deck-page::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.05) 60%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.45s ease-in;
+  }
+  .deck-page.is-turning::after { opacity: 1; }
+  .deck-page.is-turning:not(.is-turned)::after { transition-timing-function: ease-out; }
+  @supports (corner-shape: squircle) {
+    .deck-stage, .deck-page { border-radius: 24px; corner-shape: squircle; }
+  }
+  /* Arrows and page count under the slide */
+  .deck-controls { display: flex; align-items: center; justify-content: center; gap: 24px; margin-top: 32px; }
+  .deck-btn {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    background: rgba(0, 255, 204, 0.1);
+    color: var(--accent);
+    font: 400 20px/1 "Kode Mono", ui-monospace, monospace;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .deck-btn:hover:not(:disabled) { background: rgba(0, 255, 204, 0.2); font-weight: 600; }
+  .deck-btn:disabled { opacity: 0.3; cursor: default; }
+  .deck-count {
+    min-width: 7ch;
+    margin: 0;
+    color: var(--ink);
+    font: 400 var(--nav-fs)/1 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+  /* Reduced motion: slides cross-fade instead of turning */
+  @media (prefers-reduced-motion: reduce) {
+    .deck-page { transition: opacity 0.25s ease; }
+    .deck-page.is-turned { transform: none; opacity: 0; }
+    .deck-page::after { display: none; }
+  }
+
   /* Slides fill the column */
   .gallery img.slide { width: 100%; max-height: none; }
 </style>
@@ -160,7 +232,7 @@
     <h1>AI Automation for product designers</h1>
     <p class="meta">Codex Community event talk, June 2026</p>
 
-    <div class="gallery">
+    <div class="gallery" data-deck>
       <img class="slide" src="assets/slide-01.jpg" width="2172" height="1222" alt="Title slide: AI automation for product designers: be your own customer zero. Daria Podrezova, UX/UI Design Manager, USYD tutor (Usability, HCI)">
       <img class="slide" src="assets/slide-02.jpg" width="2172" height="1222" loading="lazy" alt="About me: 15 years of work experience from UI designer to UX/UI design manager, with examples of projects">
       <img class="slide" src="assets/slide-03.jpg" width="2172" height="1222" loading="lazy" alt="Where is the best automation value? A chart from fuzzy to well-defined, predictable, repeatable processes, which are easier to automate and probably already automated">
@@ -182,6 +254,7 @@
     </div>
   </main>
 
+<script src="deck.js"></script>
 <script src="../../back.js"></script>
 <!-- Visitor stats (GoatCounter: no cookies). Skips localhost and browsers marked on /not-me/ -->
 <script data-goatcounter="https://dariapodd.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
