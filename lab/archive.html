@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>XYZ Archives · prototype</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../favicon-64.png" type="image/png" sizes="64x64">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Mozilla+Text:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /* Playground: AI transcription and metadata automation (Government client, Azure AI PoC).
+     No real OCR or video: recognised text, clips and suggestions are canned data below. */
+  :root {
+    --bg: #f5f5f5;            /* media column */
+    --panel: #ffffff;
+    --panel-2: #f5f5f5;       /* selected rows, hover */
+    --input: #f3f3f3;         /* inputs and dropdowns */
+    --ink: #1d1c19;
+    --muted: #64696d;         /* labels, confidence */
+    --meta: #6d6b64;          /* counts, file meta */
+    --placeholder: #757575;
+    --line: #dedede;          /* row separators */
+    --line-panel: #e1e1e1;    /* panel edges */
+    --line-strong: #cfccc2;
+    --accent: #1d1c19;        /* selection is neutral */
+    --accent-soft: #f5f5f5;
+    --rust: #b5492b;          /* AI, flags, progress */
+    --ai: var(--rust);
+    --ai-soft: rgba(181, 73, 43, 0.2);
+    --rust-tint: rgba(181, 73, 43, 0.1);
+    --ok: #000000;
+    --ok-soft: rgba(0, 0, 0, 0.12);
+    --warn: var(--rust);
+    --warn-soft: rgba(181, 73, 43, 0.2);
+    --r-input: 2px;
+    --margin: 20px;           /* white app panel inset from the window edges (Figma 11:2) */
+    --inset: 24px;            /* sidebar content inside the panel */
+    --side: 316px;            /* sources, fields and properties panels share one width */
+    --hl: rgba(255, 200, 40, 0.22);
+    --hl-line: rgba(214, 150, 0, 0.75);
+    --radius: 2px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    display: flex; flex-direction: column;
+    background: linear-gradient(102deg, #151515, #373737) fixed #1d1c19; color: var(--ink);
+    font: 400 13px/1.45 Inter, system-ui, sans-serif;
+  }
+  button, input, select, textarea { font: inherit; color: inherit; }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    display: flex; align-items: center; gap: 16px;
+    height: 72px; padding: 0 var(--margin); flex: none; gap: 24px;
+    background: transparent;
+  }
+  .brand { margin-left: auto; display: flex; align-items: center; gap: 8px; white-space: nowrap; font-size: 18px; font-weight: 700; letter-spacing: 0.1px; text-transform: uppercase; color: #fff; }
+  .nav { display: flex; align-items: center; gap: 16px; }
+  .nav a { display: inline-flex; align-items: center; gap: 8px; color: #fff; font-size: 13px; text-decoration: none; }
+  .nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .badge { min-width: 21px; height: 20px; padding: 0 7px; border-radius: 4px; background: var(--rust); color: #fff; display: inline-grid; place-items: center; font-size: 13px; line-height: 1; }
+  .user {
+    display: inline-flex; align-items: center; gap: 10px; height: 32px; padding: 0 12px;
+    border: 0; border-radius: 4px; background: #474747; color: #fff; font-size: 13px; cursor: pointer; white-space: nowrap;
+  }
+  .user:hover { background: #545454; }
+  .brand-mark { height: 22px; padding: 0 6px; border-radius: 6px; background: var(--ink); color: #fff; display: grid; place-items: center; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; }
+  .avatar { width: 28px; height: 28px; border-radius: 50%; background: #d9d4c7; display: grid; place-items: center; font-size: 11px; font-weight: 600; }
+
+  /* ---------- Layout ---------- */
+  .app { flex: 1; min-height: 0; display: grid; grid-template-columns: var(--side) 1fr var(--side); margin: 0 var(--margin); background: var(--panel); border-radius: 6px 6px 0 0; overflow: hidden; }   /* 6px corners on the white panel */
+  .sidebar, .props { background: var(--panel); min-height: 0; overflow-y: auto; }
+  .sidebar { border-right: 1px solid #e4e2db; display: flex; flex-direction: column; }
+  .props { border-left: 1px solid var(--line-panel); }
+  .content { min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) var(--side); }
+  /* Media on the left, recognised fields / clips as a vertical panel to its right */
+  .media { min-height: 0; overflow-y: auto; padding: 24px 24px 40px; background: var(--bg); }
+  .content.is-video { grid-template-columns: minmax(0, 1fr); }   /* films: fields sit in the right panel */
+  @media (min-width: 1101px) { .app.is-video { grid-template-columns: var(--side) 1fr calc(var(--side) * 1.5); } }   /* films: right panel 1.5x wider */
+  .details { min-height: 0; overflow-y: auto; background: var(--panel); border-left: 1px solid var(--line-panel); }
+
+  .section-title {
+    margin: 0; padding: 28px 16px 14px var(--inset);
+    font-size: 18px; font-weight: 700; letter-spacing: 0.1px; text-transform: uppercase; color: var(--ink);
+  }
+
+  /* ---------- Sources ---------- */
+  .sources { list-style: none; margin: 0; padding: 0 8px 12px var(--inset); }
+  .source {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    padding: 7px 8px; border: 0; border-radius: var(--r-input); background: none; text-align: left; cursor: pointer;
+  }
+  .source:hover { background: var(--panel-2); }
+  .source[aria-pressed="true"] { background: var(--panel-2); color: #000; }
+  .source .ico { width: 16px; text-align: center; opacity: 0.8; }
+  .source .count { margin-left: auto; color: var(--meta); font-size: 12px; font-weight: 400; }
+
+  /* ---------- Files ---------- */
+  .files-head { display: flex; align-items: center; justify-content: space-between; padding-right: 16px; }
+  .files-head small { color: var(--meta); font-size: 12px; }
+  .files { list-style: none; margin: 0; padding: 0 8px 16px var(--inset); }
+  .file {
+    display: grid; grid-template-columns: 36px 1fr auto; align-items: center; gap: 10px;
+    width: 100%; padding: 7px 8px; border: 0; border-radius: var(--r-input); background: none; text-align: left; cursor: pointer;
+  }
+  .file:hover:not(:disabled) { background: var(--panel-2); }
+  .file[aria-current="true"] { background: var(--accent-soft); }
+  .file:disabled { cursor: default; }
+  .file:disabled .file-name { color: var(--meta); }
+  .file-thumb { width: 36px; height: 36px; border-radius: var(--r-input); background: var(--input) center/cover; position: relative; }
+  .file-thumb.is-video::after { content: "▶"; position: absolute; right: 2px; bottom: 1px; font-size: 9px; color: #fff; text-shadow: 0 0 3px rgba(0,0,0,0.6); }
+  .file-thumb.is-blank { background: var(--input); }   /* no thumbnail yet: plain grey box */
+  .file-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 400; }
+  .file-meta { color: var(--meta); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Processing status, right of each file */
+  .status { display: flex; align-items: center; justify-content: flex-end; width: 56px; }
+  .tick { width: 18px; height: 18px; border-radius: 50%; background: var(--ok); color: #fff; display: grid; place-items: center; font-size: 11px; }
+  .tick.reviewed { box-shadow: 0 0 0 3px var(--ok-soft); }
+  .progress { width: 48px; height: 5px; border-radius: var(--r-input); background: #e9e6de; overflow: hidden; }
+  .progress i { display: block; height: 100%; background: var(--rust); border-radius: inherit; transition: width 0.6s linear; }
+  .hourglass { font-size: 14px; opacity: 0.6; }
+
+  /* ---------- Content ---------- */
+  .content-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
+  .content-head h1 { margin: 0; font-size: 18px; font-weight: 300; }
+  .content-head span, .content-head h1.filename { color: var(--meta); font-size: 13px; font-weight: 400; }
+
+  .viewer { position: relative; background: #2a2925; border-radius: var(--radius); overflow: hidden; }
+  .stage { position: relative; margin: 0 auto; }
+  .stage img { display: block; width: 100%; height: auto; user-select: none; }
+  /* Document: crop 20px off every edge of the scan; the highlights move with the page */
+  #stage { display: flow-root; overflow: hidden; }
+  #stage .page { position: relative; margin: -20px; }
+
+  /* OCR highlights over the scanned document */
+  .hl {
+    position: absolute; border-radius: var(--r-input); cursor: pointer;
+    background: var(--hl); outline: 1px solid transparent;
+    transition: background 0.15s, outline-color 0.15s;
+  }
+  .hl:hover, .hl.is-on { background: rgba(255, 200, 40, 0.38); outline-color: var(--hl-line); }
+  .hl-tip {
+    position: absolute; z-index: 5; max-width: 280px; padding: 6px 9px; border-radius: var(--r-input); pointer-events: none;
+    background: var(--ink); color: #fff; font-size: 12px; line-height: 1.35;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25); opacity: 0; transform: translateY(4px); transition: opacity 0.12s, transform 0.12s;
+  }
+  .hl-tip.show { opacity: 1; transform: none; }
+  .hl-tip b { display: block; color: #ffd76a; font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+  input[type="checkbox"] { accent-color: #000; }   /* black instead of the browser blue */
+
+  /* Video: still + controls */
+  .play { position: absolute; inset: 0; margin: auto; width: 64px; height: 64px; border-radius: 50%; border: 0; background: rgba(0,0,0,0.5); color: #fff; font-size: 22px; cursor: pointer; }
+  .controls { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #1d1c19; color: #ddd; font-size: 12px; }
+  .timeline { position: relative; flex: 1; height: 18px; cursor: pointer; }
+  .timeline .seg { position: absolute; top: 6px; height: 6px; border-radius: 2px; background: #4a4842; }
+  .timeline .seg.is-on { background: var(--rust); }
+  .timeline .head { position: absolute; top: 2px; width: 2px; height: 14px; background: #fff; }
+
+  /* Fields under the image */
+  /* Clips under the video: a card in the media column */
+  .fields--card { margin-top: 20px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .fields--card .fields-head { position: static; }
+  .fields--card .clip { grid-template-columns: 160px 1fr; gap: 16px; }
+  .fields-head {
+    position: sticky; top: 0; z-index: 1;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 28px 16px 14px; background: var(--panel);
+  }
+  .fields-head h2 { margin: 0; display: flex; align-items: center; gap: 6px; font-size: 18px; font-weight: 700; letter-spacing: 0.1px; text-transform: uppercase; color: var(--ink); }
+  .fields-head small { color: var(--muted); }
+  /* Same alignment as the properties panel: label left, value right */
+  .field { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 8px; padding: 0 16px; margin-bottom: 6px; }
+  .field label { color: var(--muted); display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; }
+  .field:has(textarea) label { align-self: start; padding-top: 6px; }
+  .field input { height: 28px; padding: 0 12px !important; }
+  .field input, .field textarea {
+    width: 100%; padding: 6px 12px; border: 1px solid transparent; border-radius: var(--r-input); background: var(--input); resize: vertical;   /* grey by default */
+  }
+  .field textarea { background: var(--input); }
+  .field input:focus, .field textarea:focus { outline: none; }
+  .field input:focus, .field textarea:focus { border-color: var(--ink); }
+  /* Low confidence: rust tint and a flag instead of the percentage */
+  .field.is-key input { background: var(--input); }
+  .field.is-low textarea { background: var(--rust-tint); }
+  .field .val { position: relative; }
+  .field.is-low textarea { padding-right: 32px; }
+  .field .q { position: absolute; right: 12px; top: 5px; color: var(--rust); font-weight: 700; pointer-events: none; }
+  .field textarea { display: block; min-height: 28px; padding: 5px 12px; line-height: 1.35; resize: none; field-sizing: content; }   /* grows to fit long lines */
+  .field .conf { padding-left: 0 !important; }
+  .ai {
+    display: inline-flex; align-items: center; padding: 1px 5px; border-radius: var(--r-input);
+    background: var(--ai-soft); color: var(--ai);
+    font: 600 10px/1.5 "Mozilla Text", Inter, system-ui, sans-serif; letter-spacing: 0.4px; text-transform: none;
+  }
+  .conf { color: var(--muted); font-size: 11px; }
+
+  /* Video clips list */
+  .clip { display: grid; grid-template-columns: 104px 1fr; gap: 12px; padding: 12px 16px; cursor: pointer; }
+  .clip:last-child { border-bottom: 0; }
+  .clip:hover { background: var(--panel-2); }
+  .clip.is-on { background: var(--panel-2); }
+  .clip-thumb {
+    position: relative; aspect-ratio: 16 / 9; border-radius: var(--r-input); background: center/cover;
+    border: 1px dashed var(--line-strong); background-color: var(--panel-2);
+    display: grid; place-items: center; color: var(--muted); font-size: 11px;
+  }
+  .clip-thumb time { position: absolute; right: 4px; bottom: 4px; padding: 0 4px; border-radius: var(--r-input); background: rgba(0,0,0,0.6); color: #fff; font-size: 10px; }
+  .clip-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .clip-title { display: flex; align-items: center; gap: 8px; }
+  .clip-title input { flex: 1; min-width: 0; padding: 2px 6px; margin-left: -6px; border: 1px solid transparent; border-radius: var(--r-input); background: none; font-weight: 600; }
+  .clip-body textarea { width: 100%; padding: 2px 6px; margin-left: -6px; border: 1px solid transparent; border-radius: var(--r-input); background: none; color: var(--muted); resize: none; min-height: 40px; field-sizing: content; }
+  .clip input:hover, .clip textarea:hover { border-color: var(--line); }
+  .clip input:focus, .clip textarea:focus { outline: none; border-color: var(--ink); background: var(--input); color: var(--ink); }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag { padding: 1px 7px; border-radius: var(--r-input); background: var(--input); border: 0; color: var(--muted); font-size: 11px; }
+  .tag.flag { background: var(--warn-soft); border-color: transparent; color: var(--warn); }
+
+  /* ---------- Properties panel ---------- */
+  .prop-group { padding: 4px 16px 4px; }   /* 32px between sections (was 48) */
+  .prop-group h3 { margin: 0; padding: 24px 0 14px; font-size: 18px; font-weight: 700; letter-spacing: 0.1px; text-transform: uppercase; color: var(--ink); }
+  .prop { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .prop label { color: var(--muted); }
+  .prop-group .field { padding: 0; }   /* fields inside the right panel use its padding */
+  /* Description lives in Attributes: label top-aligned, tall grey box */
+  .prop--long { align-items: start; }
+  .prop--long label { padding-top: 6px; display: flex; flex-wrap: wrap; gap: 2px 6px; align-items: center; }
+  .prop textarea { width: 100%; min-height: 180px; padding: 6px 12px; border: 1px solid transparent; border-radius: var(--r-input); background: var(--input); resize: vertical; }
+  .app.is-video .prop textarea { min-height: 120px; }   /* films: shorter description (wider panel) */
+  .prop textarea:focus { outline: none; border-color: var(--ink); }
+  .prop select, .prop input { width: 100%; height: 28px; padding: 0 12px; border: 0; border-radius: var(--r-input); background: var(--input); }
+  .prop select:focus, .prop input:focus { outline: 1px solid var(--ink); }
+  /* Dropdown chevron 12px in from the right edge (Figma 10:336), instead of the browser arrow */
+  .prop select {
+    appearance: none; -webkit-appearance: none; padding-right: 34px; cursor: pointer;
+    background: var(--input) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%231d1c19' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center / 10px 6px;
+  }
+
+  .suggest {
+    margin-top: 8px; padding: 10px 12px; border-radius: var(--r-input);
+    background: var(--ai-soft); border: 1px solid var(--ai-soft);
+  }
+  .suggest.is-warn { background: var(--warn-soft); border-color: var(--warn-soft); }
+  .suggest-head .ai { order: 2; margin-left: auto; }
+  .suggest-head { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-weight: 600; }
+  .suggest p { margin: 0; }
+  .suggest-actions { display: flex; gap: 6px; margin-top: 10px; }
+  .btn { height: 26px; padding: 0 10px; border-radius: var(--r-input); border: 1px solid var(--line-strong); background: #fff; cursor: pointer; font-size: 12px; font-weight: 500; }
+  .btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .btn:hover { filter: brightness(0.96); }
+  .applied { margin-top: 8px; color: var(--ok); font-weight: 500; }
+
+  .status-pill { display: inline-flex; align-items: center; gap: 6px; }
+  .history { margin: 10px 0 0; padding: 0; list-style: none; color: var(--meta); font-size: 12px; }
+  .history li { padding: 3px 0; }
+  .history b { color: var(--ink); font-weight: 500; }
+
+  /* ---------- Narrow screens ---------- */
+  @media (max-width: 1400px) {
+    :root { --side: 266px; }
+  }
+  @media (max-width: 1100px) {
+    .content { display: block; }
+    .media, .details { overflow: visible; }
+    .details { border-left: 0; border-top: 1px solid var(--line); }
+    .fields-head { position: static; }
+    .app { grid-template-columns: var(--side) 1fr; }
+    .props { grid-column: 2; border-left: 0; border-top: 1px solid var(--line); }
+    .app { grid-template-rows: auto auto; overflow-y: auto; }
+    .content, .props, .sidebar { overflow: visible; }
+    .sidebar { grid-row: 1 / span 2; }
+  }
+  @media (max-width: 720px) {
+    :root { --margin: 8px; --inset: 16px; }
+    .nav { display: none; }
+    .app { display: block; }
+    .sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
+    .media { padding: 16px; }
+    .clip { grid-template-columns: 96px 1fr; }
+  }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav" aria-label="Main">
+      <a href="#">Digitise</a>
+      <a href="#">Organise</a>
+      <a href="#">Collections</a>
+      <a href="#">Teams</a>
+      <a href="#">Requests <span class="badge" aria-label="1 new request">1</span></a>
+    </nav>
+    <div class="brand">XYZ Archives</div>
+    <button class="user" type="button" aria-haspopup="menu">Angeline Userson
+      <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </header>
+
+  <div class="app">
+    <!-- Left: sources and files -->
+    <nav class="sidebar" aria-label="Sources and files">
+      <h2 class="section-title">Sources</h2>
+      <ul class="sources" id="sources"></ul>
+
+      <div class="files-head">
+        <h2 class="section-title">Files</h2>
+        <small id="files-summary"></small>
+      </div>
+      <ul class="files" id="files"></ul>
+    </nav>
+
+    <!-- Middle: the content itself -->
+    <main class="content" id="content" aria-live="polite"></main>
+
+    <!-- Right: properties -->
+    <aside class="props" id="props" aria-label="Properties"></aside>
+  </div>
+
+  <div class="hl-tip" id="tip" role="tooltip"></div>
+
+<script>
+/* ---------------- Data ---------------- */
+const SOURCES = [
+  { id: "batch",  icon: "⧉", name: "Digitisation batch · Nov 2024", count: 128 },
+  { id: "av",     icon: "▶", name: "Audiovisual collection",         count: 2341 },
+  { id: "store",  icon: "▤", name: "Repository A · Shelf 12",        count: 412 },
+  { id: "upload", icon: "⇪", name: "Recent uploads",                 count: 17 },
+];
+
+// x, y, w, h in % of the image. Each box is one recognised text item.
+// kind: "typed" (printed on the form) or "hand" (filled in by hand); conf < 85 = low confidence
+const DOC_BOXES = [
+  { id: "form",     x: 89.6, y: 1.0,  w: 9.4,  h: 2.0, kind: "typed", conf: 91, value: "A.A.F. A101" },
+  { id: "issuer",   x: 33.5, y: 15.4, w: 33,   h: 3.0, kind: "typed", conf: 99, value: "Australian Military Forces" },
+  { id: "type",     x: 23,   y: 19.0, w: 54,   h: 5.2, kind: "hand",  conf: 97, value: "Certificate of Discharge" },
+  { id: "certno",   x: 64.5, y: 25.6, w: 21.5, h: 2.6, kind: "typed", conf: 98, value: "# 169841" },
+  { id: "name",     x: 10,   y: 30.8, w: 80,   h: 4.0, kind: "hand",  conf: 90, value: "V91214 – Private – James – Moar – McKenzie" },
+  { id: "unit",     x: 10.5, y: 34.6, w: 55,   h: 2.4, kind: "hand",  conf: 81, value: "Head Quarters, Vic L of C Area" },
+  { id: "enlisted", x: 20.5, y: 37.0, w: 67,   h: 2.4, kind: "hand",  conf: 88, value: "C.M.F. · 18th Dec. 1940" },
+  { id: "force",    x: 35.5, y: 41.2, w: 31,   h: 2.3, kind: "hand",  conf: 92, value: "Citizen Military Forces" },
+  { id: "period",   x: 13.5, y: 43.4, w: 71,   h: 4.6, kind: "hand",  conf: 79, value: "One thousand two hundred and eighty two" },
+  { id: "aus",      x: 31.5, y: 50.4, w: 33,   h: 2.3, kind: "hand",  conf: 93, value: "1163" },
+  { id: "outside",  x: 40.5, y: 52.5, w: 8.5,  h: 2.1, kind: "hand",  conf: 77, value: "— (nil)" },
+  { id: "from",     x: 14.5, y: 54.6, w: 71,   h: 2.6, kind: "hand",  conf: 95, value: "The Citizen Military Forces" },
+  { id: "sigcapt",  x: 56,   y: 68.3, w: 27,   h: 3.6, kind: "hand",  conf: 62, value: "J. Elwill, Capt." },
+  { id: "officer",  x: 40.5, y: 71.8, w: 47,   h: 6.2, kind: "hand",  conf: 74, value: "Victoria Echelon & Records L of C Area" },
+  { id: "margin",   x: 26,   y: 77.2, w: 3,    h: 2.3, kind: "hand",  conf: 70, value: "4." },
+  { id: "effect",   x: 14.5, y: 82.0, w: 71,   h: 4.2, kind: "hand",  conf: 86, value: "19th day of June One thousand nine hundred and forty five" },
+  { id: "place",    x: 14.5, y: 87.0, w: 24,   h: 2.6, kind: "hand",  conf: 89, value: "Royal Park" },
+  { id: "sigmajor", x: 48.5, y: 86.8, w: 25,   h: 3.8, kind: "hand",  conf: 58, value: "J. Elton, Major" },
+  { id: "date",     x: 14.5, y: 89.6, w: 22.5, h: 2.8, kind: "hand",  conf: 90, value: "19/6/1945" },
+  { id: "stamp",    x: 75,   y: 90.4, w: 12,   h: 2.0, kind: "hand",  conf: 66, value: "C.O. O.D.D. Royal Park" },
+  { id: "initials", x: 82.5, y: 91.6, w: 6,    h: 1.9, kind: "hand",  conf: 55, value: "1/8/51" },
+];
+const KIND_LABEL = { typed: "Typed text", hand: "Handwritten" };
+
+const FILES = [
+  {
+    id: "doc", kind: "image", name: "AMF_discharge_169841.tif", meta: "Scan · 600 dpi · 1 page", img: "assets/archive/doc.jpg",
+    status: "processed", source: "batch",
+    title: "Certificate of Discharge, Pte J. M. McKenzie",
+    fields: [
+      { id: "description", label: "Description", ai: true, long: true,
+        value: "Australian Military Forces Certificate of Discharge (form A.A.F. A101) for Private James Moar McKenzie, service number V91214, Head Quarters Victoria Lines of Communication Area. Enlisted in the Citizen Military Forces on 18 December 1940; discharged at Royal Park on 19 June 1945 after 1,282 days of effective full-time war service, 1,163 of them in Australia." },
+      { id: "type",       label: "Document type",        value: "Certificate of Discharge", conf: 99 },
+      { id: "issuer",     label: "Issued by",            value: "Australian Military Forces", conf: 99 },
+      { id: "form",       label: "Form",                 value: "A.A.F. A101", conf: 91 },
+      { id: "certno",     label: "Certificate number",   value: "169841", conf: 98 },
+      { id: "name",       label: "Full name",            value: "James Moar McKenzie", conf: 94 },
+      { id: "rank",       label: "Rank · Service no.",   value: "Private · V91214", conf: 93, box: "name" },
+      { id: "unit",       label: "Unit",                 value: "Head Quarters, Vic L of C Area", conf: 81 },
+      { id: "enlisted",   label: "Enlisted",             value: "18 Dec 1940", conf: 90 },
+      { id: "force",      label: "Service",              value: "Citizen Military Forces", conf: 96 },
+      { id: "period",     label: "Total effective period", value: "1,282 days", conf: 86 },
+      { id: "aus",        label: "Service in Australia", value: "1,163 days", conf: 92 },
+      { id: "discharged", label: "Discharged",           value: "19 Jun 1945", conf: 95 },
+      { id: "place",      label: "Place",                value: "Royal Park, Victoria", conf: 88 },
+      { id: "authority",  label: "Authority",            value: "Officer in Charge, Records, Victoria Echelon", conf: 74 },
+    ],
+    props: { category: "Defence service records", location: "Royal Park, VIC, Australia", type: "Certificate", status: "Processed", sensitivity: "None" },
+    suggestion: { tone: "ok", title: "No restrictions recommended",
+      text: "No sensitivity or restriction recommendations. No culturally sensitive content or restricted personal information detected." },
+  },
+  {
+    id: "park", kind: "video", name: "Wellington_park_works_1916.mov", meta: "Film · 16 mm · 08:40", img: "assets/archive/park.jpg",
+    status: "processed", source: "batch", duration: 520,
+    title: "Park construction, Wellington",
+    fields: [
+      { id: "description", label: "Description", ai: true, long: true,
+        value: "Silent black-and-white film documenting the construction of a riverside park walk in Wellington, around 1916: clearing and pruning old willows, forming and gravelling a footpath along the bank, planting, and the first visitors walking the finished path." },
+      { id: "date",     label: "Date",     value: "c. 1916", conf: 78 },
+      { id: "place",    label: "Place",    value: "Wellington, New Zealand", conf: 72 },
+      { id: "format",   label: "Format",   value: "16 mm film, digitised to ProRes", conf: 99 },
+      { id: "audio",    label: "Audio",    value: "Silent", conf: 97 },
+      { id: "credit",   label: "Inscription", value: "E.C.I. 1916 (lower right)", conf: 88 },
+    ],
+    clips: [
+      { t: 0,   d: 72,  title: "Survey of the riverbank", text: "Wide shots of the untouched bank: leaning willows over the water and a rough track through long grass.", tags: ["river", "willow trees", "survey"] },
+      { t: 72,  d: 118, title: "Clearing and pruning willows", text: "Work gangs saw back overhanging branches and drag cut timber away from the water's edge.", tags: ["workers", "tree clearing"] },
+      { t: 190, d: 125, title: "Forming the footpath", text: "Workers level the ground, set edging and spread gravel to form a path that follows the riverbank.", tags: ["footpath", "gravel", "construction"] },
+      { t: 315, d: 110, title: "Planting the verge", text: "Grass and shrubs planted along the path; a horse-drawn cart delivers soil.", tags: ["planting", "horse and cart"] },
+      { t: 425, d: 95,  title: "First walkers on the finished path", text: "Residents stroll the new park walk under the willows; closing shot with the photographer's inscription.", tags: ["opening", "residents", "E.C.I. 1916"] },
+    ],
+    props: { category: "Public works", location: "Wellington, New Zealand", type: "Film", status: "Reviewed", sensitivity: "None" },
+    suggestion: { tone: "ok", title: "No restrictions recommended",
+      text: "No sensitivity or restriction recommendations. No identifiable private individuals or culturally sensitive content detected." },
+  },
+  {
+    id: "ceremony", kind: "video", name: "Central_Australia_reel_04.mp4", meta: "Film · 16 mm · 12:15", img: "assets/archive/ceremony.jpg",
+    status: "processed", source: "batch", duration: 735,
+    title: "Central Australia, community gathering",
+    fields: [
+      { id: "description", label: "Description", ai: true, long: true,
+        value: "Colour film recorded in Central Australia: landscape establishing shots near the rock, women of the community gathering, and a ceremony with song and dance. Parts of the reel appear to show a women's ceremony." },
+      { id: "date",     label: "Date",     value: "c. 1970s", conf: 61 },
+      { id: "place",    label: "Place",    value: "Central Australia, NT", conf: 70 },
+      { id: "format",   label: "Format",   value: "16 mm film, digitised to MP4", conf: 99 },
+      { id: "audio",    label: "Audio",    value: "Song and speech, language not identified", conf: 64 },
+      { id: "people",   label: "People",   value: "Community members, not named", conf: 58 },
+    ],
+    clips: [
+      { t: 0,   d: 95,  thumb: "assets/archive/clips/ceremony-1-rock.jpg", title: "Landscape near the rock", text: "Establishing shots across spinifex grassland towards the rock under a cloudy evening sky.", tags: ["landscape", "establishing shot"] },
+      { t: 95,  d: 170, thumb: "assets/archive/clips/ceremony-2-gathering.jpg", title: "Women gathering", text: "Women of the community arrive and gather at the ceremony ground; children nearby.", tags: ["community", "women"] },
+      { t: 265, d: 160, title: "Preparation", text: "Preparations for the ceremony. Possible restricted cultural content.", tags: ["ceremony"], flag: true },
+      { t: 425, d: 205, title: "Ceremony: song and dance", text: "Ceremonial song and dance. Possible women's business: restricted cultural content.", tags: ["ceremony", "song", "dance"], flag: true },
+      { t: 630, d: 105, thumb: "assets/archive/clips/ceremony-5-dusk.jpg", title: "Return to camp", text: "The group returns to camp at dusk; closing wide shot of the landscape.", tags: ["camp", "landscape"] },
+    ],
+    props: { category: "Cultural heritage", location: "Central Australia, NT", type: "Film", status: "In queue", sensitivity: "Not set" },
+    suggestion: { tone: "warn", title: "Cultural restriction recommended",
+      text: "This looks like it contains an Aboriginal ceremony, and it looks like a women's business type of ceremony. We recommend applying viewing restrictions for the public and confirming access with the community.",
+      apply: "Cultural: women only, public access restricted" },
+  },
+  // Not part of the demo: shown for context, not selectable
+  { id: "f4", name: "Parliament_minutes_1922_p01.tif", meta: "Scan · 400 dpi", status: "processing", progress: 0.62 },
+  { id: "f5", name: "Harbour_survey_map_1931.tif",     meta: "Scan · map",     status: "processing", progress: 0.18 },
+  { id: "f6", name: "Oral_history_tape_A12.wav",        meta: "Audio · 46:10",  status: "waiting" },
+  { id: "f7", name: "Letters_box_7_bundle_3.pdf",        meta: "PDF · 38 pages", status: "waiting" },
+  { id: "f8", name: "Railway_opening_newsreel.mov",      meta: "Film · 03:12",   status: "waiting" },
+  { id: "f9",  name: "Council_rates_ledger_1908.tif",   meta: "Scan · 600 dpi", status: "processing", progress: 0.41 },
+  { id: "f10", name: "Shipping_manifest_Lyttelton.pdf",  meta: "PDF · 12 pages", status: "waiting" },
+  { id: "f11", name: "School_photo_class_1952.tif",      meta: "Scan · photo",   status: "waiting" },
+  { id: "f12", name: "Radio_interview_1974_reel2.wav",   meta: "Audio · 28:45",  status: "waiting" },
+  { id: "f13", name: "Land_grant_deed_1856.tif",         meta: "Scan · 2 pages", status: "waiting" },
+];
+
+const OPTIONS = {
+  category: ["Defence service records", "Public works", "Cultural heritage", "Government records", "Maps and plans", "Oral history"],
+  type: ["Certificate", "Letter", "Map", "Photograph", "Film", "Audio recording", "Minutes"],
+  status: ["In queue", "Processed", "Reviewed"],
+  sensitivity: ["Not set", "None", "Personal information", "Cultural: women only, public access restricted", "Cultural: men only, public access restricted", "Classified"],
+};
+
+/* ---------------- State ---------------- */
+let currentSource = "batch";
+// ?file=doc | park | ceremony opens that file
+let currentId = ["doc", "park", "ceremony"].includes(new URLSearchParams(location.search).get("file")) ? new URLSearchParams(location.search).get("file") : "doc";
+let currentClip = 0;
+
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = s => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+
+/* ---------------- Left panel ---------------- */
+function renderSources() {
+  $("#sources").innerHTML = SOURCES.map(s => `
+    <li><button class="source" data-id="${s.id}" aria-pressed="${s.id === currentSource}">
+      <span class="ico" aria-hidden="true">${s.icon}</span>${esc(s.name)}<span class="count">${s.count.toLocaleString()}</span>
+    </button></li>`).join("");
+}
+
+function statusHTML(f) {
+  if (f.status === "processed") {
+    const reviewed = f.props && f.props.status === "Reviewed";
+    return `<span class="tick ${reviewed ? "reviewed" : ""}" title="${reviewed ? "Reviewed" : "Processed"}">✓</span>`;
+  }
+  if (f.status === "processing") return `<span class="progress" title="Processing ${Math.round(f.progress * 100)}%"><i style="width:${f.progress * 100}%"></i></span>`;
+  return `<span class="hourglass" title="Waiting">⏳</span>`;
+}
+
+function renderFiles() {
+  $("#files").innerHTML = FILES.map(f => {
+    const active = !!f.kind;
+    const thumb = f.img ? `style="background-image:url(${f.img})"` : "";
+    return `<li><button class="file" data-id="${f.id}" ${active ? "" : "disabled"} aria-current="${f.id === currentId}">
+      <span class="file-thumb ${f.kind === "video" ? "is-video" : ""} ${f.img ? "" : "is-blank"}" ${thumb}></span>
+      <span style="min-width:0"><span class="file-name" style="display:block">${esc(f.name)}</span><span class="file-meta" style="display:block">${esc(f.meta)}</span></span>
+      <span class="status">${statusHTML(f)}</span>
+    </button></li>`;
+  }).join("");
+  const done = FILES.filter(f => f.status === "processed").length;
+  $("#files-summary").textContent = `${done} of ${FILES.length} processed`;
+}
+
+/* ---------------- Middle: content ---------------- */
+/* Recognised fields: the scan gives one item per highlight; films give their metadata fields
+   (Description lives in Attributes). Low confidence = tinted box with a "?" */
+function recognised(f) {
+  const isLow = fl => fl.conf && fl.conf < 85;
+  // The scan: one item per highlight. Films: their metadata fields (Description lives in Attributes)
+  const ordered = f.kind === "image"
+    ? DOC_BOXES.map(b => ({ id: b.id, label: KIND_LABEL[b.kind], value: b.value, conf: b.conf, src: b }))
+    : f.fields.filter(fl => fl.id !== "description").map(fl => ({ ...fl, src: fl }));
+  const html = ordered.map(fl => `
+    <div class="field ${isLow(fl) ? "is-low" : ""}" data-field="${fl.id}">
+      <label for="f-${fl.id}">${esc(fl.label)}</label>
+      <div class="val">
+        <textarea id="f-${fl.id}" rows="1">${esc(fl.value)}</textarea>
+        ${isLow(fl) ? '<span class="q" title="Low confidence: please check">?</span>' : ""}
+      </div>
+    </div>`).join("");
+  return { ordered, html };
+}
+
+function renderContent() {
+  const f = FILES.find(x => x.id === currentId);
+  const head = `<div class="content-head"><h1 class="filename">${esc(f.name)}</h1></div>`;
+  const { ordered, html: fieldsHTML } = recognised(f);
+
+  if (f.kind === "image") {
+    $("#content").innerHTML = `<div class="media">${head}
+      <div class="viewer">
+        <div class="stage" id="stage">
+          <div class="page"><img src="${f.img}" width="1360" height="1716" alt="Scanned ${esc(f.title)}">
+          ${DOC_BOXES.map(b => `<span class="hl" data-box="${b.id}" data-field="${b.id}" style="left:${b.x}%;top:${b.y}%;width:${b.w}%;height:${b.h}%"></span>`).join("")}</div>
+        </div>
+      </div></div>
+      <div class="details">
+      <section class="fields" aria-labelledby="fields-title">
+        <div class="fields-head"><h2 id="fields-title">Recognised fields</h2></div>
+        ${fieldsHTML}
+      </section></div>`;
+    bindHighlights();
+  } else {
+    const segs = f.clips.map((c, i) => `<span class="seg ${i === currentClip ? "is-on" : ""}" data-clip="${i}" style="left:calc(${c.t / f.duration * 100}% + 1px);width:calc(${c.d / f.duration * 100}% - 2px)"></span>`).join("");
+    const clip = f.clips[currentClip];
+    $("#content").innerHTML = `<div class="media">${head}
+      <div class="viewer">
+        <div class="stage"><img src="${f.img}" alt="Video still: ${esc(f.title)}"></div>
+        <button class="play" aria-label="Play">▶</button>
+        <div class="controls">
+          <span id="time">${fmt(clip.t)}</span>
+          <div class="timeline" id="timeline">${segs}<span class="head" style="left:${clip.t / f.duration * 100}%"></span></div>
+          <span>${fmt(f.duration)}</span>
+        </div>
+      </div>
+      <section class="fields fields--card" aria-labelledby="clips-title">
+        <div class="fields-head"><h2 id="clips-title">Clips</h2><small>${f.clips.length} clips · used for search and indexing</small></div>
+        ${f.clips.map((c, i) => `
+          <div class="clip ${i === currentClip ? "is-on" : ""}" data-clip="${i}">
+            <div class="clip-thumb" ${c.thumb ? `style="background-image:url(${c.thumb});border-style:solid"` : ""}>${c.thumb ? "" : "thumbnail"}<time>${fmt(c.t)}</time></div>
+            <div class="clip-body">
+              <div class="clip-title"><input value="${esc(c.title)}" aria-label="Clip ${i + 1} header"></div>
+              <textarea rows="3" aria-label="Clip ${i + 1} description">${esc(c.text)}</textarea>
+              <div class="tags">${c.flag ? '<span class="tag flag">⚠ sensitive</span>' : ""}${c.tags.map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
+            </div>
+          </div>`).join("")}
+      </section></div>`;
+  }
+  $("#content").classList.toggle("is-video", f.kind !== "image");
+  $(".app").classList.toggle("is-video", f.kind !== "image");
+  // Keep edits in the data so switching files doesn't lose them
+  $("#content").querySelectorAll(".field input, .field textarea").forEach(el => el.addEventListener("input", () => {
+    ordered.find(x => "f-" + x.id === el.id).src.value = el.value;
+  }));
+  $("#content").querySelectorAll(".clip").forEach(row => {
+    const c = f.clips[+row.dataset.clip];
+    $("input", row).addEventListener("input", e => c.title = e.target.value);
+    $("textarea", row).addEventListener("input", e => c.text = e.target.value);
+  });
+}
+
+/* Hover a highlight: show its text and the matching field; and the other way round */
+function bindHighlights() {
+  const tip = $("#tip");
+  const stage = $("#stage");
+  const light = (fieldId, on) => {
+    document.querySelectorAll(`.hl[data-field="${fieldId}"], .field[data-field="${fieldId}"]`).forEach(el => el.classList.toggle("is-on", on));
+  };
+  stage.querySelectorAll(".hl").forEach(el => {
+    const b = DOC_BOXES.find(x => x.id === el.dataset.box);
+    el.addEventListener("mouseenter", () => {
+      tip.innerHTML = `<b>${esc(KIND_LABEL[b.kind])}${b.conf < 85 ? " · low confidence" : ""}</b>${esc(b.value)}`;
+      const r = el.getBoundingClientRect();
+      tip.classList.add("show");
+      const tw = tip.offsetWidth;
+      tip.style.left = Math.max(8, Math.min(innerWidth - tw - 8, r.left + r.width / 2 - tw / 2)) + "px";
+      tip.style.top = (r.top - tip.offsetHeight - 8 < 8 ? r.bottom + 8 : r.top - tip.offsetHeight - 8) + "px";
+      light(b.id, true);
+    });
+    el.addEventListener("mouseleave", () => { tip.classList.remove("show"); light(b.id, false); });
+    el.addEventListener("click", () => {
+      const input = $(`#f-${b.id}`);
+      if (input) { input.scrollIntoView({ behavior: "smooth", block: "center" }); input.focus({ preventScroll: true }); }
+    });
+  });
+  $("#content").querySelectorAll(".field").forEach(row => {
+    const id = row.dataset.field;
+    row.addEventListener("mouseenter", () => light(id, true));
+    row.addEventListener("mouseleave", () => light(id, false));
+  });
+}
+
+/* ---------------- Right: properties ---------------- */
+function select(name, value) {
+  const opts = OPTIONS[name].includes(value) ? OPTIONS[name] : [value, ...OPTIONS[name]];
+  return `<select id="p-${name}" data-prop="${name}">${opts.map(o => `<option ${o === value ? "selected" : ""}>${esc(o)}</option>`).join("")}</select>`;
+}
+
+function renderProps() {
+  const f = FILES.find(x => x.id === currentId);
+  const p = f.props, s = f.suggestion;
+  const applied = s.apply && p.sensitivity === s.apply;
+  const suggestion = s.dismissed ? "" : applied
+    ? `<p class="applied">✓ Restriction applied from AI suggestion</p>`
+    : `<div class="suggest ${s.tone === "warn" ? "is-warn" : ""}" role="status">
+        <div class="suggest-head"><span class="ai">AI</span>${esc(s.title)}</div>
+        <p>${esc(s.text)}</p>
+        ${s.apply ? `<div class="suggest-actions"><button class="btn primary" id="apply">Apply restriction</button><button class="btn" id="dismiss">Dismiss</button></div>` : ""}
+      </div>`;
+  $("#props").innerHTML = `
+    <div class="prop-group">
+      <h3>Processing</h3>
+      <div class="prop"><label for="p-status">Status</label>${select("status", p.status)}</div>
+      <ul class="history">
+        <li><b>Transcribed</b> · Azure AI · 2 min ago</li>
+        <li><b>Metadata extracted</b> · Azure AI · 2 min ago</li>
+        <li><b>Ingested</b> from ${esc(SOURCES.find(x => x.id === f.source).name)}</li>
+      </ul>
+    </div>
+    <div class="prop-group">
+      <h3>Attributes</h3>
+      <div class="prop prop--long"><label for="p-description">Description</label><textarea id="p-description" rows="7">${esc(f.fields.find(x => x.id === "description").value)}</textarea></div>
+      <div class="prop"><label for="p-category">Category</label>${select("category", p.category)}</div>
+      <div class="prop"><label for="p-location">Location</label><input id="p-location" data-prop="location" value="${esc(p.location)}"></div>
+      <div class="prop"><label for="p-type">Type</label>${select("type", p.type)}</div>
+    </div>
+    <div class="prop-group">
+      <h3>Sensitivity</h3>
+      <div class="prop"><label for="p-sensitivity">Access</label>${select("sensitivity", p.sensitivity)}</div>
+      ${suggestion}
+    </div>
+    ${f.kind === "image" ? "" : `<div class="prop-group">
+      <h3>Recognised fields</h3>
+      ${recognised(f).html}
+    </div>`}`;
+  if (f.kind !== "image") {
+    const { ordered } = recognised(f);
+    $("#props").querySelectorAll(".field textarea").forEach(el => el.addEventListener("input", () => {
+      ordered.find(x => "f-" + x.id === el.id).src.value = el.value;
+    }));
+  }
+  $("#p-description").addEventListener("input", e => f.fields.find(x => x.id === "description").value = e.target.value);
+  $("#props").querySelectorAll("[data-prop]").forEach(el => el.addEventListener("change", () => {
+    p[el.dataset.prop] = el.value;
+    if (el.dataset.prop === "status") renderFiles();
+    if (el.dataset.prop === "sensitivity") renderProps();
+  }));
+  const apply = $("#apply");
+  if (apply) apply.addEventListener("click", () => { p.sensitivity = s.apply; renderProps(); });
+  const dismiss = $("#dismiss");
+  if (dismiss) dismiss.addEventListener("click", () => { s.dismissed = true; renderProps(); });
+}
+
+/* ---------------- Events ---------------- */
+$("#sources").addEventListener("click", e => {
+  const b = e.target.closest(".source"); if (!b) return;
+  currentSource = b.dataset.id; renderSources();
+});
+$("#files").addEventListener("click", e => {
+  const b = e.target.closest(".file"); if (!b || b.disabled) return;
+  currentId = b.dataset.id; currentClip = 0;
+  renderFiles(); renderContent(); renderProps();
+  $("#content").querySelectorAll(".media, .details").forEach(el => el.scrollTop = 0);
+});
+$("#content").addEventListener("click", e => {
+  if (e.target.closest("input, textarea")) return;
+  const f = FILES.find(x => x.id === currentId);
+  if (f.kind !== "video") return;
+  const row = e.target.closest("[data-clip]");
+  if (row) { currentClip = +row.dataset.clip; renderContent(); return; }
+  const tl = e.target.closest("#timeline");
+  if (tl) {
+    const r = tl.getBoundingClientRect();
+    const t = (e.clientX - r.left) / r.width * f.duration;
+    currentClip = Math.max(0, f.clips.findIndex(c => t >= c.t && t < c.t + c.d));
+    renderContent();
+  }
+});
+
+// Files still processing creep forward; finish at 100% and stay "processing" (demo)
+setInterval(() => {
+  let changed = false;
+  FILES.forEach(f => { if (f.status === "processing" && f.progress < 0.97) { f.progress = Math.min(0.97, f.progress + 0.01 + Math.random() * 0.02); changed = true; } });
+  if (changed) document.querySelectorAll(".file").forEach(b => {
+    const f = FILES.find(x => x.id === b.dataset.id);
+    if (f.status === "processing") { const i = b.querySelector(".progress i"); if (i) i.style.width = f.progress * 100 + "%"; }
+  });
+}, 1200);
+
+renderSources(); renderFiles(); renderContent(); renderProps();
+</script>
+</body>
+</html>
