@@ -91,6 +91,7 @@ COPY = [
     ("<p>With hard styling rules</p>", "<p>Strict style rules</p>"),
     ("<h3>Illustrations and icons</h3>", "<h3>Cave paintings and icons</h3>"),
     ("<h3>Theremin glove</h3>", "<h3>Music glove</h3>"),
+    ("<h3>UI Motion sickness research</h3>", "<h3>Screen make belly sick</h3>"),
     ("<p>Physical Arduino prototype</p>", "<p>Real prototype you touch, Arduino brain</p>"),
     ("<p>Local search service, 2.6M monthly visitors</p>", "<p>Find-place service, 2.6M visitors each moon</p>"),
     ("<p>Software vendor portal, 450 pages</p>", "<p>Big software tribe portal, 450 pages</p>"),

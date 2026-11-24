@@ -543,6 +543,7 @@
   .more-link--soon { opacity: 0.4; cursor: default; }   /* no URL yet */
   .more-links { display: flex; flex-direction: column; gap: 6px; }   /* two links stacked (Figma 260:1572) */
   /* Empty slots, to be filled */
+  .more-thumb--empty { border: 1px dashed rgba(221, 220, 200, 0.2); background: rgba(255, 255, 255, 0.02); }   /* no thumbnail yet */
   .more-card--empty { min-height: 490px; background: none; border: 1px dashed rgba(221, 220, 200, 0.2); }   /* as tall as a filled card (Figma) */
   @supports (corner-shape: squircle) {
     .more-card { border-radius: 24px; corner-shape: squircle; }
@@ -916,6 +917,13 @@
             <a class="more-link" href="https://www.figma.com/community/file/1628023173002348154" target="_blank" rel="noopener">Figma community ↗</a>
             <a class="more-link" href="https://github.com/dariapodd/figma-branded-ujm-builder" target="_blank" rel="noopener">GitHub ↗</a>
           </div>
+        </article>
+        <article class="more-card">
+          <div class="more-thumb more-thumb--empty" aria-hidden="true"></div>
+          <div class="more-text">
+            <h3>UI Motion sickness research</h3>
+          </div>
+          <span class="more-link more-link--soon" aria-disabled="true">coming soon</span>
         </article>
         <article class="more-card">
           <a class="more-thumb-link" href="../projects/illustrations/" tabindex="-1" aria-hidden="true">
