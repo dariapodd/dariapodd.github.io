@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UI motion sickness research: Daria Podrezova</title>
+<meta name="description" content="Research project: how common UI animations in business software trigger motion sickness, tested with 12 participants, and a design cheat sheet.">
+<link rel="icon" href="../../favicon-64.png" type="image/png" sizes="64x64">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="../../fonts/KodeMono.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+  /* Kode Mono, self-hosted (full character set). License: fonts/OFL.txt */
+  @font-face {
+    font-family: "Kode Mono";
+    src: url("../../fonts/KodeMono.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+  }
+
+  /* Same tokens as the homepage */
+  :root {
+    --bg: #1e1d19;
+    --bg-mid: #2c2b29;
+    --bg-glow: #393938;
+    --ink: #dddcc8;
+    --accent: #00ffcc;
+    --rule: #3d414a;
+
+    --nav-fs: 16px;
+    --margin-line: 26px;
+    --content-left: 160px;
+    --text-left: calc(var(--margin-line) + 1px + var(--content-left));
+    --gutter: 53px;
+  }
+  @media (max-width: 700px) {
+    :root { --content-left: 26px; }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    position: relative;
+    min-height: 100vh;
+    /* Figma: a tall radial glow down the middle of the page */
+    background: radial-gradient(960px 2887px at 50% 50%, var(--bg-glow), var(--bg-mid) 50%, var(--bg)) var(--bg);
+    color: var(--ink);
+    font-family: "Kode Mono", ui-monospace, monospace;
+  }
+  /* Vertical margin line, the full height of the page */
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--margin-line);
+    width: 1px;
+    background: var(--rule);
+    pointer-events: none;
+  }
+
+  /* ---------- Resume button (as on the homepage) ---------- */
+  .resume {
+    position: fixed;
+    z-index: 10;
+    top: 32px;
+    right: 32px;
+    padding: 12.5px 32px 11.5px;
+    border-radius: 12px;
+    background: rgba(28, 71, 56, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .resume:hover { font-weight: 600; }
+  @supports (corner-shape: squircle) {
+    .resume { border-radius: 24px; corner-shape: squircle; }
+  }
+  @supports (text-box: trim-both cap alphabetic) {
+    .resume { text-box: trim-both cap alphabetic; padding-top: 15.6px; padding-bottom: 15.6px; }
+  }
+
+  /* ---------- Page ---------- */
+  .page {
+    padding: 131px var(--gutter) 217px var(--text-left);
+  }
+  .back {
+    display: inline-block;
+    padding: 16px 0;
+    color: var(--accent);
+    font-size: var(--nav-fs);
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .back:hover { font-weight: 600; }
+
+  .case {
+    display: flex;
+    flex-direction: column;
+    gap: 120px;
+    max-width: 1086px;
+    padding-top: 48px;
+  }
+
+  h1, h2 {
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  h1 { font-size: 60px; line-height: 1.2; }
+  h2 { font-size: 48px; line-height: 1.2; }
+  @media (max-width: 700px) {
+    h1 { font-size: 36px; }
+    h2 { font-size: 32px; }
+  }
+
+  /* Body copy: Chakra Petch Light, 16/22.4, 12px between paragraphs */
+  .text, .lead, .caption, .apps, .awards, .review {
+    color: #fff;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .text { max-width: 513px; }
+  .text p { margin: 0; }
+  .text p + p { margin-top: 12px; }
+
+  /* ---------- Intro: problem and solution side by side ---------- */
+  .intro { display: flex; flex-direction: column; gap: 80px; }
+  .meta {
+    margin: 0;
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .columns { display: flex; gap: 80px; align-items: flex-start; }
+  .columns > section { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 36px; }
+  .columns .text { max-width: none; }
+  .lead { font-weight: 500; font-size: 20px; line-height: normal; }
+  .lead p { margin: 0; }
+  .lead p + p { margin-top: 24px; }
+  /* Platforms it's built on (Figma 263:1830) */
+  .tech-logos { display: flex; align-items: center; gap: 50px; opacity: 0.4; }
+  .tech-logos img { display: block; }
+  /* Recognition (Figma 284:26) */
+  .awards { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 16px; font-size: 14px; line-height: normal; margin-top: -4px; }
+  .awards li { display: flex; flex-direction: column; gap: 4px; }
+  .awards strong { font-weight: inherit; color: #fff; }
+  .awards span { color: var(--ink); }
+
+  /* ---------- Sections ---------- */
+  .section { display: flex; flex-direction: column; gap: 36px; }
+
+  /* Results: four big numbers */
+  .results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px 32px; margin: 0; }
+  .results div { display: flex; flex-direction: column; gap: 8px; }
+  .results dt { order: 2; color: #fff; font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif; }
+  .results dd { order: 1; margin: 0; color: var(--accent); font: 400 60px/1 "Kode Mono", ui-monospace, monospace; }
+
+  /* The apps, and what each one replaced */
+  .apps { width: 100%; border-collapse: collapse; }
+  .apps th {
+    padding: 0 24px 12px 0;
+    border-bottom: 1px solid var(--rule);
+    color: rgba(221, 220, 200, 0.6);
+    font: 400 14px/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+  .apps td { padding: 16px 24px 16px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .apps td:first-child { width: 24%; color: var(--ink); font-weight: 600; }
+  .apps td:nth-child(2) { width: 40%; }
+  .apps td:last-child { color: rgba(255, 255, 255, 0.65); }
+
+  /* ---------- Figures ---------- */
+  figure.shot { margin: 0; display: flex; flex-direction: column; gap: 16px; }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 12px; }
+  .caption { text-align: center; }
+  @supports (corner-shape: squircle) {
+    .shot img { border-radius: 24px; corner-shape: squircle; }
+  }
+
+  /* Closing note: 48px under the last caption rather than a full 120px section gap */
+  .note { margin: -72px 0 0; color: rgba(255, 255, 255, 0.6); font: 300 14px/1.4 "Chakra Petch", system-ui, sans-serif; }
+
+  /* ---------- Narrow screens ---------- */
+  @media (max-width: 1100px) {
+    .columns { flex-direction: column; gap: 64px; }
+    .results { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 800px) {
+    .page { padding-top: 112px; }
+    .case { gap: 80px; }
+    .note { margin-top: -32px; }   /* still 48px under the last caption */
+    .intro { gap: 40px; }
+    /* The table becomes a list of cards */
+    .apps thead { display: none; }
+    .apps, .apps tbody, .apps tr, .apps td { display: block; width: auto !important; }
+    .apps tr { padding: 16px 0; border-bottom: 1px solid var(--rule); }
+    .apps td { padding: 0; border: 0; }
+    .apps td + td { margin-top: 8px; }
+    .apps td:last-child::before { content: "Replaced: "; color: rgba(221, 220, 200, 0.6); }
+  }
+  @media (max-width: 500px) {
+    .results { grid-template-columns: 1fr; }
+  }
+  /* NDA disclaimer, right under the meta line */
+  .meta-block { display: flex; flex-direction: column; gap: 4px; }
+  .disclaimer { margin: 0; color: rgba(221, 220, 200, 0.8); font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif; }
+
+  /* Participant quotes */
+  .review { margin: 0; display: flex; flex-direction: column; gap: 12px; max-width: 513px; }
+  .review blockquote { margin: 0; }
+  .review blockquote p { margin: 0; }
+  .review figcaption { font-weight: 600; }
+  .reviews { display: flex; flex-direction: column; gap: 48px; }
+  .text a { color: var(--accent); text-decoration: none; }
+  .text a:hover { font-weight: 600; }
+  .text ul { margin: 12px 0 0; padding-left: 20px; }
+  .text li + li { margin-top: 6px; }
+  /* The cheat sheet is a portrait A4 page: narrower than the landscape figures */
+  .shot--page { max-width: 700px; }
+</style>
+</head>
+<body>
+  <a class="resume" href="../../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
+
+  <main class="page">
+    <a class="back" href="../../enterprise/#more-title">← Back to projects</a>
+
+    <article class="case">
+      <header class="intro">
+        <h1>UI motion sickness research</h1>
+        <div class="meta-block">
+          <p class="meta">Research project · The University of Sydney · 2020 · Survey, user testing, data analysis</p>
+        </div>
+        <div class="columns">
+          <section aria-labelledby="problem">
+            <h2 id="problem">The problem</h2>
+            <div class="lead">
+              <p>Accessibility standards are written for permanent, clearly understood disabilities. Conditions that aren’t legally recognised as impairments, such as screen-triggered motion sickness, are rarely considered when interfaces are designed.</p>
+            </div>
+          </section>
+          <section aria-labelledby="solution">
+            <h2 id="solution">The study</h2>
+            <div class="text">
+              <p>“The Undisabled”: a research project on how common UI animations in everyday business software affect people with motion sickness. A survey estimated how widespread the condition is, a task-based user test compared seven animation samples, and the findings became a design cheat sheet for software teams.</p>
+            </div>
+          </section>
+        </div>
+      </header>
+
+      <section class="section" aria-labelledby="results">
+        <h2 id="results">Key numbers</h2>
+        <dl class="results">
+          <div><dt>of survey respondents have experienced screen-triggered motion sickness</dt><dd>45%</dd></div>
+          <div><dt>experience it regularly</dt><dd>20%</dd></div>
+          <div><dt>participants in the user test: 6 motion-sick, 6 in the control group</dt><dd>12</dd></div>
+          <div><dt>popular business products tested that trigger motion sickness</dt><dd>4 of 5</dd></div>
+        </dl>
+      </section>
+
+      <section class="section" aria-labelledby="why">
+        <h2 id="why">Why motion sickness</h2>
+        <div class="text">
+          <p>Almost anyone can experience motion sickness when exposed to the right triggers: only people with total loss of the balance sense in the inner ear are immune to it.</p>
+          <p>It made a good focus for the study: a specific condition reported by a significant share of people, with concrete triggers in the interface (animations), quick to induce within a 30-minute test, easy to test remotely during pandemic restrictions, and easy to recruit for, as people usually know whether they have it.</p>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="quotes">
+        <h2 id="quotes">What participants said</h2>
+        <div class="reviews">
+        <figure class="review">
+          <blockquote><p>It feels weird to explain… My supervisor was very confused when he learned that I can’t play 1st person video games.</p></blockquote>
+          <figcaption>— P5, Video game researcher</figcaption>
+        </figure>
+        <figure class="review">
+          <blockquote><p>I can’t explain that I’m not kidding when I ask to stop moving during a video call.</p></blockquote>
+          <figcaption>— P12, Business analyst</figcaption>
+        </figure>
+        <figure class="review">
+          <blockquote><p>I have a Kindle book reader, and the first thing I’ve done with it was to switch off page turning animations.</p></blockquote>
+          <figcaption>— P15, Software developer</figcaption>
+        </figure>
+        <figure class="review">
+          <blockquote><p>I never use the ‘Back to top’ feature on websites, as it makes me dizzy.</p></blockquote>
+          <figcaption>— P15, Software developer</figcaption>
+        </figure>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="scope">
+        <h2 id="scope">Scope: business software</h2>
+        <div class="text">
+          <p>Business software is often used for long hours, with repetitive operations, in stressful environments, and with limited freedom of choice: people can’t simply switch tools. Everything users choose freely was left out of the study: video games, AR and VR, roller coasters.</p>
+          <p>The test used slide-turning animations from popular business products: Outlook, Confluence, Canva, Google Slides and Gmail.</p>
+        </div>
+      </section>
+      <figure class="shot">
+        <img src="assets/scope.jpg" width="1600" height="900" loading="lazy" alt="Scope slide: business software is used for long hours with limited freedom of choice; products tested were Outlook, Confluence, Gmail, Google Slides and Canva">
+        <figcaption class="caption">Scope: everyday business software that people can’t choose to avoid.</figcaption>
+      </figure>
+
+      <section class="section" aria-labelledby="triggers">
+        <h2 id="triggers">Why these triggers</h2>
+        <div class="text">
+          <p>Motion sickness happens when actual and expected motion don’t match, in particular when motion is seen but not felt (visually induced motion sickness). Closing your eyes during such scenes helps, but that’s not a workable strategy at work, although one participant did report doing exactly that.</p>
+          <p>Typical UI triggers are accelerated movement (scrolling, zooming), certain types of fades and sharp changes of contrast. During the study I compiled a video of samples from popular products: <a href="https://www.youtube.com/watch?v=hGXOjHBtfiQ" target="_blank" rel="noopener">watch the trigger compilation ↗</a> (it will show whether you have it).</p>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="test">
+        <h2 id="test">User test</h2>
+        <div class="text">
+          <p>Participants flipped through slides in recordings of each product’s slide-turning animation and named the fruit on each slide: a simple task that mimics office routines such as skimming documents, attachments or book pages.</p>
+          <p>Animations were recorded on video, as live apps were unreliable over remote testing. Each sample ran for up to 60 repetitions (chosen after a pilot test) to capture the accumulating effect, in random order, with breaks and short interviews between tasks. Samples with visible loading artefacts were kept separate, and most participants used their regular work computers.</p>
+          <p>Metrics:</p>
+          <ul>
+            <li><strong>Performance:</strong> how many slides a participant saw before reporting discomfort.</li>
+            <li><strong>Perceived comfort:</strong> a subjective rating of each sample compared to the others.</li>
+            <li><strong>Qualitative feedback:</strong> comments and insights from the interviews.</li>
+          </ul>
+        </div>
+      </section>
+      <figure class="shot">
+        <img src="assets/sample.jpg" width="1600" height="900" loading="lazy" alt="User test sample: 12 participants, 6 in the test group and 6 in the control group; seven samples T1 to T7 covering fade, slide and no animation">
+        <figcaption class="caption">Seven samples: fades and side-slides at different speeds, and two with no animation.</figcaption>
+      </figure>
+
+      <section class="section" aria-labelledby="analysis">
+        <h2 id="analysis">Data analysis</h2>
+        <div class="text">
+          <p>For each sample, task success is the difference between the number of slides a participant reached and that participant’s own average, added up for the test group and the control group. Subjective ratings were tallied the same way.</p>
+        </div>
+      </section>
+      <figure class="shot">
+        <img src="assets/analysis.jpg" width="1600" height="900" loading="lazy" alt="Data analysis table: slides seen before discomfort, task success and subjective rating for each sample and participant">
+        <figcaption class="caption">Slides seen before discomfort, task success and subjective ratings for every participant and sample.</figcaption>
+      </figure>
+
+      <section class="section" aria-labelledby="findings">
+        <h2 id="findings">Findings</h2>
+        <div class="text">
+          <p>Some animations are clearly more comfortable than others, and motion-sick users perceive them very differently from the control group, so averaging the two groups hides the problem.</p>
+        </div>
+      </section>
+      <figure class="shot">
+        <img src="assets/f1.jpg" width="1600" height="900" loading="lazy" alt="Findings I: task success chart for the test and control groups across seven samples">
+        <figcaption class="caption">Task success by sample: the motion-sick group (dark) and the control group (light).</figcaption>
+      </figure>
+
+      <section class="section" aria-labelledby="findings-2">
+        <h2 id="findings-2">Findings: no animation is the most comfortable</h2>
+        <div class="text">
+          <p>The most comfortable animation is no animation at all, and this is especially true for motion-sick people. Fades come second: they get low subjective ratings, particularly from the control group, but perform well. Ugly but useful.</p>
+          <p>Loading artefacts are part of the animation too: a spinner or a sudden background change lowers both the rating and the performance, even for the best sample.</p>
+        </div>
+      </section>
+      <figure class="shot">
+        <img src="assets/f2.jpg" width="1600" height="900" loading="lazy" alt="Findings II: no animation has the best task success">
+        <figcaption class="caption">No animation performs best, especially for the motion-sick group.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="assets/f3.jpg" width="1600" height="900" loading="lazy" alt="Findings III: fade animations perform well, but a fade with a spinner performs badly">
+        <figcaption class="caption">Fades perform well; the same fade with a spinner does not.</figcaption>
+      </figure>
+
+      <section class="section" aria-labelledby="findings-3">
+        <h2 id="findings-3">Findings: side-slides and contrast are the worst</h2>
+        <div class="text">
+          <p>Both groups agree on sharp side-slides: they tire everyone. Yet the animation gets a neutral subjective rating, so people don’t realise it’s wearing them out. Repetitive movement in the same direction is known to accumulate and increase the effect.</p>
+          <p>Substantial contrast change with flashing is the other strong trigger. Certain types of flashing and blinking are also known to cause epileptic seizures.</p>
+        </div>
+      </section>
+      <figure class="shot">
+        <img src="assets/f4.jpg" width="1600" height="900" loading="lazy" alt="Findings IV: the sharp side-slide animation has poor task success in both groups">
+        <figcaption class="caption">The sharp side-slide is tiring for both groups.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="assets/f5.jpg" width="1600" height="900" loading="lazy" alt="Findings V: the most blinking sample has poor task success">
+        <figcaption class="caption">The sample with the most blinking.</figcaption>
+      </figure>
+
+      <section class="section" aria-labelledby="findings-4">
+        <h2 id="findings-4">Findings: long, smooth animations split opinion</h2>
+        <div class="text">
+          <p>A long, smooth, skeuomorphic “zoom and slide” transition gets polar opinions. The control group likes it (“This one is the easiest as you can see what’s coming”, “I really like it, the best one”), while the motion-sick group suffers (“It irritates me”, “I feel aggression towards the author”, “It’s awful”).</p>
+          <p>And people can’t simply avoid it: the same animation is used in the app every time items are added or removed, and it can’t be turned off.</p>
+        </div>
+      </section>
+      <figure class="shot">
+        <img src="assets/f6.jpg" width="1600" height="900" loading="lazy" alt="Findings VI: subjective rating chart with polar opinions on the long smooth animation">
+        <figcaption class="caption">Subjective rating: polar opinions on the long, smooth animation.</figcaption>
+      </figure>
+
+      <section class="section" aria-labelledby="sopite">
+        <h2 id="sopite">More than discomfort: sopite syndrome</h2>
+        <div class="text">
+          <p>People tend to endure rather than complain: some motion-sick participants carried on with the task and only later mentioned that their discomfort had started halfway through.</p>
+          <p>Long exposure to low-intensity motion that isn’t strong enough to make someone sick can still cause profound drowsiness and persistent fatigue. This “sopite syndrome” can last for hours or even days, and can include apathy, lack of initiative and irritability: a real cost for people who spend their working day in these tools.</p>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="outcomes">
+        <h2 id="outcomes">Project outcome: the cheat sheet</h2>
+        <div class="text">
+          <p>The findings became a one-page cheat sheet in plain language for software teams: how to design UI that works for people with motion sickness, from avoiding unnecessary animation and side-slides to letting users opt out.</p>
+          <p><a href="assets/the-undisabled-cheat-sheet.pdf" target="_blank" rel="noopener">Download the cheat sheet (PDF) ↗</a></p>
+        </div>
+      </section>
+      <figure class="shot shot--page">
+        <img src="assets/cheat-sheet.jpg" width="1400" height="1981" loading="lazy" alt="The Undisabled cheat sheet: 20% of users regularly get motion-sick from simple animations, and tips such as avoid unnecessary animations, allow opt-out, avoid side slides and ask the motion-sick">
+        <figcaption class="caption">The Undisabled cheat sheet.</figcaption>
+      </figure>
+    </article>
+  </main>
+
+<script src="../../back.js"></script>
+<!-- Visitor stats (GoatCounter: no cookies). Skips localhost and browsers marked on /not-me/ -->
+<script data-goatcounter="https://dariapodd.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
