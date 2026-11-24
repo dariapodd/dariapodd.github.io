@@ -434,6 +434,8 @@
     overflow: hidden;
   }
   .project-shot--deaf img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  /* Archive app on a laptop (Figma Resume 358:61): same placement as the track shot, taller frame */
+  .project-shot--archive { aspect-ratio: 766 / 580; }
   /* Placeholder projects without a screenshot yet: an empty frame where it will go */
   .project-shot--empty { border: 1px dashed rgba(221, 220, 200, 0.2); background: rgba(255, 255, 255, 0.02); }
   /* Approval portal mock-up (Figma 245:1195), running off the block's right edge */
@@ -498,7 +500,7 @@
   }
 
   /* ---------- More projects: cards, three to a row ---------- */
-  .more-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .more-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
   .more-card {
     display: flex;
     flex-direction: column;
@@ -549,6 +551,7 @@
   @supports (corner-shape: squircle) {
     .more-card { border-radius: 24px; corner-shape: squircle; }
   }
+  @media (max-width: 1300px) { .more-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 1100px) { .more-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 700px) { .more-grid { grid-template-columns: 1fr; } }
 
@@ -847,13 +850,15 @@
       <div class="project-content">
         <h2 id="project-8">Chief scroll keeper</h2>
         <div class="project-desc">
-          <p><strong>UX Lead.</strong> AI listen, write down talk, tag scrolls, file scrolls. Daria prototype it. Tribe build it.</p>
+          <p><strong>Chief tribe. UX Lead.</strong> AI listen, write down talk, tag scrolls, file scrolls. Daria prototype it. Tribe build it.</p>
         </div>
-        <span class="button button--soon" aria-disabled="true">story come later</span>
+        <a class="button" href="../projects/ai-document-workflow/">more hunt →</a>
       </div>
 
       <div class="micro micro--solid" data-shape="temple" aria-hidden="true"></div>
-      <div class="project-shot project-shot--track project-shot--empty" aria-hidden="true"></div>
+      <a class="project-shot project-shot--track project-shot--archive project-shot-link" href="../projects/ai-document-workflow/" tabindex="-1" aria-hidden="true">
+        <img src="../enterprise/assets/project-8-archive-laptop.jpg" width="1532" height="1160" loading="lazy" alt="Archive app on a laptop: sources and files, a film with AI-generated clips, and a cultural restriction suggestion">
+      </a>
     </section>
 
     <section class="project project--black" aria-labelledby="project-9">

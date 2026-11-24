@@ -66,9 +66,9 @@ COPY = [
     ("<p><strong>Current-state assessment.</strong> Comprehensive experience assessment and process mapping of an internal admin role at a major education client: around 20 systems and many siloed departments, mapped end to end from the admin’s point of view for the first time.</p>",
      "<p><strong>Look at cave now.</strong> One helper run errands between many caves, 20 magic stones, many tribes who not talk. Daria walk whole path with helper, draw first full map. Big report for chiefs.</p>"),
 
-    ('<h2 id="project-8">Government client</h2>', '<h2 id="project-8">Chief scroll keeper</h2>'),
-    ("<p><strong>UX Lead.</strong> AI-driven transcription, metadata automation and document management workflow PoC prototyped and implemented.</p>",
-     "<p><strong>UX Lead.</strong> AI listen, write down talk, tag scrolls, file scrolls. Daria prototype it. Tribe build it.</p>"),
+    ('<h2 id="project-8">AI metadata and transcription automation</h2>', '<h2 id="project-8">Chief scroll keeper</h2>'),
+    ("<p><strong>Government client.</strong> UX Lead: AI-driven transcription, metadata automation and document management workflow PoC prototyped and implemented.</p>",
+     "<p><strong>Chief tribe. UX Lead.</strong> AI listen, write down talk, tag scrolls, file scrolls. Daria prototype it. Tribe build it.</p>"),
 
     ('<h2 id="project-7">Figma &amp; AI Teaching</h2>', '<h2 id="project-7">Teach tribe Figma fire</h2>'),
     ("<p>Learning sessions content and delivery, go-to prototyping support for the APAC team: 68 training sessions on advanced prototyping and automation, plus hands-on 1:1 help.</p>",
