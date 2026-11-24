@@ -70,8 +70,8 @@ COPY = [
     ("<p><strong>UX Lead.</strong> AI-driven transcription, metadata automation and document management workflow PoC prototyped and implemented.</p>",
      "<p><strong>UX Lead.</strong> AI listen, write down talk, tag scrolls, file scrolls. Daria prototype it. Tribe build it.</p>"),
 
-    ('<h2 id="project-7">Figma &amp; AI enablement</h2>', '<h2 id="project-7">Teach tribe Figma fire</h2>'),
-    ("<p>Go-to prototyping support for the APAC team: 68 training sessions on advanced prototyping and automation, plus hands-on 1:1 help.</p>",
+    ('<h2 id="project-7">Figma &amp; AI Teaching</h2>', '<h2 id="project-7">Teach tribe Figma fire</h2>'),
+    ("<p>Learning sessions content and delivery, go-to prototyping support for the APAC team: 68 training sessions on advanced prototyping and automation, plus hands-on 1:1 help.</p>",
      "<p>Whole APAC tribe come to Daria for prototype help. 68 fire-teaching sessions on big prototype and automation magic. Plus help one by one.</p>"),
 
     ('<h2 id="project-9">Spatial digital twin</h2>', '<h2 id="project-9">Big hole magic twin</h2>'),
