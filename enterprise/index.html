@@ -433,6 +433,8 @@
     overflow: hidden;
   }
   .project-shot--deaf img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  /* Archive app on a laptop (Figma Resume 358:61): same placement as the track shot, taller frame */
+  .project-shot--archive { aspect-ratio: 766 / 580; }
   /* Placeholder projects without a screenshot yet: an empty frame where it will go */
   .project-shot--empty { border: 1px dashed rgba(221, 220, 200, 0.2); background: rgba(255, 255, 255, 0.02); }
   /* Approval portal mock-up (Figma 245:1195), running off the block's right edge */
@@ -827,15 +829,17 @@
       <div class="project-num" aria-hidden="true"></div>
 
       <div class="project-content">
-        <h2 id="project-8">Government client</h2>
+        <h2 id="project-8">AI metadata and transcription automation</h2>
         <div class="project-desc">
-          <p><strong>UX Lead.</strong> AI-driven transcription, metadata automation and document management workflow PoC prototyped and implemented.</p>
+          <p><strong>Government client.</strong> UX Lead: AI-driven transcription, metadata automation and document management workflow PoC prototyped and implemented.</p>
         </div>
-        <span class="button button--soon" aria-disabled="true">case study coming soon</span>
+        <a class="button" href="../projects/ai-document-workflow/">learn more ↗</a>
       </div>
 
       <div class="micro micro--solid" data-shape="temple" aria-hidden="true"></div>
-      <div class="project-shot project-shot--track project-shot--empty" aria-hidden="true"></div>
+      <a class="project-shot project-shot--track project-shot--archive project-shot-link" href="../projects/ai-document-workflow/" tabindex="-1" aria-hidden="true">
+        <img src="../enterprise/assets/project-8-archive-laptop.jpg" width="1532" height="1160" loading="lazy" alt="Archive app on a laptop: sources and files, a film with AI-generated clips, and a cultural restriction suggestion">
+      </a>
     </section>
 
     <section class="project project--black" aria-labelledby="project-9">

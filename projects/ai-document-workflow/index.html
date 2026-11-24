@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI metadata and transcription automation: Daria Podrezova</title>
+<meta name="description" content="Case study: AI-driven transcription, metadata automation and document management workflow PoC for a government client, built as a web app on Azure AI.">
+<link rel="icon" href="../../favicon-64.png" type="image/png" sizes="64x64">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="../../fonts/KodeMono.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+  /* Kode Mono, self-hosted (full character set). License: fonts/OFL.txt */
+  @font-face {
+    font-family: "Kode Mono";
+    src: url("../../fonts/KodeMono.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+  }
+
+  /* Same tokens as the homepage */
+  :root {
+    --bg: #1e1d19;
+    --bg-mid: #2c2b29;
+    --bg-glow: #393938;
+    --ink: #dddcc8;
+    --accent: #00ffcc;
+    --rule: #3d414a;
+
+    --nav-fs: 16px;
+    --margin-line: 26px;
+    --content-left: 160px;
+    --text-left: calc(var(--margin-line) + 1px + var(--content-left));
+    --gutter: 53px;
+  }
+  @media (max-width: 700px) {
+    :root { --content-left: 26px; }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    position: relative;
+    min-height: 100vh;
+    /* Figma: a tall radial glow down the middle of the page */
+    background: radial-gradient(960px 2887px at 50% 50%, var(--bg-glow), var(--bg-mid) 50%, var(--bg)) var(--bg);
+    color: var(--ink);
+    font-family: "Kode Mono", ui-monospace, monospace;
+  }
+  /* Vertical margin line, the full height of the page */
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--margin-line);
+    width: 1px;
+    background: var(--rule);
+    pointer-events: none;
+  }
+
+  /* ---------- Resume button (as on the homepage) ---------- */
+  .resume {
+    position: fixed;
+    z-index: 10;
+    top: 32px;
+    right: 32px;
+    padding: 12.5px 32px 11.5px;
+    border-radius: 12px;
+    background: rgba(28, 71, 56, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .resume:hover { font-weight: 600; }
+  @supports (corner-shape: squircle) {
+    .resume { border-radius: 24px; corner-shape: squircle; }
+  }
+  @supports (text-box: trim-both cap alphabetic) {
+    .resume { text-box: trim-both cap alphabetic; padding-top: 15.6px; padding-bottom: 15.6px; }
+  }
+
+  /* ---------- Page ---------- */
+  .page {
+    padding: 131px var(--gutter) 217px var(--text-left);
+  }
+  .back {
+    display: inline-block;
+    padding: 16px 0;
+    color: var(--accent);
+    font-size: var(--nav-fs);
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .back:hover { font-weight: 600; }
+
+  .case {
+    display: flex;
+    flex-direction: column;
+    gap: 120px;
+    max-width: 1086px;
+    padding-top: 48px;
+  }
+
+  h1, h2 {
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  h1 { font-size: 60px; line-height: 1.2; }
+  h2 { font-size: 48px; line-height: 1.2; }
+  @media (max-width: 700px) {
+    h1 { font-size: 36px; }
+    h2 { font-size: 32px; }
+  }
+
+  /* Body copy: Chakra Petch Light, 16/22.4, 12px between paragraphs */
+  .text, .lead, .caption, .review {
+    color: #fff;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .text { max-width: 513px; }
+  .text p { margin: 0; }
+  .text p + p { margin-top: 12px; }
+  /* Closing disclaimer, 48px under the review rather than a full section gap */
+  .note { margin: -72px 0 0; color: rgba(255, 255, 255, 0.6); font: 300 14px/1.4 "Chakra Petch", system-ui, sans-serif; }
+
+  /* ---------- Intro: problem and solution side by side ---------- */
+  .intro { display: flex; flex-direction: column; gap: 80px; }
+  .meta {
+    margin: 0;
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .columns { display: flex; gap: 80px; align-items: flex-start; }
+  .columns > section { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 36px; }
+  .columns .text { max-width: none; }
+  .lead { font-weight: 500; font-size: 20px; line-height: normal; }
+  .lead p { margin: 0; }
+  .lead p + p { margin-top: 24px; }
+
+  /* ---------- Sections ---------- */
+  .section { display: flex; flex-direction: column; gap: 36px; }
+
+  .review { margin: 0; display: flex; flex-direction: column; gap: 12px; max-width: 513px; }
+  .review blockquote { margin: 0; }
+  .review figcaption { font-weight: 600; }
+
+  /* ---------- Figures ---------- */
+  figure.shot { margin: 0; display: flex; flex-direction: column; gap: 16px; }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 12px; }
+  .caption { text-align: center; }
+  /* The original form and the original flow, side by side */
+  .before { display: flex; gap: 64px; align-items: flex-start; }
+  .before .shot:first-child { flex: none; width: 198px; }
+  .before .shot:last-child { flex: 1; min-width: 0; }
+  @supports (corner-shape: squircle) {
+    .shot img { border-radius: 24px; corner-shape: squircle; }
+  }
+
+  /* ---------- Narrow screens ---------- */
+  @media (max-width: 1100px) {
+    .columns { flex-direction: column; gap: 64px; }
+  }
+  @media (max-width: 800px) {
+    .page { padding-top: 112px; }
+    .case { gap: 80px; }
+    .note { margin-top: -32px; }   /* still 48px under the last caption */
+    .intro { gap: 40px; }
+    .before { flex-direction: column; gap: 40px; }
+    .before .shot:first-child { width: 198px; max-width: 100%; }
+    .before .shot:first-child .caption { text-align: left; }
+  }
+  /* NDA disclaimer, right under the meta line */
+  .meta-block { display: flex; flex-direction: column; gap: 4px; }
+  .disclaimer { margin: 0; color: rgba(221, 220, 200, 0.8); font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif; }
+</style>
+</head>
+<body>
+  <a class="resume" href="../../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
+
+  <main class="page">
+    <a class="back" href="../../enterprise/#project-8">← Back to projects</a>
+
+    <article class="case">
+      <header class="intro">
+        <h1>AI metadata and transcription automation</h1>
+        <div class="meta-block">
+          <p class="meta">Government client · UX Lead · Web app · Azure AI</p>
+          <p class="disclaimer">Note: this case study has branding removed and content white-labelled due to NDA restrictions.</p>
+        </div>
+        <div class="columns">
+          <section aria-labelledby="problem">
+            <h2 id="problem">The problem</h2>
+            <div class="lead">
+              <p>Digitising historical documents, photos and videos takes time. Scanning is only the first step: every item then needs manual effort to transcribe it and label it correctly, so that it can be found in search.</p>
+              <p>Until that work is done, a digitised record is still invisible: it sits in the archive with nothing to search by.</p>
+            </div>
+          </section>
+          <section aria-labelledby="solution">
+            <h2 id="solution">The solution</h2>
+            <div class="text">
+              <p>A batch digitise–transcribe–label–review web app that processes multimodal content together: scanned documents, photos and films go through the same flow.</p>
+              <p>Azure AI transcribes typed and handwritten text, breaks films into described clips, and suggests metadata and access restrictions. Archivists review and correct the results, and the content becomes accessible for search, indexing and retrieval.</p>
+            </div>
+          </section>
+        </div>
+        <div class="columns">
+          <section aria-labelledby="role">
+            <h2 id="role">My role</h2>
+            <div class="lead">
+              <p>UX Lead: handled ideation and prototyping in close collaboration with the tech/AI stream.</p>
+              <p>AI-driven transcription, metadata automation and document management workflow PoC prototyped and implemented.</p>
+            </div>
+          </section>
+          <section aria-labelledby="technology">
+            <h2 id="technology">Technology</h2>
+            <div class="lead">
+              <p>Web app + Azure AI</p>
+            </div>
+          </section>
+        </div>
+      </header>
+
+      <figure class="shot">
+        <img src="assets/document-transcription.jpg" width="2172" height="1629" alt="Archive app on a desktop display: a scanned discharge certificate with recognised text highlighted, typed and handwritten readings listed beside it, and the record's AI description and attributes">
+        <figcaption class="caption">Transcription and metadata: Azure AI reads the typed and handwritten text on a digitised document. Every recognised item is highlighted on the scan and listed beside it to edit, and low-confidence readings are flagged for an archivist to check. Together with the generated description, category, location and type, this metadata turns an image nobody can find into a record that can be searched and retrieved.</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="assets/video-clips.jpg" width="2000" height="1500" loading="lazy" alt="Archive app on a desktop display: a film from Central Australia cut into clips with generated headers, descriptions and tags, and a cultural restriction suggestion in the sensitivity panel">
+        <figcaption class="caption">Video: instead of one long transcript, each film is automatically cut into clips, and AI writes a header, a description and tags for every clip. Archivists can edit them all, and each moment of the film becomes searchable and indexable on its own. The same pass flags sensitive content: here it recommends a cultural restriction for what looks like a women’s business ceremony.</figcaption>
+      </figure>
+
+      <section class="section" aria-labelledby="reviews">
+        <h2 id="reviews">Stakeholder reviews</h2>
+        <figure class="review">
+          <blockquote>Daria is very thoughtful in the way she works and puts things together. This is seen in how she asks questions and answers ones that the client asks. I enjoy seeing how Daria works with the team and answering the question behind the question. […] She understand[s] the requirements and brief really well, takes the time to digest it, and then comes up with very thoughtful solutions. She is able to give instructions well to the younger ones in the team.</blockquote>
+          <figcaption>— L., Project Manager</figcaption>
+        </figure>
+      </section>
+    </article>
+  </main>
+<script src="../../back.js"></script>
+<!-- Visitor stats (GoatCounter: no cookies). Skips localhost and browsers marked on /not-me/ -->
+<script data-goatcounter="https://dariapodd.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
