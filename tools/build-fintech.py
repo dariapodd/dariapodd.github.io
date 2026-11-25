@@ -31,7 +31,7 @@ SKIN = [
     ("--bg-glow: #393938;", "--bg-glow: #121a1c;"),
     ("--ink: #dddcc8;", "--ink: #ecebe4;"),
     ("--accent: #00ffcc;", f"--accent: {ACCENT};\n    --menu-accent: {ACCENT};   /* style menu's intro box */"),
-    ("--accent-bg: rgba(0, 255, 204, 0.1);", f"--accent-bg: rgba({ACCENT_RGB}, 0.1);"),
+    ("--accent-bg: rgba(0, 255, 204, 0.1);", f"--accent-bg: rgba({ACCENT_RGB}, 0.1);\n    --micro-ink: {ACCENT_RGB};   /* micrographic lines (sphere.js, surface.js) */"),
     ("--body-black: #191613;", "--body-black: #121a1c;"),
     ("--body-grey: #3a3938;", "--body-grey: #1b2629;"),
     ("--body-light: #21201d;", "--body-light: #0f1d22;"),
@@ -98,7 +98,18 @@ SKIN_CSS = """
   .julia-adjust small { min-height: 1.2em; color: var(--accent); word-break: break-all; }
   /* Pill buttons */
   .resume, .button, .scroll-hint { border-radius: 999px; }
-  .scroll-hint { background: rgba(8, 16, 20, 0.85); }
+  /* Glass buttons (resume, learn more, scroll hint): see-through mint tint, strong blur, a hairline rim and a light top edge (inset shadows,
+     so the buttons keep their size) */
+  .resume, .button, .scroll-hint {
+    backdrop-filter: blur(20px) saturate(170%);
+    -webkit-backdrop-filter: blur(20px) saturate(170%);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      inset 0 -10px 18px rgba(255, 255, 255, 0.03),
+      0 8px 32px rgba(0, 0, 0, 0.35);
+  }
+  .resume, .button, .scroll-hint { background: linear-gradient(180deg, rgba(63, 240, 180, 0.16), rgba(63, 240, 180, 0.06)); }
   @supports (corner-shape: squircle) {
     .resume, .button, .scroll-hint { border-radius: 999px; corner-shape: round; }
   }

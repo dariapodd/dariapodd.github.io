@@ -11,7 +11,8 @@
 //     tesseract cube within a cube (spatial digital twin)
 //     hand      open hand, palm to the viewer (Deaf community)
 (() => {
-  const INK = "155, 153, 138";    // #9b998a (Figma)
+  // Line colour: #9b998a (Figma), or the page's --micro-ink ("r, g, b") where a style sets one
+  const INK = getComputedStyle(document.documentElement).getPropertyValue("--micro-ink").trim() || "155, 153, 138";
   const FRONT = 1, BACK = 0.3;    // line opacity on the near and far side
   const LINE = 1;                 // px
   const MERIDIANS = 16;           // every 22.5°

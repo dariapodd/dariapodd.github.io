@@ -5,7 +5,8 @@
 (() => {
   const VIEW_W = 663;   // Figma size of the graphic
   const VIEW_H = 330;
-  const INK = [221, 220, 200];     // #dddcc8, wireframe lines
+  // Wireframe lines: #dddcc8, or the page's --micro-ink ("r, g, b") where a style sets one
+  const INK = (getComputedStyle(document.documentElement).getPropertyValue("--micro-ink").trim() || "221, 220, 200").split(",").map(Number);
   const INK_ALPHA = 0.75;
   const TEAL = [0, 255, 204];      // #00ffcc, hover fill
   const TEAL_ALPHA = 0.5;          // fully lit cell
