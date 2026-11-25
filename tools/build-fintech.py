@@ -27,19 +27,13 @@ SKIN = [
     ('data-current="enterprise"', 'data-current="fintech"'),
 
     # ---- Colour: navy sections, mint-teal key colour
-    ("--bg: #1e1d19;", "--bg: #121a1c;\n    --hero-bg: #0d1920;\n    --cream: #e7e2c9;"),
-    ("--bg-glow: #393938;", "--bg-glow: #121a1c;"),
     ("--accent: #00ffcc;", f"--accent: {ACCENT};\n    --menu-accent: {ACCENT};   /* style menu's intro box */"),
     ("--accent-bg: rgba(0, 255, 204, 0.1);", f"--accent-bg: rgba({ACCENT_RGB}, 0.1);"),
-    ("--body-black: #191613;", "--body-black: #060c0c;"),   # odd projects (Figma 387:1964)
-    ("--body-grey: #3a3938;", "--body-grey: #1b2629;"),
-    ("--body-light: #21201d;", "--body-light: #11171a;"),   # even projects
     ("--tab: rgba(217, 217, 217, 0.15);", "--tab: transparent;   /* no square behind the tab shapes */"),
     ("--rule: #3d414a;", "--rule: #23302f;"),
     ("background: rgba(28, 71, 56, 0.6);   /* deep green at 60% (Figma) */",
      "background: rgba(12, 58, 48, 0.85);   /* deep mint pill */"),
     ("background: rgba(25, 22, 19, 0.92);", "background: rgba(10, 20, 25, 0.94);"),
-    ("    background: #191613;\n    display: grid;", "    background: #161a1c;\n    display: grid;"),   # company logo tiles
 
     # ---- Hero: the Julia set replaces the Lorenz attractor
     ('    <div class="micro micro--lorenz" aria-hidden="true"></div>\n', ""),
@@ -64,10 +58,10 @@ SKIN_CSS = """
   /* Hero, back to front: navy gradient (the fractal's own background colours), veil, the headline's
      ruled lines, then the Julia set (julia.js), which is transparent around the object and fades
      out towards the text */
-  .hero { background: linear-gradient(111deg, #03070b 30%, #0c161d 64%); isolation: isolate; }   /* Figma 387:2216 */
+  .hero { isolation: isolate; }   /* background: the page gradient, as in enterprise */
   .hero .julia-veil {
     position: absolute; z-index: -5; inset: 0; pointer-events: none;
-    background: linear-gradient(90deg, rgba(4, 8, 11, 0.92) 0%, rgba(13, 25, 32, 0.7) 63%, rgba(13, 25, 32, 0) 70%);   /* Figma 387:2217 */
+    background: linear-gradient(90deg, rgba(30, 29, 25, 0.92) 0%, rgba(30, 29, 25, 0.7) 63%, rgba(30, 29, 25, 0) 70%);   /* in the enterprise background colour */
   }
   .hero h1::before { z-index: -4; }
   .hero .julia {
@@ -76,7 +70,7 @@ SKIN_CSS = """
     mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.3) 38%, #000 70%);
   }
   @media (max-width: 760px) {
-    .hero .julia-veil { background: rgba(13, 25, 32, 0.6); }
+    .hero .julia-veil { background: rgba(30, 29, 25, 0.6); }
     .hero .julia {
       -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.18) 55%, rgba(0, 0, 0, 0.08));
       mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.18) 55%, rgba(0, 0, 0, 0.08));

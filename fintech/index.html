@@ -22,17 +22,15 @@
   }
 
   :root {
-    --bg: #121a1c;
-    --hero-bg: #0d1920;
-    --cream: #e7e2c9;
-    --bg-glow: #121a1c;
+    --bg: #1e1d19;
+    --bg-glow: #393938;
     --ink: #dddcc8;
     --accent: #3ff0b4;
     --menu-accent: #3ff0b4;   /* style menu's intro box */
     --accent-bg: rgba(63, 240, 180, 0.1);
-    --body-black: #060c0c;    /* project body, black variant */
-    --body-grey: #1b2629;     /* recommendation cards */
-    --body-light: #11171a;    /* project body, lighter variant */
+    --body-black: #191613;    /* project body, black variant */
+    --body-grey: #3a3938;     /* recommendation cards */
+    --body-light: #21201d;    /* project body, lighter variant */
     --tab: transparent;   /* no square behind the tab shapes */
     --rule: #23302f;          /* margin line and ruled lines */
 
@@ -217,7 +215,7 @@
     width: 64px;
     height: 64px;
     border-radius: 2px;
-    background: #161a1c;
+    background: #191613;
     display: grid;
     place-items: center;
     outline-offset: 3px;
@@ -667,10 +665,10 @@
   /* Hero, back to front: navy gradient (the fractal's own background colours), veil, the headline's
      ruled lines, then the Julia set (julia.js), which is transparent around the object and fades
      out towards the text */
-  .hero { background: linear-gradient(111deg, #03070b 30%, #0c161d 64%); isolation: isolate; }   /* Figma 387:2216 */
+  .hero { isolation: isolate; }   /* background: the page gradient, as in enterprise */
   .hero .julia-veil {
     position: absolute; z-index: -5; inset: 0; pointer-events: none;
-    background: linear-gradient(90deg, rgba(4, 8, 11, 0.92) 0%, rgba(13, 25, 32, 0.7) 63%, rgba(13, 25, 32, 0) 70%);   /* Figma 387:2217 */
+    background: linear-gradient(90deg, rgba(30, 29, 25, 0.92) 0%, rgba(30, 29, 25, 0.7) 63%, rgba(30, 29, 25, 0) 70%);   /* in the enterprise background colour */
   }
   .hero h1::before { z-index: -4; }
   .hero .julia {
@@ -679,7 +677,7 @@
     mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.3) 38%, #000 70%);
   }
   @media (max-width: 760px) {
-    .hero .julia-veil { background: rgba(13, 25, 32, 0.6); }
+    .hero .julia-veil { background: rgba(30, 29, 25, 0.6); }
     .hero .julia {
       -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.18) 55%, rgba(0, 0, 0, 0.08));
       mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.18) 55%, rgba(0, 0, 0, 0.08));
