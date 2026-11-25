@@ -8,6 +8,11 @@ if(!hero)return;
 const cv=document.createElement('canvas');cv.className='julia';cv.setAttribute('aria-hidden','true');
 const veil=document.createElement('div');veil.className='julia-veil';veil.setAttribute('aria-hidden','true');
 hero.prepend(cv,veil);
+// The veil switches off gradually above tablet width: full at 1024px and narrower, gone at 1440px
+// and wider
+const VEIL_FROM=1024,VEIL_TO=1440;
+const fadeVeil=()=>{const w=hero.clientWidth;veil.style.opacity=Math.max(0,Math.min(1,(VEIL_TO-w)/(VEIL_TO-VEIL_FROM)))};
+fadeVeil();new ResizeObserver(fadeVeil).observe(hero);
 // Stars behind the fractal, like the stray points around the Lorenz attractor further down:
 // warm grey (#dddcc8) dots, mostly tiny, a few larger and softer, a little denser towards the
 // object on the right. Seeded, so they sit in the same places on every load.
