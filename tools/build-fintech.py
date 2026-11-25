@@ -80,6 +80,11 @@ SKIN_CSS = """
   /* #adjust: fine-tuning the fractal's position (julia.js) */
   .hero .julia-grab { position: absolute; z-index: 20; inset: 0; cursor: grab; touch-action: none; outline: 2px dashed var(--accent); outline-offset: -8px; }
   .hero .julia-grab:active { cursor: grabbing; }
+  /* Dragging the hero morphs the fractal (julia.js) */
+  .hero { cursor: grab; }
+  .hero a, .hero .logos, .hero .intro { cursor: auto; }
+  .hero a { cursor: pointer; }
+  .hero.is-morphing, .hero.is-morphing * { cursor: grabbing; user-select: none; }
   .julia-adjust {
     position: fixed; z-index: 40; left: 16px; bottom: 16px; width: min(360px, calc(100vw - 32px));
     display: grid; gap: 8px; padding: 14px 16px; border-radius: 12px;

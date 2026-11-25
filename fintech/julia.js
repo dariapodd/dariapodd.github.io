@@ -170,8 +170,8 @@ function adjust(){
   const dA=S.drift*.12;
   f('uRes',W,H);f('uYaw',L.yaw);f('uPitch',L.pitch);f('uDist',S.dist/L.z);
   f('uRot',S.rx*R,S.ry*R,S.rz*R);
-  f('uC',S.cx+dA*Math.sin(tDrift*.7),S.cy+dA*Math.sin(tDrift*.53+1),S.cz+dA*Math.sin(tDrift*.31+2),S.cw+dA*Math.sin(tDrift*.43+3));
-  gl.uniform1i(U.uIter,S.iter);f('uPow',S.pow);f('uW',S.w);f('uBn',S.bn);f('uJb',S.jb);f('uSkip',0);
+  f('uC',S.cx+M.c+dA*Math.sin(tDrift*.7),S.cy+dA*Math.sin(tDrift*.53+1),S.cz+dA*Math.sin(tDrift*.31+2),S.cw+dA*Math.sin(tDrift*.43+3));
+  gl.uniform1i(U.uIter,S.iter);f('uPow',S.pow);f('uW',S.w+M.w);f('uBn',S.bn);f('uJb',S.jb);f('uSkip',0);
   const sg=S.flip?-1:1,el=S.cutEl*R,az=S.cutAz*R;
   f('uCut',S.cut);f('uCutN',sg*Math.cos(el)*Math.sin(az),sg*Math.sin(el),sg*Math.cos(el)*Math.cos(az));f('uCutD',sg*S.cutD);
   f('uEps',Math.pow(10,-2.2-1.6*S.detail));
@@ -181,9 +181,25 @@ function adjust(){
   f('uShellMix',S.shellMix);f('uFreq',S.freq);f('uOff',S.off);f('uItMix',S.itMix);f('uSpec',S.spec);f('uAO',S.ao);f('uGlow',S.glow);f('uShad',S.shad);f('uAmb',S.amb);f('uRim',S.rim);
   gl.drawArrays(gl.TRIANGLES,0,3);
  }
+ // Morphing: dragging across the hero shifts the Julia constant c (pointer x) and the 4D slice w
+ // (pointer y). The shape eases towards the new values, so it changes slowly, and keeps them.
+ const M={c:0,w:0,tc:0,tw:0};
+ const ease=k=>{const a=1-Math.exp(-k);M.c+=(M.tc-M.c)*a;M.w+=(M.tw-M.w)*a};
+ let pull=null;
+ hero.addEventListener('pointerdown',e=>{
+  if(e.button!==0||document.querySelector('.julia-grab')||e.target.closest('a,button,.logos,.intro,.view-select'))return;
+  pull={id:e.pointerId,x:e.clientX,y:e.clientY};hero.setPointerCapture(e.pointerId);hero.classList.add('is-morphing');e.preventDefault()});
+ hero.addEventListener('pointermove',e=>{
+  if(!pull||e.pointerId!==pull.id)return;
+  M.tc=Math.max(-.3,Math.min(.3,M.tc+(e.clientX-pull.x)*.0006));
+  M.tw=Math.max(-.45,Math.min(.45,M.tw+(e.clientY-pull.y)*.0008));
+  pull.x=e.clientX;pull.y=e.clientY;
+  if(reduce){ease(1);draw()}});
+ const release=e=>{if(pull&&e.pointerId===pull.id){pull=null;hero.classList.remove('is-morphing')}};
+ hero.addEventListener('pointerup',release);hero.addEventListener('pointercancel',release);
  function frame(now){
   const dt=Math.min(.1,(now-last)/1000);last=now;
-  if(visible&&!document.hidden){tDrift+=dt*S.drift*1.5;draw()}
+  if(visible&&!document.hidden){tDrift+=dt*S.drift*1.5;ease(dt*1.5);draw()}
   requestAnimationFrame(frame);
  }
  const io=new IntersectionObserver(e=>{visible=e[0].isIntersecting});io.observe(hero);
