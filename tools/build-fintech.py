@@ -14,8 +14,6 @@ from pathlib import Path
 root = Path(__file__).resolve().parent.parent
 html = (root / "index.html").read_text(encoding="utf-8")
 
-ACCENT = "#3ff0b4"            # mint-teal key colour
-ACCENT_RGB = "63, 240, 180"
 
 # (homepage text, fintech text). Exact matches; each must occur at least once.
 SKIN = [
@@ -27,8 +25,6 @@ SKIN = [
     ('data-current="enterprise"', 'data-current="fintech"'),
 
     # ---- Colour: navy sections, mint-teal key colour
-    ("--accent: #00ffcc;", f"--accent: {ACCENT};\n    --menu-accent: {ACCENT};   /* style menu's intro box */"),
-    ("--accent-bg: rgba(0, 255, 204, 0.1);", f"--accent-bg: rgba({ACCENT_RGB}, 0.1);"),
     ("background: rgba(28, 71, 56, 0.6);   /* deep green at 60% (Figma) */",
      "background: rgba(12, 58, 48, 0.85);   /* deep mint pill */"),
     ("background: rgba(25, 22, 19, 0.92);", "background: rgba(10, 20, 25, 0.94);"),
