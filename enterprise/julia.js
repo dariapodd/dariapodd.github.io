@@ -9,9 +9,17 @@ const cv=document.createElement('canvas');cv.className='julia';cv.setAttribute('
 const veil=document.createElement('div');veil.className='julia-veil';veil.setAttribute('aria-hidden','true');
 hero.prepend(cv,veil);
 // The veil switches off gradually above tablet width: full at 1024px and narrower, gone at 1440px
-// and wider
+// and wider.
 const VEIL_FROM=1024,VEIL_TO=1440;
-const fadeVeil=()=>{const w=hero.clientWidth;veil.style.opacity=Math.max(0,Math.min(1,(VEIL_TO-w)/(VEIL_TO-VEIL_FROM)))};
+// The fractal's left-to-right fade eases off over the same range: tablets and narrower keep the
+// top-to-bottom fade from the page CSS; at 1440px and wider the object shows in full
+const fadeVeil=()=>{
+ const w=hero.clientWidth,t=Math.max(0,Math.min(1,(w-VEIL_FROM)/(VEIL_TO-VEIL_FROM)));
+ veil.style.opacity=1-t;
+ if(w<=VEIL_FROM){cv.style.webkitMaskImage=cv.style.maskImage='';return}
+ const m=`linear-gradient(90deg, rgba(0,0,0,${(.1+.9*t).toFixed(3)}) 0%, rgba(0,0,0,${(.3+.7*t).toFixed(3)}) 38%, #000 70%)`;
+ cv.style.webkitMaskImage=cv.style.maskImage=m;
+};
 fadeVeil();new ResizeObserver(fadeVeil).observe(hero);
 // Stars behind the fractal, like the stray points around the Lorenz attractor further down:
 // warm grey (#dddcc8) dots, mostly tiny, a few larger and softer, a little denser towards the
