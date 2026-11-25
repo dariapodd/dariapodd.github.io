@@ -185,18 +185,20 @@ function adjust(){
  // (pointer y). The shape eases towards the new values, so it changes slowly, and keeps them.
  const M={c:0,w:0,tc:0,tw:0};
  const ease=k=>{const a=1-Math.exp(-k);M.c+=(M.tc-M.c)*a;M.w+=(M.tw-M.w)*a};
+ // A layer over the whole hero takes the drag (only the style menu link and the scroll hint sit above it)
+ const pad=document.createElement('div');pad.className='julia-drag';pad.setAttribute('aria-hidden','true');hero.append(pad);
  let pull=null;
- hero.addEventListener('pointerdown',e=>{
-  if(e.button!==0||document.querySelector('.julia-grab')||e.target.closest('a,button,.logos,.intro,.view-select'))return;
-  pull={id:e.pointerId,x:e.clientX,y:e.clientY};hero.setPointerCapture(e.pointerId);hero.classList.add('is-morphing');e.preventDefault()});
- hero.addEventListener('pointermove',e=>{
+ pad.addEventListener('pointerdown',e=>{
+  if(e.button!==0||document.querySelector('.julia-grab'))return;
+  pull={id:e.pointerId,x:e.clientX,y:e.clientY};pad.setPointerCapture(e.pointerId);hero.classList.add('is-morphing');e.preventDefault()});
+ pad.addEventListener('pointermove',e=>{
   if(!pull||e.pointerId!==pull.id)return;
   M.tc=Math.max(-.3,Math.min(.3,M.tc+(e.clientX-pull.x)*.0006));
   M.tw=Math.max(-.45,Math.min(.45,M.tw+(e.clientY-pull.y)*.0008));
   pull.x=e.clientX;pull.y=e.clientY;
   if(reduce){ease(1);draw()}});
  const release=e=>{if(pull&&e.pointerId===pull.id){pull=null;hero.classList.remove('is-morphing')}};
- hero.addEventListener('pointerup',release);hero.addEventListener('pointercancel',release);
+ pad.addEventListener('pointerup',release);pad.addEventListener('pointercancel',release);
  function frame(now){
   const dt=Math.min(.1,(now-last)/1000);last=now;
   if(visible&&!document.hidden){tDrift+=dt*S.drift*1.5;ease(dt*1.5);draw()}
