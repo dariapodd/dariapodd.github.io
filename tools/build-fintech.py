@@ -116,6 +116,7 @@ SKIN_CSS = """
       inset 0 -10px 18px rgba(255, 255, 255, 0.03),
       0 8px 32px rgba(0, 0, 0, 0.35);
   }
+  .scroll-hint { background: rgba(28, 71, 56, 0.2); }   /* lighter: 20% fill */
   /* "Coming soon" keeps the enterprise look: amber, square-ish corners, no glass */
   .button.button--soon {
     border-radius: 12px; background: rgba(255, 166, 0, 0.1); box-shadow: none;
