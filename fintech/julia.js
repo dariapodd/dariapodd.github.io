@@ -14,7 +14,7 @@ const ANIM={"name": "Site", "state": {"amb": 0.35, "ao": 0.8, "bg0": "#14242f", 
 const S=ANIM.state;
 const FS=`#version 300 es
 precision highp float;
-uniform vec2 uRes,uShift;uniform float uRoll,uYaw,uPitch,uDist;uniform vec3 uRot;
+uniform vec2 uRes,uShift;uniform float uExp,uRoll,uYaw,uPitch,uDist;uniform vec3 uRot;
 uniform vec4 uC;uniform int uIter;uniform float uPow,uW,uBn,uJb;
 uniform float uCut;uniform vec3 uCutN;uniform float uCutD,uEps;
 uniform vec3 uBg0,uBg1,uShell,uP0,uP1,uP2,uP3,uLc,uGc,uLd;
@@ -100,16 +100,18 @@ void main(){
    col=mix(col,bg,1.-exp(-.004*t*t*t));
   }
  }
- vec3 gc=uGc*min(glow,1.5)*uGlow;
+ vec3 gc=uGc*min(glow,1.5)*uGlow*uExp;
  // The object is opaque; around it only the glow shows, so the hero's own background and the
  // headline's ruled lines show through (premultiplied alpha)
- if(hit){col+=gc*.25;o=vec4(pow(max(col,0.),vec3(1./2.2)),1);}
+ if(hit){col=col*uExp+gc*.25;o=vec4(pow(max(col,0.),vec3(1./2.2)),1);}
  else{vec3 g=pow(max(gc,0.),vec3(1./2.2));o=vec4(g,clamp(max(g.r,max(g.g,g.b)),0.,1.));}
 }`;
 const VS=`#version 300 es
 in vec2 a;void main(){gl_Position=vec4(a,0,1);}`;
 // Object position: u/v = centre as a fraction of hero width/height, z = size, yaw/pitch = camera angle
 const POSITION={"wide":{"roll":0.7328554841775412,"u":0.7669113243319154,"v":1.0940540640517942,"z":1.9518815291131284,"yaw":5.145425292968761,"pitch":-0.3342973632812509},"narrow":{"u":0.5,"v":0.625,"z":0.87,"yaw":4.145775390625007,"pitch":0.6840480957031247,"roll":0}};
+// Exposure in stops, like a photo editor's: negative dims the object and its glow
+const EXPOSURE=-0.6;
 const layout=()=>hero.clientWidth/hero.clientHeight>1.15?'wide':'narrow';
 // Fine-tuning: open the page with #adjust. Drag moves the object, Shift-drag turns it clockwise or
 // anticlockwise, Alt-drag orbits the camera, scroll zooms. "Copy position" puts the JSON on the
@@ -164,7 +166,7 @@ function adjust(){
   if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H}
   gl.viewport(0,0,W,H);
   const L=POS[layout()],asp=W/H;
-  f('uShift',(L.u-.5)*2*asp,(.5-L.v)*2);f('uRoll',L.roll);
+  f('uShift',(L.u-.5)*2*asp,(.5-L.v)*2);f('uRoll',L.roll);f('uExp',Math.pow(2,EXPOSURE));
   const dA=S.drift*.12;
   f('uRes',W,H);f('uYaw',L.yaw);f('uPitch',L.pitch);f('uDist',S.dist/L.z);
   f('uRot',S.rx*R,S.ry*R,S.rz*R);
