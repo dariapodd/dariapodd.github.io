@@ -29,7 +29,6 @@ SKIN = [
     # ---- Colour: navy sections, mint-teal key colour
     ("--bg: #1e1d19;", "--bg: #121a1c;\n    --hero-bg: #0d1920;\n    --cream: #e7e2c9;"),
     ("--bg-glow: #393938;", "--bg-glow: #121a1c;"),
-    ("--ink: #dddcc8;", "--ink: #ecebe4;"),
     ("--accent: #00ffcc;", f"--accent: {ACCENT};\n    --menu-accent: {ACCENT};   /* style menu's intro box */"),
     ("--accent-bg: rgba(0, 255, 204, 0.1);", f"--accent-bg: rgba({ACCENT_RGB}, 0.1);"),
     ("--body-black: #191613;", "--body-black: #060c0c;"),   # odd projects (Figma 387:1964)
@@ -85,8 +84,6 @@ SKIN_CSS = """
   }
   .hero h1 .dot { background: var(--accent); }
   .micro { display: none; }   /* no micrographics in this skin */
-  .intro, .project-desc, .project-quote, .rec { color: #d6dadb; }
-  .project h2, .recs h2, .more h2, .more-card h3 { color: var(--ink); }   /* same as the hero headline */
   /* #adjust: fine-tuning the fractal's position (julia.js) */
   .hero .julia-grab { position: absolute; z-index: 20; inset: 0; cursor: grab; touch-action: none; outline: 2px dashed var(--accent); outline-offset: -8px; }
   .hero .julia-grab:active { cursor: grabbing; }
