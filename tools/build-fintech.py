@@ -83,6 +83,8 @@ SKIN_CSS = """
   /* Dragging the hero morphs the fractal (julia.js) */
   .hero .julia-drag { position: absolute; z-index: 10; inset: 0; cursor: grab; touch-action: pan-y; }
   .hero.is-morphing, .hero.is-morphing * { cursor: grabbing; user-select: none; }
+  .hero { -webkit-user-select: none; user-select: none; }   /* hero text can't be selected (double-click, drag) */
+  .hero img { -webkit-user-drag: none; }
   .hero .view-select { position: relative; z-index: 11; }   /* the style menu stays clickable */
   .hero .scroll-hint { z-index: 11; }
   .julia-adjust {
