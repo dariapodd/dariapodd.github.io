@@ -29,7 +29,6 @@ SKIN = [
     # ---- Colour: navy sections, mint-teal key colour
     ("--accent: #00ffcc;", f"--accent: {ACCENT};\n    --menu-accent: {ACCENT};   /* style menu's intro box */"),
     ("--accent-bg: rgba(0, 255, 204, 0.1);", f"--accent-bg: rgba({ACCENT_RGB}, 0.1);"),
-    ("--tab: rgba(217, 217, 217, 0.15);", "--tab: transparent;   /* no square behind the tab shapes */"),
     ("background: rgba(28, 71, 56, 0.6);   /* deep green at 60% (Figma) */",
      "background: rgba(12, 58, 48, 0.85);   /* deep mint pill */"),
     ("background: rgba(25, 22, 19, 0.92);", "background: rgba(10, 20, 25, 0.94);"),
@@ -38,9 +37,6 @@ SKIN = [
     ('    <div class="micro micro--lorenz" aria-hidden="true"></div>\n', ""),
     ('<script src="enterprise/lorenz.js" defer></script>', '<script src="fintech/julia.js" defer></script>'),
 
-    # ---- No micrographics: drop the wireframe surface and the tab shapes
-    ('<script src="enterprise/surface.js" defer></script>\n', ""),
-    ('<script src="enterprise/sphere.js" defer></script>\n', ""),
 ]
 
 missing = []
@@ -76,7 +72,6 @@ SKIN_CSS = """
     }
   }
   .hero h1 .dot { background: var(--accent); }
-  .micro { display: none; }   /* no micrographics in this skin */
   /* #adjust: fine-tuning the fractal's position (julia.js) */
   .hero .julia-grab { position: absolute; z-index: 20; inset: 0; cursor: grab; touch-action: none; outline: 2px dashed var(--accent); outline-offset: -8px; }
   .hero .julia-grab:active { cursor: grabbing; }

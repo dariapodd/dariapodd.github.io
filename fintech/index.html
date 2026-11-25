@@ -31,7 +31,7 @@
     --body-black: #191613;    /* project body, black variant */
     --body-grey: #3a3938;     /* recommendation cards */
     --body-light: #21201d;    /* project body, lighter variant */
-    --tab: transparent;   /* no square behind the tab shapes */
+    --tab: rgba(217, 217, 217, 0.15);
     --rule: #3d414a;          /* margin line and ruled lines */
 
     --nav-fs: 16px;
@@ -684,7 +684,6 @@
     }
   }
   .hero h1 .dot { background: var(--accent); }
-  .micro { display: none; }   /* no micrographics in this skin */
   /* #adjust: fine-tuning the fractal's position (julia.js) */
   .hero .julia-grab { position: absolute; z-index: 20; inset: 0; cursor: grab; touch-action: none; outline: 2px dashed var(--accent); outline-offset: -8px; }
   .hero .julia-grab:active { cursor: grabbing; }
@@ -1047,7 +1046,9 @@
     </section>
   </main>
 
+<script src="../enterprise/surface.js" defer></script>
 <script src="../fintech/julia.js" defer></script>
+<script src="../enterprise/sphere.js" defer></script>
 <!--: the welcome popup with style previews (root page only; the builds strip it) -->
 <script src="../menu.js" defer data-current="fintech"></script>
 
