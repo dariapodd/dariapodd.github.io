@@ -1,4 +1,4 @@
-// Fintech view: a live ray-marched quaternion Julia set behind the hero (WebGL2), from the
+// Hero: a live ray-marched quaternion Julia set behind the headline (WebGL2), from the
 // "Site" animation in fintech-portfolio.html. Renders at 0.7x, DPR capped at 1.5, pauses when
 // the hero is off-screen or the tab is hidden, one still frame for prefers-reduced-motion.
 // Without WebGL2 the hero stays plain navy.
@@ -166,7 +166,7 @@ function adjust(){
  box.addEventListener('click',async e=>{const a=e.target.dataset&&e.target.dataset.a;if(!a)return;
   if(a==='reset'){POS[layout()]=Object.assign({roll:0},POSITION[layout()]);msg.textContent='Back to the saved position.'}
   else{const txt=JSON.stringify(POS);
-   try{await navigator.clipboard.writeText(txt);msg.textContent='Copied. Paste it over POSITION in fintech/julia.js.'}
+   try{await navigator.clipboard.writeText(txt);msg.textContent='Copied. Paste it over POSITION in enterprise/julia.js.'}
    catch(err){msg.textContent=txt}}
   sync();redraw()});
  addEventListener('resize',sync);sync();

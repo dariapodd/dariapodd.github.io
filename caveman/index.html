@@ -591,9 +591,10 @@
     aspect-ratio: 663 / 330;
     --micro-nudge: 75px;     /* about 40% of the drawn surface sits above the block */
   }
-  /* Lorenz attractor. This box sets its size and centre (lorenz.js shifts it 10% of the
+  /* Lorenz attractor (beside the recommendations; the caveman page keeps it in the hero as
+     an asteroid belt). This box sets its size and centre (lorenz.js shifts it 10% of the
      page width further right); drag inside it to rotate.
-     lorenz.js draws it on a canvas covering the whole hero, behind the text, so it
+     lorenz.js draws it on a canvas covering its whole section, behind the text, so it
      isn't cut off when rotated. */
   .micro--lorenz {
     top: 111px;
@@ -672,6 +673,87 @@
       .project-shot--deaf { border-radius: 24px; }
       .project-shot--fashion { border-radius: 32px; }
     }
+  }
+
+  /* ---------- Hero fractal (julia.js) ----------
+     Back to front: the page gradient, a veil in the page colour, stars, the headline's ruled
+     lines, then the Julia set, which is transparent around the object and fades out towards the
+     text. Drag anywhere in the hero to morph it; open the page with #adjust to reposition it. */
+  .hero { isolation: isolate; -webkit-user-select: none; user-select: none; }   /* hero text can't be selected */
+  .hero img { -webkit-user-drag: none; }
+  .hero .julia-veil {
+    position: absolute; z-index: -5; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg, rgba(30, 29, 25, 0.92) 0%, rgba(30, 29, 25, 0.7) 63%, rgba(30, 29, 25, 0) 70%);
+  }
+  .hero .julia-stars { position: absolute; z-index: -4; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .hero h1::before { z-index: -4; }
+  .hero .julia {
+    position: absolute; z-index: -3; inset: 0; width: 100%; height: 100%; display: block;
+    -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.3) 38%, #000 70%);
+    mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.3) 38%, #000 70%);
+  }
+  @media (max-width: 760px) {
+    .hero .julia-veil { background: rgba(30, 29, 25, 0.6); }
+    .hero .julia {
+      -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.18) 55%, rgba(0, 0, 0, 0.08));
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.18) 55%, rgba(0, 0, 0, 0.08));
+    }
+  }
+  .hero h1 .dot { background: var(--accent); }
+  .hero .julia-drag { position: absolute; z-index: 10; inset: 0; cursor: grab; touch-action: pan-y; }
+  .hero.is-morphing, .hero.is-morphing * { cursor: grabbing; user-select: none; }
+  /* Above the drag layer: the style menu link, the scroll hint and the logos (their hints show on hover) */
+  .hero .view-select { position: relative; z-index: 11; }
+  .hero .scroll-hint { z-index: 11; }
+  .hero .logos { position: relative; z-index: 11; }
+  /* #adjust: fine-tuning the fractal's position */
+  .hero .julia-grab { position: absolute; z-index: 20; inset: 0; cursor: grab; touch-action: none; outline: 2px dashed var(--accent); outline-offset: -8px; }
+  .hero .julia-grab:active { cursor: grabbing; }
+  .julia-adjust {
+    position: fixed; z-index: 40; left: 16px; bottom: 16px; width: min(360px, calc(100vw - 32px));
+    display: grid; gap: 8px; padding: 14px 16px; border-radius: 12px;
+    background: rgba(25, 22, 19, 0.94); border: 1px solid var(--rule); color: var(--ink);
+    font: 300 14px/1.4 "Space Grotesk", system-ui, sans-serif;
+  }
+  .julia-adjust b { font: 400 14px/1.2 "Kode Mono", ui-monospace, monospace; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+  .julia-adjust output { font-variant-numeric: tabular-nums; color: #fff; }
+  .julia-adjust div { display: flex; gap: 8px; }
+  .julia-adjust button { font: inherit; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--rule); background: none; color: var(--ink); cursor: pointer; }
+  .julia-adjust button[data-a="copy"] { margin-left: auto; background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+  .julia-adjust small { min-height: 1.2em; color: var(--accent); word-break: break-all; }
+
+  /* ---------- Recommendations beside the Lorenz attractor (lorenz.js) ----------
+     A narrower column with the attractor to its right; drag it to turn it.
+     Narrow screens: full width, no attractor. */
+  .recs { position: relative; isolation: isolate; }
+  .recs.is-lorenz-grab { cursor: grab; }
+  .recs.is-lorenz-dragging { cursor: grabbing; user-select: none; }
+  @media (min-width: 1200px) {
+    .recs .micro--lorenz { top: calc(50% - 283px); height: 566px; left: max(59.5%, 880px); right: 0; }
+  }
+
+  /* ---------- Glass buttons (Figma 387:1964) ----------
+     Deep green fill, 40px background blur, a light top edge and a soft inner glow from below
+     (inset shadows, so the buttons keep their size); the floating ones also cast a shadow. */
+  .resume, .button, .scroll-hint {
+    background: rgba(84, 36, 24, 0.78);   /* glass fill, red-brown */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.10),
+      inset 0 -10px 18px rgba(255, 255, 255, 0.03);
+  }
+  .resume, .scroll-hint {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.10),
+      inset 0 -10px 18px rgba(255, 255, 255, 0.03),
+      0 8px 32px rgba(0, 0, 0, 0.35);
+  }
+  .scroll-hint { background: rgba(84, 36, 24, 0.2); }   /* scroll hint: lighter glass */
+  /* "Coming soon": amber, no glass */
+  .button.button--soon {
+    background: rgba(255, 166, 0, 0.1); box-shadow: none;
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   }
 
   /* ---------- Rocks: floating low-poly stones (rocks.js) ---------- */

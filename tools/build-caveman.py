@@ -98,8 +98,15 @@ COPY = [
     (">view ↗</a>", ">look ↗</a>"),
 
     # ---- Style: reddish accent, Space Grotesk body text
-    ('<div class="micro micro--lorenz" aria-hidden="true"></div>',
-     '<div class="micro micro--lorenz" data-mode="belt" aria-hidden="true"></div>'),   # asteroid belt instead of the attractor
+    # Hero: the asteroid belt (lorenz.js, belt mode) stays, instead of the fractal; the
+    # recommendations keep their full width, without the attractor
+    ('<script src="enterprise/julia.js" defer></script>\n', ""),
+    ('\n      <div class="micro micro--lorenz" aria-hidden="true"></div>', ""),
+    ("  </header>", '    <div class="micro micro--lorenz" data-mode="belt" aria-hidden="true"></div>\n  </header>'),
+    ("    .recs > h2, .recs-grid { max-width: 760px; }\n", ""),
+    # Glass buttons in deep red-brown
+    ("background: rgba(28, 71, 56, 0.78);   /* glass fill */", "background: rgba(84, 36, 24, 0.78);   /* glass fill, red-brown */"),
+    (".scroll-hint { background: rgba(28, 71, 56, 0.2); }", ".scroll-hint { background: rgba(84, 36, 24, 0.2); }"),
     ("--accent: #00ffcc;", f"--accent: {ACCENT};\n    --menu-accent: {ACCENT};   /* style menu's intro box */"),
     ("--accent-bg: rgba(0, 255, 204, 0.1);", f"--accent-bg: rgba({ACCENT_RGB}, 0.1);"),
     ("background: rgba(28, 71, 56, 0.6);   /* deep green at 60% (Figma) */",

@@ -190,6 +190,23 @@
   /* NDA disclaimer, right under the meta line */
   .meta-block { display: flex; flex-direction: column; gap: 4px; }
   .disclaimer { margin: 0; color: rgba(221, 220, 200, 0.8); font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif; }
+
+  /* Glass buttons, as on the homepage (Figma 387:1964): deep green fill, 40px background blur,
+     a light top edge and a soft inner glow from below; the floating resume button casts a shadow */
+  .resume, .button, .text .button {
+    background: rgba(28, 71, 56, 0.78);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.10),
+      inset 0 -10px 18px rgba(255, 255, 255, 0.03);
+  }
+  .resume {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.10),
+      inset 0 -10px 18px rgba(255, 255, 255, 0.03),
+      0 8px 32px rgba(0, 0, 0, 0.35);
+  }
 </style>
 </head>
 <body>

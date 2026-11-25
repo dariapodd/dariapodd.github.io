@@ -17,7 +17,6 @@
       desc: 'Very succinct, inspired by <a href="https://dev.to/onsen/caveman-claude-the-token-cutting-skill-thats-changing-ai-workflows-4hmc" target="_blank" rel="noopener">this skill</a>' },
     { id: "elevator-pitch", name: "elevator pitch", desc: "Imagine you’re in a very tall building...", href: "elevator-pitch/", thumb: "elevator.jpg" },
     { id: "json", name: "json", desc: "Works best if you’re a robot", href: "json/", thumb: "json.jpg" },
-    { id: "fintech", name: "fintech", desc: "A trading terminal at night", href: "fintech/", thumb: "fintech.jpg" },
   ];
 
   // Descriptions use Chakra Petch; load it on pages that don't already
@@ -43,7 +42,7 @@
       z-index: 31;
       top: 50%;
       left: 50%;
-      width: min(1000px, calc(100vw - 32px));
+      width: min(705px, calc(100vw - 32px));
       max-height: calc(100vh - 32px);
       overflow-y: auto;
       display: flex;
@@ -77,8 +76,7 @@
       text-transform: uppercase;
       text-align: center;
     }
-    .welcome ul { display: grid; grid-template-columns: repeat(3, 1fr); gap: 21px; margin: 0; padding: 0; list-style: none; }
-    @media (max-width: 900px) { .welcome ul { grid-template-columns: 1fr 1fr; } }
+    .welcome ul { display: grid; grid-template-columns: 1fr 1fr; gap: 21px; margin: 0; padding: 0; list-style: none; }
     @media (max-width: 640px) { .welcome ul { grid-template-columns: 1fr; } }
     .welcome-card {
       position: relative;
