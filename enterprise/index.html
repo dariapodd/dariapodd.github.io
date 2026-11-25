@@ -190,7 +190,7 @@
   }
 
   @media (max-width: 700px) {
-    .hero h1 { font-size: 40px; } /* 60px words like "DESIGNER," are wider than a phone */
+    .hero h1 { font-size: 27px; } /* 60px words like "DESIGNER," are wider than a phone; 40px ÷ 1.5 */
   }
 
   .intro {
@@ -495,7 +495,9 @@
     .recs-grid { grid-template-columns: 1fr; }
   }
   @media (max-width: 700px) {
-    .recs h2, .more h2 { font-size: 32px; }
+    .recs h2, .more h2 { font-size: 21px; }   /* 32px ÷ 1.5 */
+    .project h2 { font-size: 32px; }          /* 48px ÷ 1.5 */
+    .more-card h3 { font-size: 14px; }        /* about 20px ÷ 1.5, kept readable */
   }
 
   /* ---------- More projects: cards, three to a row ---------- */
@@ -563,7 +565,7 @@
     .more-card { padding: 24px; }
     .more-card h3 { font-size: clamp(14px, 1.85vw, 20px); }   /* "illustrations" still fits on one line */
   }
-  @media (max-width: 760px) { .more-card h3 { font-size: clamp(14px, 3.4vw, 20px); } }
+  @media (min-width: 701px) and (max-width: 760px) { .more-card h3 { font-size: clamp(14px, 3.4vw, 20px); } }
   @media (max-width: 760px) { .more-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; } }
   @media (max-width: 480px) { .more-grid { grid-template-columns: 1fr; } }
 
