@@ -1,5 +1,5 @@
 """Writes caveman/index.html from the root index.html: same layout, caveman words,
-reddish accent instead of teal, Space Grotesk for body text.
+reddish accent instead of teal; same fonts as enterprise.
 
 Edit index.html (layout) or the COPY list below (words), then run:
     python tools/build-caveman.py
@@ -97,7 +97,7 @@ COPY = [
     ("<p>Software vendor portal, 450 pages</p>", "<p>Big software tribe portal, 450 pages</p>"),
     (">view ↗</a>", ">look ↗</a>"),
 
-    # ---- Style: reddish accent, Space Grotesk body text
+    # ---- Style: reddish accent
     # Hero: the asteroid belt (lorenz.js, belt mode) instead of the fractal; the recommendations
     # keep the attractor beside them, its travelling dot in the red accent
     ('<script src="enterprise/julia.js" defer></script>\n', ""),
@@ -109,8 +109,6 @@ COPY = [
     ("--accent-bg: rgba(0, 255, 204, 0.1);", f"--accent-bg: rgba({ACCENT_RGB}, 0.1);"),
     ("background: rgba(28, 71, 56, 0.6);   /* deep green at 60% (Figma) */",
      "background: rgba(84, 36, 24, 0.6);   /* deep red-brown at 60% */"),
-    ("family=Chakra+Petch:wght@300;600", "family=Space+Grotesk:wght@300;600"),
-    ('"Chakra Petch"', '"Space Grotesk"'),
     ('data-current="enterprise"', 'data-current="caveman"'),
 ]
 
