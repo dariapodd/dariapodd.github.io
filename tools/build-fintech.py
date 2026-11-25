@@ -31,7 +31,11 @@ SKIN = [
 
     # ---- Hero: the Julia set replaces the Lorenz attractor
     ('    <div class="micro micro--lorenz" aria-hidden="true"></div>\n', ""),
-    ('<script src="enterprise/lorenz.js" defer></script>', '<script src="fintech/julia.js" defer></script>'),
+    ('<script src="enterprise/lorenz.js" defer></script>',
+     '<script src="fintech/julia.js" defer></script>\n<script src="enterprise/lorenz.js" defer></script>'),
+
+    # ---- Closing visual: the Lorenz attractor from the enterprise hero, at the very bottom
+    ('  </main>\n', '    <section class="lorenz-end" aria-hidden="true">\n      <div class="micro micro--lorenz"></div>\n    </section>\n  </main>\n'),
 
 ]
 
@@ -68,6 +72,14 @@ SKIN_CSS = """
     }
   }
   .hero h1 .dot { background: var(--accent); }
+  .more-card { background: none; }   /* More projects: cards without a background */
+  /* Closing visual: the Lorenz attractor (enterprise/lorenz.js) under the last section; drag to turn it */
+  .lorenz-end { position: relative; isolation: isolate; height: 640px; margin-top: -40px; }
+  .lorenz-end .micro--lorenz { top: 37px; height: 566px; left: 20%; right: 30%; }
+  .lorenz-end .lorenz-canvas { z-index: 0; }
+  .lorenz-end.is-lorenz-grab { cursor: grab; }
+  .lorenz-end.is-lorenz-dragging { cursor: grabbing; user-select: none; }
+  @media (max-width: 1199px) { .lorenz-end { display: none; } }
   /* #adjust: fine-tuning the fractal's position (julia.js) */
   .hero .julia-grab { position: absolute; z-index: 20; inset: 0; cursor: grab; touch-action: none; outline: 2px dashed var(--accent); outline-offset: -8px; }
   .hero .julia-grab:active { cursor: grabbing; }

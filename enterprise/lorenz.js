@@ -109,7 +109,9 @@
   const canvas = document.createElement("canvas");
   canvas.className = "lorenz-canvas";
   canvas.setAttribute("aria-hidden", "true");
-  hero.querySelector("h1").after(canvas);   // after the headline, so it draws over its ruled lines
+  const head = hero.querySelector("h1");
+  if (head) head.after(canvas);   // after the headline, so it draws over its ruled lines
+  else hero.prepend(canvas);      // a section without one (the fintech page's closing visual)
   const gl = canvas.getContext("webgl", { antialias: true, premultipliedAlpha: false, alpha: true });
   if (!gl) { canvas.remove(); return; }
 
