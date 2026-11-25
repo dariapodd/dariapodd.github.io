@@ -32,14 +32,15 @@ SKIN = [
     ("--ink: #dddcc8;", "--ink: #ecebe4;"),
     ("--accent: #00ffcc;", f"--accent: {ACCENT};\n    --menu-accent: {ACCENT};   /* style menu's intro box */"),
     ("--accent-bg: rgba(0, 255, 204, 0.1);", f"--accent-bg: rgba({ACCENT_RGB}, 0.1);\n    --micro-ink: {ACCENT_RGB};   /* micrographic lines (sphere.js, surface.js) */"),
-    ("--body-black: #191613;", "--body-black: #121a1c;"),
+    ("--body-black: #191613;", "--body-black: #060c0c;"),   # odd projects (Figma 387:1964)
     ("--body-grey: #3a3938;", "--body-grey: #1b2629;"),
-    ("--body-light: #21201d;", "--body-light: #0f1d22;"),
+    ("--body-light: #21201d;", "--body-light: #11171a;"),   # even projects
     ("--tab: rgba(217, 217, 217, 0.15);", "--tab: transparent;   /* no square behind the tab shapes */"),
     ("--rule: #3d414a;", "--rule: #23302f;"),
     ("background: rgba(28, 71, 56, 0.6);   /* deep green at 60% (Figma) */",
      "background: rgba(12, 58, 48, 0.85);   /* deep mint pill */"),
     ("background: rgba(25, 22, 19, 0.92);", "background: rgba(10, 20, 25, 0.94);"),
+    ("    background: #191613;\n    display: grid;", "    background: #161a1c;\n    display: grid;"),   # company logo tiles
 
     # ---- Hero: the Julia set replaces the Lorenz attractor
     ('    <div class="micro micro--lorenz" aria-hidden="true"></div>\n', ""),
@@ -60,10 +61,10 @@ SKIN_CSS = """
   /* Hero, back to front: navy gradient (the fractal's own background colours), veil, the headline's
      ruled lines, then the Julia set (julia.js), which is transparent around the object and fades
      out towards the text */
-  .hero { background: linear-gradient(to bottom, #14242f, #03070b); isolation: isolate; }
+  .hero { background: linear-gradient(111deg, #03070b 30%, #0c161d 64%); isolation: isolate; }   /* Figma 387:2216 */
   .hero .julia-veil {
     position: absolute; z-index: -5; inset: 0; pointer-events: none;
-    background: linear-gradient(90deg, rgba(13, 25, 32, 0.92) 0%, rgba(13, 25, 32, 0.7) 38%, rgba(13, 25, 32, 0) 70%);
+    background: linear-gradient(90deg, rgba(4, 8, 11, 0.92) 0%, rgba(13, 25, 32, 0.7) 63%, rgba(13, 25, 32, 0) 70%);   /* Figma 387:2217 */
   }
   .hero h1::before { z-index: -4; }
   .hero .julia {
@@ -96,19 +97,25 @@ SKIN_CSS = """
   .julia-adjust button { font: inherit; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--rule); background: none; color: var(--ink); cursor: pointer; }
   .julia-adjust button[data-a="copy"] { margin-left: auto; background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
   .julia-adjust small { min-height: 1.2em; color: var(--accent); word-break: break-all; }
-  /* Glass buttons (resume, learn more, scroll hint): see-through mint tint, strong blur, a hairline rim and a light top edge (inset shadows,
-     so the buttons keep their size) */
+  /* Glass buttons (Figma 387:1964): deep green fill, 40px background blur, a light top edge, a soft
+     inner glow from below and a hairline rim (inset shadows, so the buttons keep their size);
+     the floating ones (resume, scroll hint) also cast a shadow */
   .resume, .button, .scroll-hint {
-    backdrop-filter: blur(20px) saturate(170%);
-    -webkit-backdrop-filter: blur(20px) saturate(170%);
+    background: rgba(28, 71, 56, 0.78);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     box-shadow:
       inset 0 0 0 1px rgba(255, 255, 255, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.10),
+      inset 0 -10px 18px rgba(255, 255, 255, 0.03);
+  }
+  .resume, .scroll-hint {
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.10),
       inset 0 -10px 18px rgba(255, 255, 255, 0.03),
       0 8px 32px rgba(0, 0, 0, 0.35);
   }
-  /* Mint sheen over a dark teal base, so the mint text stays readable over light screenshots */
-  .resume, .button, .scroll-hint { background: linear-gradient(180deg, rgba(63, 240, 180, 0.16), rgba(63, 240, 180, 0.06)), rgba(6, 42, 38, 0.78); }
   /* "Coming soon" keeps the enterprise look: amber, square-ish corners, no glass */
   .button.button--soon {
     border-radius: 12px; background: rgba(255, 166, 0, 0.1); box-shadow: none;
