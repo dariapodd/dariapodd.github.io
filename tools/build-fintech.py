@@ -30,7 +30,6 @@ SKIN = [
     ("--accent: #00ffcc;", f"--accent: {ACCENT};\n    --menu-accent: {ACCENT};   /* style menu's intro box */"),
     ("--accent-bg: rgba(0, 255, 204, 0.1);", f"--accent-bg: rgba({ACCENT_RGB}, 0.1);"),
     ("--tab: rgba(217, 217, 217, 0.15);", "--tab: transparent;   /* no square behind the tab shapes */"),
-    ("--rule: #3d414a;", "--rule: #23302f;"),
     ("background: rgba(28, 71, 56, 0.6);   /* deep green at 60% (Figma) */",
      "background: rgba(12, 58, 48, 0.85);   /* deep mint pill */"),
     ("background: rgba(25, 22, 19, 0.92);", "background: rgba(10, 20, 25, 0.94);"),
