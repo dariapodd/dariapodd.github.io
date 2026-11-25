@@ -1,5 +1,5 @@
 """Writes fintech/index.html from the root index.html: same layout and words, fintech skin
-(from fintech-portfolio.html): navy and mint, pill buttons, same fonts and sizes as enterprise, and a
+(from fintech-portfolio.html): navy and mint, glass buttons, same fonts and sizes as enterprise, and a
 live quaternion Julia set behind the hero (fintech/julia.js) instead of the Lorenz attractor.
 
 Edit index.html (layout, words) or the SKIN list below, then run:
@@ -96,8 +96,6 @@ SKIN_CSS = """
   .julia-adjust button { font: inherit; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--rule); background: none; color: var(--ink); cursor: pointer; }
   .julia-adjust button[data-a="copy"] { margin-left: auto; background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
   .julia-adjust small { min-height: 1.2em; color: var(--accent); word-break: break-all; }
-  /* Pill buttons */
-  .resume, .button, .scroll-hint { border-radius: 999px; }
   /* Glass buttons (resume, learn more, scroll hint): see-through mint tint, strong blur, a hairline rim and a light top edge (inset shadows,
      so the buttons keep their size) */
   .resume, .button, .scroll-hint {
@@ -111,9 +109,6 @@ SKIN_CSS = """
   }
   /* Mint sheen over a dark teal base, so the mint text stays readable over light screenshots */
   .resume, .button, .scroll-hint { background: linear-gradient(180deg, rgba(63, 240, 180, 0.16), rgba(63, 240, 180, 0.06)), rgba(6, 42, 38, 0.78); }
-  @supports (corner-shape: squircle) {
-    .resume, .button, .scroll-hint { border-radius: 999px; corner-shape: round; }
-  }
   /* "Coming soon" keeps the enterprise look: amber, square-ish corners, no glass */
   .button.button--soon {
     border-radius: 12px; background: rgba(255, 166, 0, 0.1); box-shadow: none;
