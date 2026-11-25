@@ -133,9 +133,6 @@ in vec2 a;void main(){gl_Position=vec4(a,0,1);}`;
 const POSITION={"wide":{"roll":0.7328554841775412,"u":0.7669113243319154,"v":1.0940540640517942,"z":1.9518815291131284,"yaw":5.145425292968761,"pitch":-0.3342973632812509},"narrow":{"u":0.5,"v":0.625,"z":0.87,"yaw":4.145775390625007,"pitch":0.6840480957031247,"roll":0}};
 // Exposure in stops, like a photo editor's: negative dims the object and its glow
 const EXPOSURE=-0.6;
-// Below 1000px the object runs under the text, so it dims gradually: full brightness at 1000px,
-// 35% at 600px and narrower
-const narrowDim=()=>Math.max(.35,Math.min(1,1-(1000-hero.clientWidth)/400*.65));
 // Every screen size uses the laptop position, with the fractal on the right ("narrow" is kept in
 // POSITION, unused, in case phones need their own again)
 const layout=()=>'wide';
@@ -192,7 +189,7 @@ function adjust(){
   if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H}
   gl.viewport(0,0,W,H);
   const L=POS[layout()],asp=W/H;
-  f('uShift',(L.u-.5)*2*asp,(.5-L.v)*2);f('uRoll',L.roll);f('uExp',Math.pow(2,EXPOSURE)*narrowDim());
+  f('uShift',(L.u-.5)*2*asp,(.5-L.v)*2);f('uRoll',L.roll);f('uExp',Math.pow(2,EXPOSURE));
   const dA=S.drift*.12;
   f('uRes',W,H);f('uYaw',L.yaw);f('uPitch',L.pitch);f('uDist',S.dist/L.z);
   f('uRot',S.rx*R,S.ry*R,S.rz*R);

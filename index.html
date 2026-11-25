@@ -690,8 +690,13 @@
     -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.3) 38%, #000 70%);
     mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.3) 38%, #000 70%);
   }
-  @media (max-width: 760px) {
+  /* Phones and tablets: the text runs over the fractal, so a flat veil and a top-to-bottom fade */
+  @media (max-width: 1024px) {
     .hero .julia-veil { background: rgba(30, 29, 25, 0.6); }
+    .hero .julia {
+      -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.18) 55%, rgba(0, 0, 0, 0.08));
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.18) 55%, rgba(0, 0, 0, 0.08));
+    }
   }
   .hero h1 .dot { background: var(--accent); }
   /* Drag the image area (right of the text, never over words) to morph the fractal; text stays selectable */
