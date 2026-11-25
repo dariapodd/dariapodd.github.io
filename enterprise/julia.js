@@ -207,7 +207,8 @@ function adjust(){
  const M={c:0,w:0,tc:0,tw:0};
  const ease=k=>{const a=1-Math.exp(-k);M.c+=(M.tc-M.c)*a;M.w+=(M.tw-M.w)*a};
  // Only the image area takes the drag: on wide screens the right part of the hero (from 45% of
- // its width), and never over text (so it can still be selected), links, logos or the intro.
+ // its width), and never over text (so it can still be selected), links, logo tiles or the intro
+ // (the empty space beside the logo row and the style menu line still drags).
  const overText=(x,y)=>{
   let r=null;
   if(document.caretRangeFromPoint)r=document.caretRangeFromPoint(x,y);
@@ -219,7 +220,7 @@ function adjust(){
   return false;
  };
  const inImage=e=>{
-  if(document.querySelector('.julia-grab')||e.target.closest('a,button,.logos,.intro,.julia-adjust'))return false;
+  if(document.querySelector('.julia-grab')||e.target.closest('a,button,.logos li,.intro,.julia-adjust'))return false;
   const b=hero.getBoundingClientRect();
   if(layout()==='wide'&&(e.clientX-b.left)/b.width<.45)return false;
   return !overText(e.clientX,e.clientY);
