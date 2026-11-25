@@ -103,7 +103,7 @@ SKIN_CSS = """
   .julia-adjust button[data-a="copy"] { margin-left: auto; background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
   .julia-adjust small { min-height: 1.2em; color: var(--accent); word-break: break-all; }
   /* Glass buttons (Figma 387:1964): deep green fill, 40px background blur, a light top edge, a soft
-     inner glow from below and a hairline rim (inset shadows, so the buttons keep their size);
+     inner glow from below (inset shadows, so the buttons keep their size);
      the floating ones (resume, scroll hint) also cast a shadow */
   .resume, .button, .scroll-hint {
     background: rgba(71, 28, 38, 0.78);   /* deep red (Figma 393:39) */
