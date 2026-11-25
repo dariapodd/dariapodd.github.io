@@ -27,7 +27,6 @@ SKIN = [
     # ---- Colour: navy sections, mint-teal key colour
     ("background: rgba(28, 71, 56, 0.6);   /* deep green at 60% (Figma) */",
      "background: rgba(12, 58, 48, 0.85);   /* deep mint pill */"),
-    ("background: rgba(25, 22, 19, 0.92);", "background: rgba(10, 20, 25, 0.94);"),
 
     # ---- Hero: the Julia set replaces the Lorenz attractor
     ('    <div class="micro micro--lorenz" aria-hidden="true"></div>\n', ""),
