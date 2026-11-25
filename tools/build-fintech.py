@@ -35,7 +35,7 @@ SKIN = [
     ("--body-black: #191613;", "--body-black: #121a1c;"),
     ("--body-grey: #3a3938;", "--body-grey: #1b2629;"),
     ("--body-light: #21201d;", "--body-light: #0f1d22;"),
-    ("--tab: rgba(217, 217, 217, 0.15);", "--tab: rgba(167, 177, 179, 0.12);"),
+    ("--tab: rgba(217, 217, 217, 0.15);", "--tab: transparent;   /* no square behind the tab shapes */"),
     ("--rule: #3d414a;", "--rule: #23302f;"),
     ("background: rgba(28, 71, 56, 0.6);   /* deep green at 60% (Figma) */",
      "background: rgba(12, 58, 48, 0.85);   /* deep mint pill */"),
