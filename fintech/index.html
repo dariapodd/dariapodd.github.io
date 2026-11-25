@@ -1,0 +1,1036 @@
+<!doctype html>
+<!-- Generated from /index.html by tools/build-fintech.py. Do not edit. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daria Podrezova: fintech portfolio</title>
+<link rel="icon" href="../favicon-64.png" type="image/png" sizes="64x64">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    --bg: #121a1c;
+    --hero-bg: #0d1920;
+    --cream: #e7e2c9;
+    --bg-glow: #121a1c;
+    --ink: #ecebe4;
+    --accent: #3ff0b4;
+    --menu-accent: #3ff0b4;   /* style menu's intro box */
+    --accent-bg: rgba(63, 240, 180, 0.1);
+    --body-black: #121a1c;    /* project body, black variant */
+    --body-grey: #1b2629;     /* recommendation cards */
+    --body-light: #0f1d22;    /* project body, lighter variant */
+    --tab: rgba(167, 177, 179, 0.12);
+    --rule: #23302f;          /* margin line and ruled lines */
+
+    --nav-fs: 16px;
+    /* Left margin, shared by all views: content starts 160px after the vertical margin line */
+    --margin-line: 26px;      /* vertical margin line, from the window's left edge */
+    --content-left: 160px;    /* margin line → content (also the project number block's width) */
+    --text-left: calc(var(--margin-line) + 1px + var(--content-left));
+    --gutter: 53px;           /* right margin; also the left margin on phones */  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; }
+  html { overflow-x: clip; } /* project screenshots run off the right edge by design */
+
+  body {
+    min-height: 100vh;
+    /* Figma: radial glow centred 977px down, 1920 wide × 2268 tall */
+    background: radial-gradient(960px 1134px at 50% 977px, var(--bg-glow), var(--bg)) var(--bg);
+    color: var(--ink);
+    font-family: "Share Tech Mono", ui-monospace, monospace;
+  }
+
+  @media (max-width: 700px) {
+    :root { --content-left: 26px; } /* phones: text 53px from the edge */
+  }
+
+  /* ---------- Shared header bits (same as the other views) ---------- */
+  .view-select {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 16px;
+    padding: 16px 0;
+    font-size: var(--nav-fs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+  .view-select a {
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .view-select a:hover { font-weight: 600; }
+  .view-select .arrow { margin-left: 5px; }
+
+  .resume {
+    position: fixed;
+    z-index: 10;
+    top: 32px;
+    right: 32px;
+    padding: 12px 32px;
+    border-radius: 12px;
+    background: rgba(12, 58, 48, 0.85);   /* deep mint pill */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Share Tech Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .resume:hover { font-weight: 600; }
+
+  .button {
+    display: inline-block;
+    padding: 12px 32px;
+    border-radius: 12px;
+    background: var(--accent-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Share Tech Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .button:hover { font-weight: 600; }
+  /* Not a link yet: amber, no hover */
+  .button--soon, .button--soon:hover { background: rgba(255, 166, 0, 0.1); color: #ffae00; font-weight: 400; cursor: default; }
+
+  /* Figma: 12px radius, 100% corner smoothing → 24px squircle where supported */
+  @supports (corner-shape: squircle) {
+    .resume, .button {
+      border-radius: 24px;
+      corner-shape: squircle;
+    }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    padding: 131px 0 217px var(--text-left); /* bottom: same gap to the first project as before the hint was pinned */
+    padding-right: var(--gutter);
+  }
+
+  /* Vertical margin line: the full height of the page, over the project blocks
+     but under their diamonds (z-index 4) */
+  body { position: relative; }
+  body::before {
+    content: "";
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    bottom: 0;
+    left: var(--margin-line);
+    width: 1px;
+    background: var(--rule);
+    pointer-events: none;
+  }
+
+  .hero h1 {
+    /* full width (no max-width) so its ruled lines reach the window's right edge */
+    margin: 108px 0 0;
+    font-size: 60px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    position: relative;
+  }
+
+  /* Ruled line under each headline line, window edge to window edge:
+     Figma puts it 55.5px into each 72px line (0.925em at any size), on the baseline */
+  .hero h1::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(-1 * var(--text-left));
+    width: calc(100% + var(--text-left) + var(--gutter));
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0 0.925em,
+      var(--rule) 0.925em calc(0.925em + 1px),
+      transparent calc(0.925em + 1px) 1.2em
+    );
+    pointer-events: none;
+    z-index: -1;
+    /* Figma: each line fades from full colour at the left edge to nothing at the right */
+    -webkit-mask-image: linear-gradient(to right, #000, transparent);
+    mask-image: linear-gradient(to right, #000, transparent);
+  }
+
+  /* Custom full stop: a 10px diamond centred on the last line's rule */
+  .hero h1 .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-left: 0.07em;
+    vertical-align: -5px;
+    background: var(--ink);
+    transform: rotate(45deg);
+  }
+
+  @media (max-width: 700px) {
+    .hero h1 { font-size: 40px; } /* 60px words like "DESIGNER," are wider than a phone */
+  }
+
+  .intro {
+    max-width: 513px;
+    margin: 24px 0 0;
+    color: #fff;
+    font: 300 16px/1.4 Barlow, system-ui, sans-serif;
+  }
+
+  .logos {
+    display: flex;
+    flex-wrap: wrap;          /* six logos wrap onto two rows on phones instead of squashing */
+    gap: 16px;
+    margin: 36px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .logos li {
+    position: relative;
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    border-radius: 2px;
+    background: #191613;
+    display: grid;
+    place-items: center;
+    outline-offset: 3px;
+  }
+  .logos img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
+
+  /* Hover / keyboard-focus hint under each logo (company + relationship) and the award badge */
+  .logos .tip, .project-award .tip {
+    position: absolute;
+    z-index: 6;
+    top: calc(100% + 10px);
+    left: 0;
+    display: grid;
+    gap: 2px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(10, 20, 25, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.35);
+    width: max-content;
+    max-width: min(260px, calc(100vw - 2 * var(--gutter) - 50px));   /* long descriptions wrap instead of running off screen */
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  .logos .tip b, .project-award .tip b {
+    font: 400 14px/1.2 "Share Tech Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .logos .tip span, .project-award .tip span {
+    font: 300 14px/1.4 Barlow, system-ui, sans-serif;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .logos li:hover .tip,
+  .logos li:focus-visible .tip,
+  .project-award:hover .tip,
+  .project-award:focus-visible .tip {
+    opacity: 1;
+    transform: none;
+  }
+  .logos img.wordmark { width: 48.75px; height: auto; object-fit: contain; border-radius: 0; }   /* no rounding on TSUM's square */
+
+  /* Pinned 36px above the bottom edge, centred; fades out once the page is scrolled */
+  .scroll-hint {
+    position: fixed;
+    z-index: 4;
+    left: 50%;
+    bottom: 36px;
+    transform: translateX(-50%);
+    margin: 0;
+    padding: 12px 32px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: opacity 0.4s ease, visibility 0s;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 400;
+    font-size: var(--nav-fs);
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .scroll-hint:hover, .scroll-hint:focus-visible { font-weight: 600; }
+  /* fades out once the page scrolls, then stops taking clicks */
+  .scroll-hint.is-hidden { opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0s linear 0.4s; }
+  @media (max-width: 480px) { /* too narrow for one line: wrap inside the margins */
+    .scroll-hint { width: calc(100vw - 2 * var(--gutter)); white-space: normal; padding: 12px 16px; }
+  }
+  @supports (corner-shape: squircle) {
+    .scroll-hint { border-radius: 24px; corner-shape: squircle; }
+  }
+
+  /* ---------- Project ----------
+     The block is 1920×960 in Figma and scales with the window at 2:1.
+     Graphics (screenshot, client logo) scale with it; text, buttons and the
+     number tab keep their sizes. If the text needs more room than 2:1 gives,
+     the block grows taller instead of cutting it off. */
+  .project {
+    position: relative;
+    aspect-ratio: 2 / 1;
+    overflow-x: clip; /* screenshot runs off the right edge without making the page scroll sideways */
+  }
+
+  .project-body {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    background: var(--body-grey);
+  }
+  .project--black .project-body { background: var(--body-black); }
+  .project--grey .project-body { background: var(--body-light); }
+
+  .project-num {
+    position: absolute;
+    top: 0;
+    /* spans exactly the left margin: from the margin line to where the text starts */
+    left: calc(var(--margin-line) + 1px);
+    width: max(var(--content-left), 96px);
+    height: 130px;
+    display: grid;
+    place-items: center;
+    background: var(--tab);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  /* Teal diamond on the margin line, at the top edge of each project */
+  .project::before {
+    content: "";
+    position: absolute;
+    z-index: 4;
+    top: -3.5px;
+    left: calc(var(--margin-line) + 0.5px - 3.5px);   /* centred on the 1px line */
+    width: 7px;
+    height: 7px;
+    background: var(--accent);
+    transform: rotate(45deg);
+  }
+
+  .project-content {
+    position: relative;
+    z-index: 3;               /* text and buttons stay clickable above the micrographic */
+    padding: 123.5px 0 96px var(--text-left);
+    /* left half of the block, at least 64px clear of the screenshot at 50% */
+    width: max(calc(var(--text-left) + 260px), calc(50% - 64px));
+  }
+
+  .project h2 {
+    max-width: 499px;
+    margin: 0;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    position: relative;
+  }
+
+  .project-desc {
+    max-width: 392px;
+    margin-top: 44px;
+    color: #fff;
+    font: 300 16px/1.4 Barlow, system-ui, sans-serif;
+  }
+  .project-desc p { margin: 0 0 12px; }
+  .project-desc p:last-child { margin-bottom: 0; }
+  .project-desc strong { font-weight: 600; }
+  .project-desc--wide { max-width: 469px; }   /* Figma 184:31: the full text column */
+  /* A quote inside the description: 12px under the result, name straight under the quote */
+  .project-desc .project-quote { max-width: none; margin: 0; }
+  .project-desc .project-quote blockquote { margin: 0; }
+
+  /* Client quote with attribution */
+  .project-quote {
+    max-width: 400px;
+    margin: 44px 0 0;
+    color: #fff;
+    font: 300 16px/1.4 Barlow, system-ui, sans-serif;
+  }
+  .project-quote blockquote { margin: 0 0 12px; }
+  .project-quote figcaption { font-weight: 600; }
+
+  .project-content .button { margin-top: 44px; }
+
+  /* Award badge under a project's description (Figma 184:31): 175px, white inner glow */
+  .project-award { position: relative; width: 175px; margin: 24px 0 0; border-radius: 4px; outline-offset: 3px; }
+  .project-award picture { display: block; position: relative; border-radius: 4px; overflow: hidden; }
+  .project-award img { display: block; width: 100%; height: auto; }
+  .project-award picture::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 13.1px rgba(255, 255, 255, 0.3); pointer-events: none; }
+
+  /* Second screenshot that fades in while the screenshot itself is hovered (light mode of the same app) */
+  .project-shot-link .shot-alt { position: absolute; inset: 0; opacity: 0; transition: opacity 0.4s ease; }
+  .project-shot-link:hover .shot-alt { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .project-shot-link .shot-alt { transition: none; } }
+
+  /* Positions below are the Figma frame's, as % of the 1920×960 block */
+  .project-shot {
+    position: absolute;
+    /* Screenshot takes the right half of the block (and runs off the edge, as in Figma);
+       on narrow desktops it keeps 64px clear of the text's 260px minimum width */
+    left: max(50%, calc(var(--text-left) + 260px + 64px));
+    top: 14.22%;           /* 136.5 / 960 */
+    width: 57.76%;         /* 1109 / 1920 — runs past the right edge, as in Figma */
+    height: auto;
+    z-index: 2;            /* over the wireframe surface */
+  }
+  /* Track maintenance app, vertically centred in the block and running off its right edge.
+     Project 1's dark and light screenshots both come from Figma 230:428 (766×512 images in a
+     766×507 frame), cropped the same way so the hover swap lines up exactly */
+  .project-shot--track {
+    left: max(50%, calc(var(--text-left) + 260px + 64px));
+    top: 50%;
+    width: 53.19%;         /* 766 / 1440 */
+    aspect-ratio: 766 / 507;
+    object-fit: cover;
+    border-radius: 12px;
+    transform: translateY(-50%);
+  }
+  /* Deaf community app on a glass phone (Figma 292:5), vertically centred, running off the right edge */
+  .project-shot--deaf {
+    left: max(50%, calc(var(--text-left) + 260px + 64px));
+    top: 50%;
+    width: 50%;            /* 720 / 1440 */
+    aspect-ratio: 720 / 580;
+    object-fit: cover;
+    border-radius: 12px 0 0 12px;   /* in Figma it runs past the edge: no rounded corners on the right */
+    transform: translateY(-50%);
+    overflow: hidden;
+  }
+  .project-shot--deaf img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  /* Archive app on a laptop (Figma Resume 358:61): same placement as the track shot, taller frame */
+  .project-shot--archive { aspect-ratio: 766 / 580; }
+  /* Placeholder projects without a screenshot yet: an empty frame where it will go */
+  .project-shot--empty { border: 1px dashed rgba(221, 220, 200, 0.2); background: rgba(255, 255, 255, 0.02); }
+  /* Approval portal mock-up (Figma 245:1195), running off the block's right edge */
+  .project-shot--portal {
+    top: 9.34%;            /* 68.6 / 734.6 */
+    width: 50.69%;         /* 730 / 1440 */
+    border-radius: 12px;
+  }
+  /* Screenshots link like their project's button: the link takes the screenshot's place and
+     size, the image fills it, and a 5% white veil shows on hover */
+  .project-shot-link { display: block; overflow: hidden; }
+  .project-shot-link img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .project-shot-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.05);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+  .project-shot-link:hover::after { opacity: 1; }
+  /* Fashion apps: the store assistant app on a stand (Figma 263:1785), vertically centred,
+     rounded on the left and running off the block's right edge */
+  .project-shot--fashion {
+    top: 50%;
+    width: 54.03%;         /* 778 / 1440 */
+    aspect-ratio: 778 / 583.5;
+    object-fit: cover;
+    border-radius: 16px 0 0 16px;
+    transform: translateY(-50%);
+  }
+
+  /* ---------- Recommendations (Figma 234:452): two columns, quote over name ---------- */
+  .recs, .more { padding: 0 var(--text-left) 120px; }
+  .recs { padding-top: 120px; }   /* gap after the last project (projects themselves sit flush) */
+  .recs h2, .more h2 {
+    margin: 0 0 44px;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  .recs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 44px 64px; }
+  .rec {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    color: #fff;
+    font: 300 16px/1.4 Barlow, system-ui, sans-serif;
+  }
+  .rec blockquote { margin: 0; }
+  .rec figcaption { font-weight: 600; }
+  @media (max-width: 900px) {
+    .recs, .more { padding-right: var(--gutter); }
+    .recs-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 700px) {
+    .recs h2, .more h2 { font-size: 32px; }
+  }
+
+  /* ---------- More projects: cards, three to a row ---------- */
+  .more-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .more-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 32px;
+    border-radius: 12px;
+    background: var(--body-grey);
+    color: #fff;
+    font: 300 16px/1.4 Barlow, system-ui, sans-serif;
+  }
+  .more-thumb { display: block; width: 100%; height: auto; aspect-ratio: 1; border-radius: 6px; }
+  /* Thumbnails link like the card's first link; a 10% white veil on hover */
+  .more-thumb-link { position: relative; display: block; border-radius: 6px; overflow: hidden; }
+  .more-thumb-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+  .more-thumb-link:hover::after { opacity: 1; }
+  .more-text { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .more-card h3 {
+    margin: 0;
+    color: var(--ink);
+    font: 400 24px/1.2 "Share Tech Mono", ui-monospace, monospace;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  .more-card p { margin: 0; }
+  .more-card strong { font-weight: 600; }
+  /* Link out of a card, styled like the homepage's other links */
+  .more-link {
+    color: var(--accent);
+    font: 400 var(--nav-fs)/1.2 "Share Tech Mono", ui-monospace, monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  a.more-link:hover { font-weight: 600; }
+  .more-link--soon { opacity: 0.4; cursor: default; }   /* no URL yet */
+  .more-links { display: flex; flex-direction: column; gap: 6px; }   /* two links stacked (Figma 260:1572) */
+  /* Empty slots, to be filled */
+  .more-thumb--empty { border: 1px dashed rgba(221, 220, 200, 0.2); background: rgba(255, 255, 255, 0.02); }   /* no thumbnail yet */
+  .more-card--empty { min-height: 490px; background: none; border: 1px dashed rgba(221, 220, 200, 0.2); }   /* as tall as a filled card (Figma) */
+  @supports (corner-shape: squircle) {
+    .more-card { border-radius: 24px; corner-shape: squircle; }
+  }
+  @media (max-width: 1300px) { .more-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 1100px) { .more-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .more-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- Micrographics ----------
+     Positioned in % of the 1920×960 project block (Figma values), so they scale with it.
+     Decorative (hidden from screen readers), hidden when the project stacks on small screens. */
+  .micro {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .micro canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  /* The wireframe surface can be dragged to rotate it */
+  .micro--surface canvas { pointer-events: auto; }   /* hovering lights up surface cells */
+  .micro--surface {          /* wireframe graph, mirrored, hangs over the block's top-right corner */
+    right: -5.9%;            /* runs past the right edge */
+    top: -13.9%;
+    width: 34.53%;           /* 663 / 1920 */
+    aspect-ratio: 663 / 330;
+    --micro-nudge: 75px;     /* about 40% of the drawn surface sits above the block */
+  }
+  /* Lorenz attractor. This box sets its size and centre (lorenz.js shifts it 10% of the
+     page width further right); drag inside it to rotate.
+     lorenz.js draws it on a canvas covering the whole hero, behind the text, so it
+     isn't cut off when rotated. */
+  .micro--lorenz {
+    top: 111px;
+    height: 566px;
+    left: max(59.5%, 880px);   /* clear of the headline */
+    right: 0;
+  }
+  .lorenz-canvas {
+    position: absolute;
+    z-index: -1;               /* behind the hero text, over the headline's ruled lines */
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .hero.is-lorenz-grab { cursor: grab; }
+  .hero.is-lorenz-dragging { cursor: grabbing; user-select: none; }
+  @media (max-width: 1199px) {
+    .micro--lorenz, .lorenz-canvas { display: none; }   /* no room beside the headline */
+  }
+
+  /* Wireframe globe (project 1) and a low-poly solid for each other project (sphere.js),
+     centred in the project's tab in place of a number; they turn once a minute */
+  .micro--sphere, .micro--solid {
+    --size: 56px;
+    z-index: 2;
+    top: calc((130px - var(--size)) / 2);
+    left: calc(var(--margin-line) + 1px + (max(var(--content-left), 96px) - var(--size)) / 2);
+    width: var(--size);
+    height: var(--size);
+  }
+
+  /* Below 1280px the text column is too narrow for the longest heading word
+     ("collaboration", ~420px at 48px) to clear the screenshot: stack text and screenshot */
+  @media (max-width: 1279px) {
+    .micro:not(.micro--sphere, .micro--solid) { display: none; }   /* the tab shapes stay */
+    .project { aspect-ratio: auto; padding-bottom: 48px; }
+    .project-content { width: auto; padding: 160px var(--gutter) 0 var(--text-left); }
+    .project-shot {
+      position: relative;
+      display: block;
+      left: auto;
+      top: auto;
+      width: calc(100% - var(--text-left));
+      margin: 40px 0 0 var(--text-left);
+    }
+    .project-shot--track, .project-shot--fashion, .project-shot--deaf { transform: none; }
+    .project-shot--fashion { border-radius: 16px; }
+    .project-shot--deaf { border-radius: 12px; }
+  }
+  /* Centre capitals exactly in buttons: the line box normally reserves room for accents
+     above and descenders below, which leaves caps ~1px high. Trimming the box to the cap
+     height lets equal padding centre them; older browsers get a 0.5px nudge instead.
+     Button height stays 43.2px either way. */
+  .resume, .button, .scroll-hint { padding-top: 12.5px; padding-bottom: 11.5px; }
+  @supports (text-box: trim-both cap alphabetic) {
+    .resume, .button, .scroll-hint {
+      text-box: trim-both cap alphabetic;
+      padding-top: 15.6px;
+      padding-bottom: 15.6px;
+    }
+  }
+
+  /* iOS-style squircles for every remaining rounded corner, where supported. As elsewhere,
+     the radius doubles so the curve reads the same size as the plain rounded corner. */
+  @supports (corner-shape: squircle) {
+    .logos li, .logos img { border-radius: 4px; corner-shape: squircle; }
+    .logos img.wordmark { border-radius: 0; }
+    .logos .tip, .project-award .tip { border-radius: 16px; corner-shape: squircle; }
+    .project-award, .project-award picture, .project-award picture::after { border-radius: 8px; corner-shape: squircle; }
+    .project-shot--track, .project-shot--portal { border-radius: 24px; corner-shape: squircle; }
+    .project-shot--deaf { border-radius: 24px 0 0 24px; corner-shape: squircle; }
+    .project-shot--fashion { border-radius: 32px 0 0 32px; corner-shape: squircle; }
+    .more-thumb, .more-thumb-link { border-radius: 12px; corner-shape: squircle; }
+    @media (max-width: 1279px) {
+      .project-shot--deaf { border-radius: 24px; }
+      .project-shot--fashion { border-radius: 32px; }
+    }
+  }
+
+  /* ---------- Fintech skin ---------- */
+  /* Hero: navy, with the Julia set (julia.js) behind the text and a veil so the text stays readable */
+  .hero { background: var(--hero-bg); isolation: isolate; }
+  .hero .julia { position: absolute; z-index: -2; inset: 0; width: 100%; height: 100%; display: block; }
+  .hero .julia-veil {
+    position: absolute; z-index: -2; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg, rgba(13, 25, 32, 0.92) 0%, rgba(13, 25, 32, 0.7) 38%, rgba(13, 25, 32, 0) 70%);
+  }
+  @media (max-width: 760px) {
+    .hero .julia-veil { background: linear-gradient(180deg, rgba(13, 25, 32, 0.55), rgba(13, 25, 32, 0.82) 55%, rgba(13, 25, 32, 0.92)); }
+  }
+  .hero h1 { letter-spacing: 0.06em; }
+  .hero h1 .dot { background: var(--accent); }
+  .intro, .project-desc, .project-quote, .rec { color: #d6dadb; }
+  .project h2, .recs h2, .more h2, .more-card h3 { color: var(--cream); letter-spacing: 0.06em; }
+  /* Pill buttons */
+  .resume, .button, .scroll-hint { border-radius: 999px; }
+  .scroll-hint { background: rgba(8, 16, 20, 0.85); }
+  @supports (corner-shape: squircle) {
+    .resume, .button, .scroll-hint { border-radius: 999px; corner-shape: round; }
+  }
+</style>
+</head>
+<body>
+  <a class="resume" href="../resume-daria-podrezova.pdf" target="_blank" rel="noopener">resume and contacts</a>
+
+  <header class="hero">
+    <nav class="view-select" aria-label="Portfolio style">
+      <span>view portfolio as:</span>
+      <a href="../" title="Choose another portfolio style">fintech portfolio<span class="arrow" aria-hidden="true">▼</span></a>
+    </nav>
+
+    <h1>Hi, I’m Daria,<br>Product Designer,<br>Agentic AI &amp; enterprise<span class="dot" aria-hidden="true"></span></h1>
+
+    <p class="intro">I’m a communicator, explorer, builder and engineers’ friend with 14 years in design, a Master’s in Computer Science, and experience in project management and teaching. How I work: talk to people. Find the real problem. Map the workflow, simplify it. Prototype it so stakeholders see it, understand it, and say yes.</p>
+
+    <ul class="logos" aria-label="Where I’ve worked">
+      <li tabindex="0"><img src="../enterprise/assets/logo-ey.png" alt="Ernst &amp; Young, agency specialising in enterprise software"><span class="tip" aria-hidden="true"><b>Ernst &amp; Young</b><span>Agency, specialises in enterprise software</span></span></li>
+      <li tabindex="0"><img src="../enterprise/assets/logo-2.png" alt="EY Studio+, agency specialising in enterprise software"><span class="tip" aria-hidden="true"><b>EY Studio+</b><span>Agency, specialises in enterprise software</span></span></li>
+      <li tabindex="0"><img src="../enterprise/assets/logo-3.svg" alt="The University of Sydney, teaching HCI and usability to engineers since 2019, over 600 students"><span class="tip" aria-hidden="true"><b>The University of Sydney</b><span>Teaching HCI and Usability to engineers since 2019, &gt; 600 students</span></span></li>
+      <li tabindex="0"><img src="../enterprise/assets/logo-4.svg" alt="2GIS, map and reviews platform vendor, B2B and B2C" class="wordmark" style="width: 44px"><span class="tip" aria-hidden="true"><b>2GIS</b><span>Map and reviews platform vendor, B2B and B2C</span></span></li>
+      <li tabindex="0"><img src="../enterprise/assets/logo-tsum.svg" alt="TSUM, luxury fashion retail: department store automation in Europe" class="wordmark" style="width: 38.67px"><span class="tip" aria-hidden="true"><b>TSUM</b><span>Luxury Fashion Retail – Department store automation in Europe</span></span></li>
+      <li tabindex="0"><img src="../enterprise/assets/logo-1c-rarus.svg" alt="1C-Rarus, major ERP vendor and consultancy in Europe"><span class="tip" aria-hidden="true"><b>1C-Rarus</b><span>Major ERP vendor and consultancy in Europe</span></span></li>
+    </ul>
+
+    <a class="scroll-hint" href="#project-1">scroll down for projects and recommendations ↓</a>
+  </header>
+
+  <main>
+    <section class="project project--black" aria-labelledby="project-1">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true"></div>
+
+      <div class="project-content">
+        <h2 id="project-1">4-dimensional spatial collaboration</h2>
+        <div class="project-desc project-desc--wide">
+          <p>Immersive Spatial Collaboration Tool for railway asset management. I’ve led complex prototyping and design system development; collaborated on user research and delivery support. <strong>Result:</strong> efficient planning, less time/cost spent on field visits.</p>
+          <!-- Animated trophy; a still frame for people who prefer reduced motion. Hint on hover/focus. -->
+          <div class="project-award" tabindex="0">
+            <picture>
+              <source srcset="../projects/spatial-collaboration/assets/award.jpg" media="(prefers-reduced-motion: reduce)">
+              <img src="../projects/spatial-collaboration/assets/award.webp" width="480" height="480" loading="lazy" alt="Global EY Design Studio award, won in 2024 for Breakthrough Product">
+            </picture>
+            <span class="tip" aria-hidden="true"><b>Global EY Design Studio award</b><span>Won in 2024 for Breakthrough Product</span></span>
+          </div>
+        </div>
+        <a class="button" href="../projects/spatial-collaboration/">learn more ↗</a>
+      </div>
+
+      <a class="project-shot project-shot--track project-shot-link" href="../projects/spatial-collaboration/" tabindex="-1" aria-hidden="true">
+        <img src="../enterprise/assets/project-1-tunnel-bw.jpg" width="1532" height="1014" alt="Track maintenance app: layer list, 360° imagery inside a rail tunnel, and a map with access roads and exclusion zones">
+        <img class="shot-alt" src="../enterprise/assets/project-1-track-light.jpg" width="1532" height="1014" loading="lazy" alt="">
+      </a>
+      <div class="micro micro--sphere" aria-hidden="true"></div>
+    </section>
+
+    <section class="project project--grey" aria-labelledby="project-2">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true"></div>
+
+      <div class="project-content">
+        <h2 id="project-2">Government/<wbr>health portal</h2>
+        <div class="project-desc">
+          <p>Audit and redesign of a complex certification/approval flow with multiple organisations and departments involved, following a recent ServiceNow implementation.</p>
+          <p><strong>Result: average approval time reduced from 12 months to 3 months.</strong></p>
+        </div>
+        <a class="button" href="../projects/government-approval-portal/">learn more ↗</a>
+      </div>
+
+      <div class="micro micro--solid" data-shape="cross" aria-hidden="true"></div>
+      <a class="project-shot project-shot--portal project-shot-link" href="../projects/government-approval-portal/" tabindex="-1" aria-hidden="true">
+        <img src="../enterprise/assets/project-2-approval-portal-display.jpg" width="1460" height="1193" alt="Approval portal on a laptop: certification steps from scope to decision, and the applicant’s task list">
+      </a>
+    </section>
+
+    <section class="project project--black" aria-labelledby="project-3">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true"></div>
+
+      <div class="project-content">
+        <h2 id="project-3">Luxury in-store retail apps</h2>
+        <div class="project-desc">
+          <p>Luxury fashion retailer with department stores and multi-brand boutiques, where sales rely on personal connections between customers and style assistants. A family of iOS apps for style assistants, warehouse and delivery teams: style suggestions, stock access, indoor navigation and checkout on iOS.</p>
+          <p><strong>Result: +10% items sold per sales assistant year on year, 550 devices making 8,000 barcode scans a day, and the country’s first mobile checkout on iOS.</strong></p>
+        </div>
+        <a class="button" href="../projects/fashion-retail-apps/">learn more ↗</a>
+      </div>
+
+      <a class="project-shot project-shot--fashion project-shot-link" href="../projects/fashion-retail-apps/" tabindex="-1" aria-hidden="true">
+        <img src="../enterprise/assets/project-3-fashion-phone.jpg" width="1556" height="1167" alt="Store assistant app on an iPhone in a marble stand: menu with filters, new order, track order, reserve, shopping bag, print tags and barcode">
+      </a>
+      <div class="micro micro--solid" data-shape="diamond" aria-hidden="true"></div>
+    </section>
+
+    <section class="project project--grey" aria-labelledby="project-4">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true"></div>
+
+      <div class="project-content">
+        <h2 id="project-4">Social startup for the Deaf community</h2>
+        <div class="project-desc">
+          <p>E2E Product Design – user research, focus groups, questionnaires, personas, journey mapping, data analysis, stakeholder pitches, lo-fi, hi-fi, UI and handover. iOS PoC app delivered.</p>
+        </div>
+        <a class="button" href="../projects/sign-language-booking/">learn more ↗</a>
+      </div>
+
+      <div class="micro micro--solid" data-shape="hand" aria-hidden="true"></div>
+      <a class="project-shot project-shot--deaf project-shot-link" href="../projects/sign-language-booking/" tabindex="-1" aria-hidden="true">
+        <img src="../enterprise/assets/project-9-deaf-community-phone.png" width="1440" height="1160" loading="lazy" alt="Phone on a desk showing a full-screen note: “Hi! I’m deaf so I will be using an interpreter on this device. Please speak to them – like on a regular phone call.”">
+      </a>
+    </section>
+
+    <section class="project project--black" aria-labelledby="project-5">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true"></div>
+
+      <div class="project-content">
+        <h2 id="project-5">Large education client</h2>
+        <div class="project-desc">
+          <p><strong>Current-state assessment.</strong> Comprehensive experience assessment and process mapping of an internal admin role at a major education client: around 20 systems and many siloed departments, mapped end to end from the admin’s point of view for the first time.</p>
+        </div>
+        <a class="button" href="../projects/education-client/">learn more ↗</a>
+      </div>
+
+      <div class="micro micro--solid" data-shape="cap" aria-hidden="true"></div>
+      <a class="project-shot project-shot--deaf project-shot-link" href="../projects/education-client/" tabindex="-1" aria-hidden="true">
+        <img src="../enterprise/assets/project-6-education.jpg" width="1440" height="1160" loading="lazy" alt="Printed copies of the current-state analysis report laid out on a table, one open at the executive summary">
+      </a>
+    </section>
+
+    <section class="project project--grey" aria-labelledby="project-6">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true"></div>
+
+      <div class="project-content">
+        <h2 id="project-6">Literary translation workbench</h2>
+        <div class="project-desc">
+          <p><strong>Agent skill.</strong> Manages terminology, character names, translation rules and style controls. Makes it possible to translate a fiction novel with consistent personal style choices in about 10 hours.</p>
+        </div>
+        <a class="button" href="https://github.com/dariapodd/translation-workbench" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+
+      <div class="micro micro--solid" data-shape="book" aria-hidden="true"></div>
+      <a class="project-shot project-shot--track project-shot-link" href="https://github.com/dariapodd/translation-workbench" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+        <img src="../enterprise/assets/project-4-translation-workbench.jpg" width="1532" height="1014" alt="Translation workbench on a laptop: a chapter shown side by side in English and French, with a glossary note on a highlighted term">
+      </a>
+    </section>
+
+    <section class="project project--black" aria-labelledby="project-7">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true"></div>
+
+      <div class="project-content">
+        <h2 id="project-7">Figma &amp; AI Teaching</h2>
+        <div class="project-desc">
+          <p>Learning sessions content and delivery, go-to prototyping support for the APAC team: 68 training sessions on advanced prototyping and automation, plus hands-on 1:1 help.</p>
+        </div>
+        <a class="button" href="../projects/figma-ai-enablement/">learn more ↗</a>
+      </div>
+
+      <div class="micro micro--solid" data-shape="sparkle" aria-hidden="true"></div>
+      <a class="project-shot project-shot--deaf project-shot-link" href="../projects/figma-ai-enablement/" tabindex="-1" aria-hidden="true">
+        <img src="../enterprise/assets/project-7-figma-ai.jpg" width="1440" height="1160" loading="lazy" alt="Retro computer monitor showing the Figma logo on a glowing neon grid">
+      </a>
+    </section>
+
+    <section class="project project--grey" aria-labelledby="project-8">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true"></div>
+
+      <div class="project-content">
+        <h2 id="project-8">AI metadata and transcription automation</h2>
+        <div class="project-desc">
+          <p><strong>Government client.</strong> UX Lead: AI-driven transcription, metadata automation and document management workflow PoC prototyped and implemented.</p>
+        </div>
+        <a class="button" href="../projects/ai-document-workflow/">learn more ↗</a>
+      </div>
+
+      <div class="micro micro--solid" data-shape="temple" aria-hidden="true"></div>
+      <a class="project-shot project-shot--track project-shot--archive project-shot-link" href="../projects/ai-document-workflow/" tabindex="-1" aria-hidden="true">
+        <img src="../enterprise/assets/project-8-archive-laptop.jpg" width="1532" height="1160" loading="lazy" alt="Archive app on a laptop: sources and files, a film with AI-generated clips, and a cultural restriction suggestion">
+      </a>
+    </section>
+
+    <section class="project project--black" aria-labelledby="project-9">
+      <div class="project-body" aria-hidden="true"></div>
+      <div class="project-num" aria-hidden="true"></div>
+
+      <div class="project-content">
+        <h2 id="project-9">Spatial digital twin</h2>
+        <div class="project-desc">
+          <p><strong>UX Lead.</strong> GIS visualisations, digital twin and AI-assisted planning platform for the processing industry. Interactive prototypes for sales pitches, PoC web app delivered.</p>
+        </div>
+        <span class="button button--soon" aria-disabled="true">case study coming soon</span>
+      </div>
+
+      <div class="micro micro--solid" data-shape="tesseract" aria-hidden="true"></div>
+      <div class="project-shot project-shot--track project-shot--empty" aria-hidden="true"></div>
+    </section>
+
+    <section class="recs" id="recommendations" aria-labelledby="recs-title">
+      <h2 id="recs-title">recommendations</h2>
+      <div class="recs-grid">
+      <figure class="rec">
+        <blockquote>Daria led the building and evolving of our Design, Figma and AI prototyping capability across a large national team of designers. […] What makes Daria particularly good is her ability to bridge design and technology. She can get deep into a technical problem, understand what engineers and technology teams need, and then translate that into a strong experience for users.</blockquote>
+        <figcaption>— D., Product &amp; Service Designer</figcaption>
+      </figure>
+      <figure class="rec">
+        <blockquote>Daria has a talent for bringing clarity to ambiguity, turning complex technical discussions, vague ideas and high-level stakeholder commentary into clear direction and execution. […] She builds trust and alignment with ease across senior stakeholders, technical teams, and offshore team members.</blockquote>
+        <figcaption>— T., Associate Director</figcaption>
+      </figure>
+      <figure class="rec">
+        <blockquote>She combines exceptional project management, business analysis, and stakeholder communication skills with deep UI/UX expertise, enabling her to deliver outstanding outcomes while keeping users at the centre of every decision.</blockquote>
+        <figcaption>— D., AI &amp; Automation Lead</figcaption>
+      </figure>
+      <figure class="rec">
+        <blockquote>Thank you for being the most amazing counsellor and manager over the last 4 years, a lot of my career has been shaped by your guidance and support, and I was always so impressed by the breadth of your knowledge.</blockquote>
+        <figcaption>— S., Designer</figcaption>
+      </figure>
+      <figure class="rec">
+        <blockquote>You have single-handedly raised everyone’s skillsets in continually showcasing the latest and greatest in Figma and vibe-coding. You have always been a go-to source of knowledge and someone who is always ready to provide the best advice on design and UX challenges.</blockquote>
+        <figcaption>— J., Design Manager</figcaption>
+      </figure>
+      <figure class="rec">
+        <blockquote>Thank you for empowering me to advocate for design decisions that make our products better.</blockquote>
+        <figcaption>— L., Senior Designer</figcaption>
+      </figure>
+      <figure class="rec">
+        <blockquote>Your input and experience have been invaluable in getting to the position we are now in and without you we really wouldn’t have made the impact we did. No task was too challenging for you.</blockquote>
+        <figcaption>— T., Project Manager</figcaption>
+      </figure>
+      <figure class="rec">
+        <blockquote>I still remember when you invited me to join the AI + Design workshop and share how AI could help us prototype and bring design and development closer together. You gave me so much guidance and encouragement throughout that session.</blockquote>
+        <figcaption>— Z., Front-end Developer</figcaption>
+      </figure>
+      </div>
+    </section>
+
+    <section class="more" aria-labelledby="more-title">
+      <h2 id="more-title">More projects</h2>
+      <div class="more-grid">
+        <article class="more-card">
+          <a class="more-thumb-link" href="../projects/ai-automation-talk/" tabindex="-1" aria-hidden="true">
+            <img class="more-thumb" src="../enterprise/assets/more/ai-automation-talk.jpg" width="550" height="550" alt="" loading="lazy">
+          </a>
+          <div class="more-text">
+            <h3>AI Automation for product designers</h3>
+            <p>Codex Community event talk, June 2026</p>
+          </div>
+          <a class="more-link" href="../projects/ai-automation-talk/">view ↗</a>
+        </article>
+        <article class="more-card">
+          <a class="more-thumb-link" href="https://www.figma.com/community/file/1628023173002348154" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+            <img class="more-thumb" src="../enterprise/assets/more/ujm-builder.jpg" width="550" height="550" alt="" loading="lazy">
+          </a>
+          <div class="more-text">
+            <h3>UJM builder skill</h3>
+            <p>With hard styling rules</p>
+          </div>
+          <div class="more-links">
+            <a class="more-link" href="https://www.figma.com/community/file/1628023173002348154" target="_blank" rel="noopener">Figma community ↗</a>
+            <a class="more-link" href="https://github.com/dariapodd/figma-branded-ujm-builder" target="_blank" rel="noopener">GitHub ↗</a>
+          </div>
+        </article>
+        <article class="more-card">
+          <a class="more-thumb-link" href="../projects/ui-motion-sickness/" tabindex="-1" aria-hidden="true">
+            <img class="more-thumb" src="../enterprise/assets/more/ui-motion-sickness.jpg" width="550" height="550" alt="" loading="lazy">
+          </a>
+          <div class="more-text">
+            <h3>UI Motion sickness research</h3>
+            <p>Research project, user testing</p>
+          </div>
+          <a class="more-link" href="../projects/ui-motion-sickness/">view ↗</a>
+        </article>
+        <article class="more-card">
+          <a class="more-thumb-link" href="../projects/illustrations/" tabindex="-1" aria-hidden="true">
+            <img class="more-thumb" src="../enterprise/assets/more/illustrations.jpg" width="550" height="550" alt="" loading="lazy">
+          </a>
+          <div class="more-text">
+            <h3>Illustrations and icons</h3>
+          </div>
+          <a class="more-link" href="../projects/illustrations/">view ↗</a>
+        </article>
+        <article class="more-card">
+          <a class="more-thumb-link" href="https://www.behance.net/gallery/114719135/Physical-product-design-Arduino-prorotyping" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+            <img class="more-thumb" src="../enterprise/assets/more/theremin-glove.jpg" width="550" height="550" alt="" loading="lazy">
+          </a>
+          <div class="more-text">
+            <h3>Theremin glove</h3>
+            <p>Physical Arduino prototype</p>
+          </div>
+          <a class="more-link" href="https://www.behance.net/gallery/114719135/Physical-product-design-Arduino-prorotyping" target="_blank" rel="noopener">view ↗</a>
+        </article>
+        <article class="more-card">
+          <a class="more-thumb-link" href="https://www.behance.net/gallery/41865863/Case-iOS-and-Android-apps-for-localsearch" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+            <img class="more-thumb" src="../enterprise/assets/more/2gis.jpg" width="550" height="550" alt="" loading="lazy">
+          </a>
+          <div class="more-text">
+            <h3>2GIS</h3>
+            <p>Local search service, 2.6M monthly visitors</p>
+          </div>
+          <a class="more-link" href="https://www.behance.net/gallery/41865863/Case-iOS-and-Android-apps-for-localsearch" target="_blank" rel="noopener">view ↗</a>
+        </article>
+        <article class="more-card">
+          <a class="more-thumb-link" href="https://www.behance.net/gallery/41865681/Case-Large-corporate-website-design-team-management" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+            <img class="more-thumb" src="../enterprise/assets/more/1c-rarus.jpg" width="550" height="550" alt="" loading="lazy">
+          </a>
+          <div class="more-text">
+            <h3>1C-Rarus</h3>
+            <p>Software vendor portal, 450 pages</p>
+          </div>
+          <a class="more-link" href="https://www.behance.net/gallery/41865681/Case-Large-corporate-website-design-team-management" target="_blank" rel="noopener">view ↗</a>
+        </article>
+      </div>
+    </section>
+  </main>
+
+<script src="../enterprise/surface.js" defer></script>
+<script src="../fintech/julia.js" defer></script>
+<script src="../enterprise/sphere.js" defer></script>
+<!--: the welcome popup with style previews (root page only; the builds strip it) -->
+<script src="../menu.js" defer data-current="fintech"></script>
+
+<script>
+  // Keep every logo hint inside the window: start under its logo, then shift sideways
+  // just enough to clear the side margins (hidden hints still count towards page width)
+  const tips = [...document.querySelectorAll(".logos .tip")];
+  function placeTips() {
+    const vw = document.documentElement.clientWidth;
+    const gutter = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gutter")) || 0;
+    for (const tip of tips) {
+      tip.style.left = "0px";
+      const r = tip.getBoundingClientRect();
+      let shift = 0;
+      if (r.right > vw - gutter) shift = (vw - gutter) - r.right;
+      if (r.left + shift < gutter) shift = gutter - r.left;
+      tip.style.left = shift + "px";
+    }
+  }
+  placeTips();
+  addEventListener("resize", placeTips);
+  document.fonts && document.fonts.ready.then(placeTips);
+
+  // Hide the scroll hint as soon as the page is scrolled; bring it back at the top
+  const hint = document.querySelector(".scroll-hint");
+  const syncHint = () => hint.classList.toggle("is-hidden", scrollY > 8);
+  addEventListener("scroll", syncHint, { passive: true });
+  syncHint();
+  // Click: glide to the top of the first project; the scroll itself fades the hint out
+  hint.addEventListener("click", (e) => {
+    e.preventDefault();
+    const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.querySelector(".project").scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+  });
+</script>
+<!-- Visitor stats (GoatCounter: no cookies). Skips localhost and browsers marked on /not-me/ -->
+<script data-goatcounter="https://dariapodd.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
