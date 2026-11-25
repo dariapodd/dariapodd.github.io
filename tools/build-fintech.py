@@ -14,8 +14,8 @@ from pathlib import Path
 root = Path(__file__).resolve().parent.parent
 html = (root / "index.html").read_text(encoding="utf-8")
 
-ACCENT = "#ff3e4b"            # red key colour (Figma 393:39)
-ACCENT_RGB = "255, 62, 75"
+ACCENT = "#3ff0b4"            # mint-teal key colour
+ACCENT_RGB = "63, 240, 180"
 
 # (homepage text, fintech text). Exact matches; each must occur at least once.
 SKIN = [
@@ -26,7 +26,7 @@ SKIN = [
      'title="Choose another portfolio style">fintech portfolio<'),
     ('data-current="enterprise"', 'data-current="fintech"'),
 
-    # ---- Colour: navy sections, red key colour
+    # ---- Colour: navy sections, mint-teal key colour
     ("--bg: #1e1d19;", "--bg: #121a1c;\n    --hero-bg: #0d1920;\n    --cream: #e7e2c9;"),
     ("--bg-glow: #393938;", "--bg-glow: #121a1c;"),
     ("--ink: #dddcc8;", "--ink: #ecebe4;"),
@@ -106,7 +106,7 @@ SKIN_CSS = """
      inner glow from below (inset shadows, so the buttons keep their size);
      the floating ones (resume, scroll hint) also cast a shadow */
   .resume, .button, .scroll-hint {
-    background: rgba(71, 28, 38, 0.78);   /* deep red (Figma 393:39) */
+    background: rgba(28, 71, 56, 0.78);   /* deep green (Figma 387:1964) */
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     box-shadow:
