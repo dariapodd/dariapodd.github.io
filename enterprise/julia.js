@@ -133,7 +133,9 @@ in vec2 a;void main(){gl_Position=vec4(a,0,1);}`;
 const POSITION={"wide":{"roll":0.7328554841775412,"u":0.7669113243319154,"v":1.0940540640517942,"z":1.9518815291131284,"yaw":5.145425292968761,"pitch":-0.3342973632812509},"narrow":{"u":0.5,"v":0.625,"z":0.87,"yaw":4.145775390625007,"pitch":0.6840480957031247,"roll":0}};
 // Exposure in stops, like a photo editor's: negative dims the object and its glow
 const EXPOSURE=-0.6;
-const layout=()=>hero.clientWidth/hero.clientHeight>1.15?'wide':'narrow';
+// Phones (under 700px wide) use the narrow position, centred behind the text; everything wider
+// keeps the fractal on the right, as on a laptop
+const layout=()=>hero.clientWidth>=700?'wide':'narrow';
 // Fine-tuning: open the page with #adjust. Drag moves the object, Shift-drag turns it clockwise or
 // anticlockwise, Alt-drag orbits the camera, scroll zooms. "Copy position" puts the JSON on the
 // clipboard: paste it over POSITION above to save it.
