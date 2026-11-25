@@ -109,7 +109,7 @@ void main(){
 const VS=`#version 300 es
 in vec2 a;void main(){gl_Position=vec4(a,0,1);}`;
 // Object position: u/v = centre as a fraction of hero width/height, z = size, yaw/pitch = camera angle
-const POSITION={"wide": {"u": 0.8850274555450337, "v": 0.8651449245876736, "z": 1.68, "yaw": 5.145425292968761, "pitch": -0.3342973632812509}, "narrow": {"u": 0.5, "v": 0.625, "z": 0.87, "yaw": 4.145775390625007, "pitch": 0.6840480957031247}};
+const POSITION={"wide":{"roll":0.7328554841775412,"u":0.7669113243319154,"v":1.0940540640517942,"z":1.9518815291131284,"yaw":5.145425292968761,"pitch":-0.3342973632812509},"narrow":{"u":0.5,"v":0.625,"z":0.87,"yaw":4.145775390625007,"pitch":0.6840480957031247,"roll":0}};
 const layout=()=>hero.clientWidth/hero.clientHeight>1.15?'wide':'narrow';
 // Fine-tuning: open the page with #adjust. Drag moves the object, Shift-drag turns it clockwise or
 // anticlockwise, Alt-drag orbits the camera, scroll zooms. "Copy position" puts the JSON on the
