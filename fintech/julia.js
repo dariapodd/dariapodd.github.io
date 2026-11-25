@@ -14,7 +14,7 @@ const ANIM={"name": "Site", "state": {"amb": 0.35, "ao": 0.8, "bg0": "#14242f", 
 const S=ANIM.state;
 const FS=`#version 300 es
 precision highp float;
-uniform vec2 uRes,uShift;uniform float uYaw,uPitch,uDist;uniform vec3 uRot;
+uniform vec2 uRes,uShift;uniform float uRoll,uYaw,uPitch,uDist;uniform vec3 uRot;
 uniform vec4 uC;uniform int uIter;uniform float uPow,uW,uBn,uJb;
 uniform float uCut;uniform vec3 uCutN;uniform float uCutD,uEps;
 uniform vec3 uBg0,uBg1,uShell,uP0,uP1,uP2,uP3,uLc,uGc,uLd;
@@ -61,6 +61,7 @@ vec3 pal(float s){return s<.3333?mix(uP0,uP1,s*3.):s<.6667?mix(uP1,uP2,s*3.-1.):
 void main(){
  vec2 uv=(2.*gl_FragCoord.xy-uRes)/uRes.y;
  uv-=uShift;
+ uv=mat2(cos(uRoll),sin(uRoll),-sin(uRoll),cos(uRoll))*uv;
  gO=rx(uRot.x)*ry(uRot.y)*rz(uRot.z);
  vec3 ro=uDist*vec3(cos(uPitch)*sin(uYaw),sin(uPitch),cos(uPitch)*cos(uYaw));
  vec3 fw=normalize(-ro),rt=normalize(cross(fw,vec3(0,1,0))),up=cross(rt,fw);
@@ -99,14 +100,54 @@ void main(){
    col=mix(col,bg,1.-exp(-.004*t*t*t));
   }
  }
- col+=uGc*min(glow,1.5)*uGlow*(hit?.25:1.);
- o=vec4(pow(max(col,0.),vec3(1./2.2)),1);
+ vec3 gc=uGc*min(glow,1.5)*uGlow;
+ // The object is opaque; around it only the glow shows, so the hero's own background and the
+ // headline's ruled lines show through (premultiplied alpha)
+ if(hit){col+=gc*.25;o=vec4(pow(max(col,0.),vec3(1./2.2)),1);}
+ else{vec3 g=pow(max(gc,0.),vec3(1./2.2));o=vec4(g,clamp(max(g.r,max(g.g,g.b)),0.,1.));}
 }`;
 const VS=`#version 300 es
 in vec2 a;void main(){gl_Position=vec4(a,0,1);}`;
 // Object position: u/v = centre as a fraction of hero width/height, z = size, yaw/pitch = camera angle
 const POSITION={"wide": {"u": 0.8850274555450337, "v": 0.8651449245876736, "z": 1.68, "yaw": 5.145425292968761, "pitch": -0.3342973632812509}, "narrow": {"u": 0.5, "v": 0.625, "z": 0.87, "yaw": 4.145775390625007, "pitch": 0.6840480957031247}};
 const layout=()=>hero.clientWidth/hero.clientHeight>1.15?'wide':'narrow';
+// Fine-tuning: open the page with #adjust. Drag moves the object, Shift-drag turns it clockwise or
+// anticlockwise, Alt-drag orbits the camera, scroll zooms. "Copy position" puts the JSON on the
+// clipboard: paste it over POSITION above to save it.
+const POS=JSON.parse(JSON.stringify(POSITION));
+for(const k in POS)POS[k].roll=POS[k].roll||0;
+let redraw=()=>{},dragging=false;
+function adjust(){
+ const grab=document.createElement('div');grab.className='julia-grab';hero.append(grab);
+ const box=document.createElement('div');box.className='julia-adjust';
+ box.innerHTML=`<b>Position the fractal</b><span>Drag: move · Shift-drag: rotate · Alt-drag: orbit · Scroll: zoom</span><output></output>
+  <div><button type="button" data-a="reset">Reset</button><button type="button" data-a="copy">Copy position</button></div><small role="status"></small>`;
+ document.body.append(box);
+ const out=box.querySelector('output'),msg=box.querySelector('small');
+ const deg=r=>Math.round(r*180/Math.PI);
+ const sync=()=>{const L=POS[layout()];out.textContent=`${layout()==='wide'?'Laptop':'Phone'} layout · across ${Math.round(L.u*100)}% · down ${Math.round(L.v*100)}% · size ${L.z.toFixed(2)}× · rotation ${deg(L.roll)}° · orbit ${deg(L.yaw)}°/${deg(L.pitch)}°`};
+ const clamp=L=>{L.pitch=Math.min(1.45,Math.max(-1.45,L.pitch));L.z=Math.min(4,Math.max(.3,L.z));L.u=Math.min(1.3,Math.max(-.3,L.u));L.v=Math.min(1.3,Math.max(-.3,L.v))};
+ let last=null,centre=null;
+ grab.addEventListener('pointerdown',e=>{grab.setPointerCapture(e.pointerId);last={x:e.clientX,y:e.clientY};dragging=true;
+  const r=hero.getBoundingClientRect(),L=POS[layout()];centre={x:r.left+L.u*r.width,y:r.top+L.v*r.height}});
+ grab.addEventListener('pointermove',e=>{if(!last)return;const L=POS[layout()],dx=e.clientX-last.x,dy=e.clientY-last.y;
+  if(e.shiftKey){   // turn around the object's centre, following the pointer
+   const a0=Math.atan2(last.y-centre.y,last.x-centre.x),a1=Math.atan2(e.clientY-centre.y,e.clientX-centre.x);
+   let d=a1-a0;if(d>Math.PI)d-=2*Math.PI;if(d<-Math.PI)d+=2*Math.PI;L.roll+=d}
+  else if(e.altKey){L.yaw-=dx*.008;L.pitch+=dy*.008}
+  else{L.u+=dx/hero.clientWidth;L.v+=dy/hero.clientHeight;centre.x+=dx;centre.y+=dy}
+  last={x:e.clientX,y:e.clientY};clamp(L);sync();redraw()});
+ const up=()=>{last=null;dragging=false;redraw()};
+ grab.addEventListener('pointerup',up);grab.addEventListener('pointercancel',up);
+ grab.addEventListener('wheel',e=>{e.preventDefault();const L=POS[layout()];L.z*=Math.exp(-e.deltaY*.0015);clamp(L);sync();redraw()},{passive:false});
+ box.addEventListener('click',async e=>{const a=e.target.dataset&&e.target.dataset.a;if(!a)return;
+  if(a==='reset'){POS[layout()]=Object.assign({roll:0},POSITION[layout()]);msg.textContent='Back to the saved position.'}
+  else{const txt=JSON.stringify(POS);
+   try{await navigator.clipboard.writeText(txt);msg.textContent='Copied. Paste it over POSITION in fintech/julia.js.'}
+   catch(err){msg.textContent=txt}}
+  sync();redraw()});
+ addEventListener('resize',sync);sync();
+}
  const sh=(t,s)=>{const x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))console.error(gl.getShaderInfoLog(x));return x};
  const p=gl.createProgram();gl.attachShader(p,sh(gl.VERTEX_SHADER,VS));gl.attachShader(p,sh(gl.FRAGMENT_SHADER,FS));gl.bindAttribLocation(p,0,'a');gl.linkProgram(p);gl.useProgram(p);
  const U={},n=gl.getProgramParameter(p,gl.ACTIVE_UNIFORMS);for(let i=0;i<n;i++){const u=gl.getActiveUniform(p,i);U[u.name]=gl.getUniformLocation(p,u.name)}
@@ -119,11 +160,11 @@ const layout=()=>hero.clientWidth/hero.clientHeight>1.15?'wide':'narrow';
  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
  function draw(){
   const dpr=Math.min(devicePixelRatio||1,1.5),sc=.7;
-  const W=Math.max(2,Math.round(hero.clientWidth*dpr*sc)),H=Math.max(2,Math.round(hero.clientHeight*dpr*sc));
+  const W=Math.max(2,Math.round(hero.clientWidth*dpr*(dragging?.4:sc))),H=Math.max(2,Math.round(hero.clientHeight*dpr*(dragging?.4:sc)));
   if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H}
   gl.viewport(0,0,W,H);
-  const L=POSITION[layout()],asp=W/H;
-  f('uShift',(L.u-.5)*2*asp,(.5-L.v)*2);
+  const L=POS[layout()],asp=W/H;
+  f('uShift',(L.u-.5)*2*asp,(.5-L.v)*2);f('uRoll',L.roll);
   const dA=S.drift*.12;
   f('uRes',W,H);f('uYaw',L.yaw);f('uPitch',L.pitch);f('uDist',S.dist/L.z);
   f('uRot',S.rx*R,S.ry*R,S.rz*R);
@@ -144,5 +185,7 @@ const layout=()=>hero.clientWidth/hero.clientHeight>1.15?'wide':'narrow';
   requestAnimationFrame(frame);
  }
  const io=new IntersectionObserver(e=>{visible=e[0].isIntersecting});io.observe(hero);
+ redraw=()=>{if(reduce)draw()};
+ if(/adjust/.test(location.hash))adjust();
  if(reduce){draw();const ro=new ResizeObserver(draw);ro.observe(hero)}else requestAnimationFrame(frame);
 })();

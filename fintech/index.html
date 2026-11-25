@@ -664,20 +664,45 @@
   }
 
   /* ---------- Fintech skin ---------- */
-  /* Hero: navy, with the Julia set (julia.js) behind the text and a veil so the text stays readable */
-  .hero { background: var(--hero-bg); isolation: isolate; }
-  .hero .julia { position: absolute; z-index: -2; inset: 0; width: 100%; height: 100%; display: block; }
+  /* Hero, back to front: navy gradient (the fractal's own background colours), veil, the headline's
+     ruled lines, then the Julia set (julia.js), which is transparent around the object and fades
+     out towards the text */
+  .hero { background: linear-gradient(to bottom, #14242f, #03070b); isolation: isolate; }
   .hero .julia-veil {
-    position: absolute; z-index: -2; inset: 0; pointer-events: none;
+    position: absolute; z-index: -5; inset: 0; pointer-events: none;
     background: linear-gradient(90deg, rgba(13, 25, 32, 0.92) 0%, rgba(13, 25, 32, 0.7) 38%, rgba(13, 25, 32, 0) 70%);
   }
+  .hero h1::before { z-index: -4; }
+  .hero .julia {
+    position: absolute; z-index: -3; inset: 0; width: 100%; height: 100%; display: block;
+    -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.3) 38%, #000 70%);
+    mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.3) 38%, #000 70%);
+  }
   @media (max-width: 760px) {
-    .hero .julia-veil { background: linear-gradient(180deg, rgba(13, 25, 32, 0.55), rgba(13, 25, 32, 0.82) 55%, rgba(13, 25, 32, 0.92)); }
+    .hero .julia-veil { background: rgba(13, 25, 32, 0.6); }
+    .hero .julia {
+      -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.18) 55%, rgba(0, 0, 0, 0.08));
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.18) 55%, rgba(0, 0, 0, 0.08));
+    }
   }
   .hero h1 .dot { background: var(--accent); }
-  .hero h1::before { display: none; }   /* no ruled lines under the headline */
   .intro, .project-desc, .project-quote, .rec { color: #d6dadb; }
   .project h2, .recs h2, .more h2, .more-card h3 { color: var(--cream); }
+  /* #adjust: fine-tuning the fractal's position (julia.js) */
+  .hero .julia-grab { position: absolute; z-index: 20; inset: 0; cursor: grab; touch-action: none; outline: 2px dashed rgba(63, 240, 180, 0.5); outline-offset: -8px; }
+  .hero .julia-grab:active { cursor: grabbing; }
+  .julia-adjust {
+    position: fixed; z-index: 40; left: 16px; bottom: 16px; width: min(360px, calc(100vw - 32px));
+    display: grid; gap: 8px; padding: 14px 16px; border-radius: 12px;
+    background: rgba(10, 20, 25, 0.94); border: 1px solid var(--rule); color: var(--ink);
+    font: 300 14px/1.4 "Chakra Petch", system-ui, sans-serif;
+  }
+  .julia-adjust b { font: 400 14px/1.2 "Kode Mono", ui-monospace, monospace; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+  .julia-adjust output { font-variant-numeric: tabular-nums; color: #fff; }
+  .julia-adjust div { display: flex; gap: 8px; }
+  .julia-adjust button { font: inherit; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--rule); background: none; color: var(--ink); cursor: pointer; }
+  .julia-adjust button[data-a="copy"] { margin-left: auto; background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+  .julia-adjust small { min-height: 1.2em; color: var(--accent); word-break: break-all; }
   /* Pill buttons */
   .resume, .button, .scroll-hint { border-radius: 999px; }
   .scroll-hint { background: rgba(8, 16, 20, 0.85); }
