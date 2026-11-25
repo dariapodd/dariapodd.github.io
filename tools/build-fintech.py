@@ -1,5 +1,5 @@
 """Writes fintech/index.html from the root index.html: same layout and words, fintech skin
-(from fintech-portfolio.html): navy and mint, Share Tech Mono + Barlow, pill buttons, and a
+(from fintech-portfolio.html): navy and mint, pill buttons, same fonts and sizes as enterprise, and a
 live quaternion Julia set behind the hero (fintech/julia.js) instead of the Lorenz attractor.
 
 Edit index.html (layout, words) or the SKIN list below, then run:
@@ -25,20 +25,6 @@ SKIN = [
     ('title="Choose another portfolio style">enterprise portfolio<',
      'title="Choose another portfolio style">fintech portfolio<'),
     ('data-current="enterprise"', 'data-current="fintech"'),
-
-    # ---- Type: Share Tech Mono for display and labels, Barlow for body
-    ("family=Chakra+Petch:wght@300;600", "family=Barlow:wght@300;400;600&family=Share+Tech+Mono"),
-    ('<link rel="preload" href="fonts/KodeMono.ttf" as="font" type="font/ttf" crossorigin>\n', ""),
-    ('''  /* Kode Mono, self-hosted (full character set). License: fonts/OFL.txt */
-  @font-face {
-    font-family: "Kode Mono";
-    src: url("fonts/KodeMono.ttf") format("truetype");
-    font-weight: 400 700;
-    font-display: swap;
-  }
-''', ""),
-    ('"Kode Mono"', '"Share Tech Mono"'),
-    ('"Chakra Petch"', "Barlow"),
 
     # ---- Colour: navy sections, mint signal, cream titles
     ("--bg: #1e1d19;", "--bg: #121a1c;\n    --hero-bg: #0d1920;\n    --cream: #e7e2c9;"),
@@ -81,10 +67,10 @@ SKIN_CSS = """
   @media (max-width: 760px) {
     .hero .julia-veil { background: linear-gradient(180deg, rgba(13, 25, 32, 0.55), rgba(13, 25, 32, 0.82) 55%, rgba(13, 25, 32, 0.92)); }
   }
-  .hero h1 { letter-spacing: 0.06em; }
   .hero h1 .dot { background: var(--accent); }
+  .hero h1::before { display: none; }   /* no ruled lines under the headline */
   .intro, .project-desc, .project-quote, .rec { color: #d6dadb; }
-  .project h2, .recs h2, .more h2, .more-card h3 { color: var(--cream); letter-spacing: 0.06em; }
+  .project h2, .recs h2, .more h2, .more-card h3 { color: var(--cream); }
   /* Pill buttons */
   .resume, .button, .scroll-hint { border-radius: 999px; }
   .scroll-hint { background: rgba(8, 16, 20, 0.85); }

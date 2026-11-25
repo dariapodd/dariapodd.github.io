@@ -10,8 +10,16 @@
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;600&display=swap" rel="stylesheet">
+<link rel="preload" href="../fonts/KodeMono.ttf" as="font" type="font/ttf" crossorigin>
 <style>
+  /* Kode Mono, self-hosted (full character set). License: fonts/OFL.txt */
+  @font-face {
+    font-family: "Kode Mono";
+    src: url("../fonts/KodeMono.ttf") format("truetype");
+    font-weight: 400 700;
+    font-display: swap;
+  }
 
   :root {
     --bg: #121a1c;
@@ -45,7 +53,7 @@
     /* Figma: radial glow centred 977px down, 1920 wide × 2268 tall */
     background: radial-gradient(960px 1134px at 50% 977px, var(--bg-glow), var(--bg)) var(--bg);
     color: var(--ink);
-    font-family: "Share Tech Mono", ui-monospace, monospace;
+    font-family: "Kode Mono", ui-monospace, monospace;
   }
 
   @media (max-width: 700px) {
@@ -84,7 +92,7 @@
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
     color: var(--accent);
-    font: 400 var(--nav-fs)/1.2 "Share Tech Mono", ui-monospace, monospace;
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     text-decoration: none;
@@ -100,7 +108,7 @@
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     color: var(--accent);
-    font: 400 var(--nav-fs)/1.2 "Share Tech Mono", ui-monospace, monospace;
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     text-decoration: none;
@@ -192,7 +200,7 @@
     max-width: 513px;
     margin: 24px 0 0;
     color: #fff;
-    font: 300 16px/1.4 Barlow, system-ui, sans-serif;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
   }
 
   .logos {
@@ -238,13 +246,13 @@
     transition: opacity 0.15s ease, transform 0.15s ease;
   }
   .logos .tip b, .project-award .tip b {
-    font: 400 14px/1.2 "Share Tech Mono", ui-monospace, monospace;
+    font: 400 14px/1.2 "Kode Mono", ui-monospace, monospace;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--ink);
   }
   .logos .tip span, .project-award .tip span {
-    font: 300 14px/1.4 Barlow, system-ui, sans-serif;
+    font: 300 14px/1.4 "Chakra Petch", system-ui, sans-serif;
     color: rgba(255, 255, 255, 0.8);
   }
   .logos li:hover .tip,
@@ -360,7 +368,7 @@
     max-width: 392px;
     margin-top: 44px;
     color: #fff;
-    font: 300 16px/1.4 Barlow, system-ui, sans-serif;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
   }
   .project-desc p { margin: 0 0 12px; }
   .project-desc p:last-child { margin-bottom: 0; }
@@ -375,7 +383,7 @@
     max-width: 400px;
     margin: 44px 0 0;
     color: #fff;
-    font: 300 16px/1.4 Barlow, system-ui, sans-serif;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
   }
   .project-quote blockquote { margin: 0 0 12px; }
   .project-quote figcaption { font-weight: 600; }
@@ -481,7 +489,7 @@
     gap: 12px;
     margin: 0;
     color: #fff;
-    font: 300 16px/1.4 Barlow, system-ui, sans-serif;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
   }
   .rec blockquote { margin: 0; }
   .rec figcaption { font-weight: 600; }
@@ -503,7 +511,7 @@
     border-radius: 12px;
     background: var(--body-grey);
     color: #fff;
-    font: 300 16px/1.4 Barlow, system-ui, sans-serif;
+    font: 300 16px/1.4 "Chakra Petch", system-ui, sans-serif;
   }
   .more-thumb { display: block; width: 100%; height: auto; aspect-ratio: 1; border-radius: 6px; }
   /* Thumbnails link like the card's first link; a 10% white veil on hover */
@@ -522,7 +530,7 @@
   .more-card h3 {
     margin: 0;
     color: var(--ink);
-    font: 400 24px/1.2 "Share Tech Mono", ui-monospace, monospace;
+    font: 400 24px/1.2 "Kode Mono", ui-monospace, monospace;
     letter-spacing: 0.07em;
     text-transform: uppercase;
   }
@@ -531,7 +539,7 @@
   /* Link out of a card, styled like the homepage's other links */
   .more-link {
     color: var(--accent);
-    font: 400 var(--nav-fs)/1.2 "Share Tech Mono", ui-monospace, monospace;
+    font: 400 var(--nav-fs)/1.2 "Kode Mono", ui-monospace, monospace;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     text-decoration: none;
@@ -666,10 +674,10 @@
   @media (max-width: 760px) {
     .hero .julia-veil { background: linear-gradient(180deg, rgba(13, 25, 32, 0.55), rgba(13, 25, 32, 0.82) 55%, rgba(13, 25, 32, 0.92)); }
   }
-  .hero h1 { letter-spacing: 0.06em; }
   .hero h1 .dot { background: var(--accent); }
+  .hero h1::before { display: none; }   /* no ruled lines under the headline */
   .intro, .project-desc, .project-quote, .rec { color: #d6dadb; }
-  .project h2, .recs h2, .more h2, .more-card h3 { color: var(--cream); letter-spacing: 0.06em; }
+  .project h2, .recs h2, .more h2, .more-card h3 { color: var(--cream); }
   /* Pill buttons */
   .resume, .button, .scroll-hint { border-radius: 999px; }
   .scroll-hint { background: rgba(8, 16, 20, 0.85); }
