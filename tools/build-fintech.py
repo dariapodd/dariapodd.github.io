@@ -110,13 +110,11 @@ SKIN_CSS = """
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     box-shadow:
-      inset 0 0 0 1px rgba(255, 255, 255, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.10),
       inset 0 -10px 18px rgba(255, 255, 255, 0.03);
   }
   .resume, .scroll-hint {
     box-shadow:
-      inset 0 0 0 1px rgba(255, 255, 255, 0.12),
       inset 0 1px 0 rgba(255, 255, 255, 0.10),
       inset 0 -10px 18px rgba(255, 255, 255, 0.03),
       0 8px 32px rgba(0, 0, 0, 0.35);
