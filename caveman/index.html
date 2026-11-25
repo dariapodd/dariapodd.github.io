@@ -729,6 +729,7 @@
   .recs.is-lorenz-grab { cursor: grab; }
   .recs.is-lorenz-dragging { cursor: grabbing; user-select: none; }
   @media (min-width: 1200px) {
+    .recs > h2, .recs-grid { max-width: 760px; }
     .recs .micro--lorenz { top: calc(50% - 283px); height: 566px; left: max(59.5%, 880px); right: 0; }
   }
 
@@ -973,6 +974,7 @@
     </section>
 
     <section class="recs" id="recommendations" aria-labelledby="recs-title">
+      <div class="micro micro--lorenz" aria-hidden="true"></div>
       <h2 id="recs-title">tribe say</h2>
       <div class="recs-grid">
       <figure class="rec">

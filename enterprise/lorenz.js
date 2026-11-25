@@ -7,9 +7,10 @@
 // to keep moving even with reduced motion on.
 // data-mode="belt" on the box (caveman page): the same scattered dots, but the attractor's
 // path is replaced by an asteroid belt seen nearly edge-on, and the dot travels its orbit.
+// Every .micro--lorenz box on the page gets its own canvas (the caveman page has two).
 (() => {
-  const host = document.querySelector(".micro--lorenz");
-  if (!host) return;
+  document.querySelectorAll(".micro--lorenz").forEach(setup);
+  function setup(host) {
   const BELT = host.dataset.mode === "belt";
 
   // Attractor
@@ -342,4 +343,5 @@
   hero.addEventListener("pointerup", end);
   hero.addEventListener("pointercancel", end);
   hero.addEventListener("pointerleave", () => { if (!drag) hero.classList.remove("is-lorenz-grab"); });
+  }
 })();
