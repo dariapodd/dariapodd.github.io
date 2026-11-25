@@ -72,7 +72,6 @@ SKIN_CSS = """
     }
   }
   .hero h1 .dot { background: var(--accent); }
-  .more-card { background: none; }   /* More projects: cards without a background */
   /* Closing visual: the Lorenz attractor (enterprise/lorenz.js) under the last section; drag to turn it */
   .lorenz-end { position: relative; isolation: isolate; height: 640px; margin-top: -40px; }
   .lorenz-end .micro--lorenz { top: 37px; height: 566px; left: 20%; right: 30%; }
