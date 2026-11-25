@@ -678,7 +678,7 @@
      Back to front: the page gradient, a veil in the page colour, stars, the headline's ruled
      lines, then the Julia set, which is transparent around the object and fades out towards the
      text. Drag anywhere in the hero to morph it; open the page with #adjust to reposition it. */
-  .hero { isolation: isolate; -webkit-user-select: none; user-select: none; }   /* hero text can't be selected */
+  .hero { isolation: isolate; }
   .hero img { -webkit-user-drag: none; }
   .hero .julia-veil {
     position: absolute; z-index: -5; inset: 0; pointer-events: none;
@@ -699,12 +699,9 @@
     }
   }
   .hero h1 .dot { background: var(--accent); }
-  .hero .julia-drag { position: absolute; z-index: 10; inset: 0; cursor: grab; touch-action: pan-y; }
+  /* Drag the image area (right of the text, never over words) to morph the fractal; text stays selectable */
+  .hero.is-over-fractal { cursor: grab; }
   .hero.is-morphing, .hero.is-morphing * { cursor: grabbing; user-select: none; }
-  /* Above the drag layer: the style menu link, the scroll hint and the logos (their hints show on hover) */
-  .hero .view-select { position: relative; z-index: 11; }
-  .hero .scroll-hint { z-index: 11; }
-  .hero .logos { position: relative; z-index: 11; }
   /* #adjust: fine-tuning the fractal's position */
   .hero .julia-grab { position: absolute; z-index: 20; inset: 0; cursor: grab; touch-action: none; outline: 2px dashed var(--accent); outline-offset: -8px; }
   .hero .julia-grab:active { cursor: grabbing; }

@@ -206,20 +206,38 @@ function adjust(){
  // (pointer y). The shape eases towards the new values, so it changes slowly, and keeps them.
  const M={c:0,w:0,tc:0,tw:0};
  const ease=k=>{const a=1-Math.exp(-k);M.c+=(M.tc-M.c)*a;M.w+=(M.tw-M.w)*a};
- // A layer over the whole hero takes the drag (only the style menu link and the scroll hint sit above it)
- const pad=document.createElement('div');pad.className='julia-drag';pad.setAttribute('aria-hidden','true');hero.append(pad);
+ // Only the image area takes the drag: on wide screens the right part of the hero (from 45% of
+ // its width), and never over text (so it can still be selected), links, logos or the intro.
+ const overText=(x,y)=>{
+  let r=null;
+  if(document.caretRangeFromPoint)r=document.caretRangeFromPoint(x,y);
+  else if(document.caretPositionFromPoint){const c=document.caretPositionFromPoint(x,y);if(c){r=document.createRange();r.setStart(c.offsetNode,c.offset)}}
+  if(!r||r.startContainer.nodeType!==3)return false;
+  const t=r.startContainer,i=r.startOffset;
+  for(const k of [i-1,i]){if(k<0||k>=t.length)continue;const g=document.createRange();g.setStart(t,k);g.setEnd(t,k+1);
+   for(const b of g.getClientRects())if(x>=b.left-2&&x<=b.right+2&&y>=b.top&&y<=b.bottom)return true}
+  return false;
+ };
+ const inImage=e=>{
+  if(document.querySelector('.julia-grab')||e.target.closest('a,button,.logos,.intro,.julia-adjust'))return false;
+  const b=hero.getBoundingClientRect();
+  if(layout()==='wide'&&(e.clientX-b.left)/b.width<.45)return false;
+  return !overText(e.clientX,e.clientY);
+ };
  let pull=null;
- pad.addEventListener('pointerdown',e=>{
-  if(e.button!==0||document.querySelector('.julia-grab'))return;
-  pull={id:e.pointerId,x:e.clientX,y:e.clientY};pad.setPointerCapture(e.pointerId);hero.classList.add('is-morphing');e.preventDefault()});
- pad.addEventListener('pointermove',e=>{
-  if(!pull||e.pointerId!==pull.id)return;
+ hero.addEventListener('pointerdown',e=>{
+  if(e.button!==0||!inImage(e))return;
+  pull={id:e.pointerId,x:e.clientX,y:e.clientY};hero.setPointerCapture(e.pointerId);hero.classList.add('is-morphing');e.preventDefault()});
+ hero.addEventListener('pointermove',e=>{
+  if(!pull){if(e.pointerType==='mouse')hero.classList.toggle('is-over-fractal',inImage(e));return}
+  if(e.pointerId!==pull.id)return;
   M.tc=Math.max(-.3,Math.min(.3,M.tc+(e.clientX-pull.x)*.0006));
   M.tw=Math.max(-.45,Math.min(.45,M.tw+(e.clientY-pull.y)*.0008));
   pull.x=e.clientX;pull.y=e.clientY;
   if(reduce){ease(1);draw()}});
  const release=e=>{if(pull&&e.pointerId===pull.id){pull=null;hero.classList.remove('is-morphing')}};
- pad.addEventListener('pointerup',release);pad.addEventListener('pointercancel',release);
+ hero.addEventListener('pointerup',release);hero.addEventListener('pointercancel',release);
+ hero.addEventListener('pointerleave',()=>hero.classList.remove('is-over-fractal'));
  function frame(now){
   const dt=Math.min(.1,(now-last)/1000);last=now;
   if(visible&&!document.hidden){tDrift+=dt*S.drift*1.5;ease(dt*1.5);draw()}
