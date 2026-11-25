@@ -114,6 +114,12 @@ SKIN_CSS = """
   @supports (corner-shape: squircle) {
     .resume, .button, .scroll-hint { border-radius: 999px; corner-shape: round; }
   }
+  /* "Coming soon" keeps the enterprise look: amber, square-ish corners, no glass */
+  .button.button--soon {
+    border-radius: 12px; background: rgba(255, 166, 0, 0.1); box-shadow: none;
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  }
+  @supports (corner-shape: squircle) { .button.button--soon { border-radius: 24px; corner-shape: squircle; } }
 """
 if html.count("</style>\n</head>") != 1:
     sys.exit("build-fintech: expected one </style></head>")
