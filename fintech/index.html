@@ -27,10 +27,9 @@
     --cream: #e7e2c9;
     --bg-glow: #121a1c;
     --ink: #ecebe4;
-    --accent: #3ff0b4;
-    --menu-accent: #3ff0b4;   /* style menu's intro box */
-    --accent-bg: rgba(63, 240, 180, 0.1);
-    --micro-ink: 63, 240, 180;   /* micrographic lines (sphere.js, surface.js) */
+    --accent: #ff3e4b;
+    --menu-accent: #ff3e4b;   /* style menu's intro box */
+    --accent-bg: rgba(255, 62, 75, 0.1);
     --body-black: #060c0c;    /* project body, black variant */
     --body-grey: #1b2629;     /* recommendation cards */
     --body-light: #11171a;    /* project body, lighter variant */
@@ -687,10 +686,11 @@
     }
   }
   .hero h1 .dot { background: var(--accent); }
+  .micro { display: none; }   /* no micrographics in this skin */
   .intro, .project-desc, .project-quote, .rec { color: #d6dadb; }
   .project h2, .recs h2, .more h2, .more-card h3 { color: var(--ink); }   /* same as the hero headline */
   /* #adjust: fine-tuning the fractal's position (julia.js) */
-  .hero .julia-grab { position: absolute; z-index: 20; inset: 0; cursor: grab; touch-action: none; outline: 2px dashed rgba(63, 240, 180, 0.5); outline-offset: -8px; }
+  .hero .julia-grab { position: absolute; z-index: 20; inset: 0; cursor: grab; touch-action: none; outline: 2px dashed var(--accent); outline-offset: -8px; }
   .hero .julia-grab:active { cursor: grabbing; }
   .julia-adjust {
     position: fixed; z-index: 40; left: 16px; bottom: 16px; width: min(360px, calc(100vw - 32px));
@@ -708,7 +708,7 @@
      inner glow from below and a hairline rim (inset shadows, so the buttons keep their size);
      the floating ones (resume, scroll hint) also cast a shadow */
   .resume, .button, .scroll-hint {
-    background: rgba(28, 71, 56, 0.78);
+    background: rgba(71, 28, 38, 0.78);   /* deep red (Figma 393:39) */
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     box-shadow:
@@ -1045,9 +1045,7 @@
     </section>
   </main>
 
-<script src="../enterprise/surface.js" defer></script>
 <script src="../fintech/julia.js" defer></script>
-<script src="../enterprise/sphere.js" defer></script>
 <!--: the welcome popup with style previews (root page only; the builds strip it) -->
 <script src="../menu.js" defer data-current="fintech"></script>
 

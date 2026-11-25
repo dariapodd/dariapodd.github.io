@@ -14,8 +14,8 @@ from pathlib import Path
 root = Path(__file__).resolve().parent.parent
 html = (root / "index.html").read_text(encoding="utf-8")
 
-ACCENT = "#3ff0b4"            # mint signal colour
-ACCENT_RGB = "63, 240, 180"
+ACCENT = "#ff3e4b"            # red key colour (Figma 393:39)
+ACCENT_RGB = "255, 62, 75"
 
 # (homepage text, fintech text). Exact matches; each must occur at least once.
 SKIN = [
@@ -26,12 +26,12 @@ SKIN = [
      'title="Choose another portfolio style">fintech portfolio<'),
     ('data-current="enterprise"', 'data-current="fintech"'),
 
-    # ---- Colour: navy sections, mint signal, cream titles
+    # ---- Colour: navy sections, red key colour
     ("--bg: #1e1d19;", "--bg: #121a1c;\n    --hero-bg: #0d1920;\n    --cream: #e7e2c9;"),
     ("--bg-glow: #393938;", "--bg-glow: #121a1c;"),
     ("--ink: #dddcc8;", "--ink: #ecebe4;"),
     ("--accent: #00ffcc;", f"--accent: {ACCENT};\n    --menu-accent: {ACCENT};   /* style menu's intro box */"),
-    ("--accent-bg: rgba(0, 255, 204, 0.1);", f"--accent-bg: rgba({ACCENT_RGB}, 0.1);\n    --micro-ink: {ACCENT_RGB};   /* micrographic lines (sphere.js, surface.js) */"),
+    ("--accent-bg: rgba(0, 255, 204, 0.1);", f"--accent-bg: rgba({ACCENT_RGB}, 0.1);"),
     ("--body-black: #191613;", "--body-black: #060c0c;"),   # odd projects (Figma 387:1964)
     ("--body-grey: #3a3938;", "--body-grey: #1b2629;"),
     ("--body-light: #21201d;", "--body-light: #11171a;"),   # even projects
@@ -45,6 +45,10 @@ SKIN = [
     # ---- Hero: the Julia set replaces the Lorenz attractor
     ('    <div class="micro micro--lorenz" aria-hidden="true"></div>\n', ""),
     ('<script src="enterprise/lorenz.js" defer></script>', '<script src="fintech/julia.js" defer></script>'),
+
+    # ---- No micrographics: drop the wireframe surface and the tab shapes
+    ('<script src="enterprise/surface.js" defer></script>\n', ""),
+    ('<script src="enterprise/sphere.js" defer></script>\n', ""),
 ]
 
 missing = []
@@ -80,10 +84,11 @@ SKIN_CSS = """
     }
   }
   .hero h1 .dot { background: var(--accent); }
+  .micro { display: none; }   /* no micrographics in this skin */
   .intro, .project-desc, .project-quote, .rec { color: #d6dadb; }
   .project h2, .recs h2, .more h2, .more-card h3 { color: var(--ink); }   /* same as the hero headline */
   /* #adjust: fine-tuning the fractal's position (julia.js) */
-  .hero .julia-grab { position: absolute; z-index: 20; inset: 0; cursor: grab; touch-action: none; outline: 2px dashed rgba(63, 240, 180, 0.5); outline-offset: -8px; }
+  .hero .julia-grab { position: absolute; z-index: 20; inset: 0; cursor: grab; touch-action: none; outline: 2px dashed var(--accent); outline-offset: -8px; }
   .hero .julia-grab:active { cursor: grabbing; }
   .julia-adjust {
     position: fixed; z-index: 40; left: 16px; bottom: 16px; width: min(360px, calc(100vw - 32px));
@@ -101,7 +106,7 @@ SKIN_CSS = """
      inner glow from below and a hairline rim (inset shadows, so the buttons keep their size);
      the floating ones (resume, scroll hint) also cast a shadow */
   .resume, .button, .scroll-hint {
-    background: rgba(28, 71, 56, 0.78);
+    background: rgba(71, 28, 38, 0.78);   /* deep red (Figma 393:39) */
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     box-shadow:
