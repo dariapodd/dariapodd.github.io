@@ -8,6 +8,27 @@ if(!hero)return;
 const cv=document.createElement('canvas');cv.className='julia';cv.setAttribute('aria-hidden','true');
 const veil=document.createElement('div');veil.className='julia-veil';veil.setAttribute('aria-hidden','true');
 hero.prepend(cv,veil);
+// Stars behind the fractal, like the stray points around the Lorenz attractor further down:
+// warm grey (#dddcc8) dots, mostly tiny, a few larger and softer, a little denser towards the
+// object on the right. Seeded, so they sit in the same places on every load.
+(()=>{
+ const st=document.createElement('canvas');st.className='julia-stars';st.setAttribute('aria-hidden','true');
+ cv.before(st);
+ const ctx=st.getContext('2d');if(!ctx)return;
+ let seed=7;const rnd=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+ const stars=[];
+ for(let i=0;i<420;i++){
+  const x=Math.pow(rnd(),.75),y=rnd(),big=rnd()<.035;   // x: more stars to the right
+  stars.push({x,y,r:big?1.6+rnd()*1.6:.45+rnd()*.55,a:big?.22+rnd()*.18:.18+rnd()*.3});
+ }
+ const paint=()=>{
+  const dpr=Math.min(devicePixelRatio||1,2),w=hero.clientWidth,h=hero.clientHeight;
+  st.width=Math.round(w*dpr);st.height=Math.round(h*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+  for(const t of stars){ctx.beginPath();ctx.arc(t.x*w,t.y*h,t.r,0,Math.PI*2);ctx.fillStyle=`rgba(221,220,200,${t.a})`;ctx.fill()}
+ };
+ paint();new ResizeObserver(paint).observe(hero);
+})();
 const gl=cv.getContext('webgl2',{antialias:false});
 if(!gl){cv.remove();return}
 const ANIM={"name": "Site", "state": {"amb": 0.35, "ao": 0.8, "bg0": "#14242f", "bg1": "#03070b", "bn": 7.75, "bright": 0.6, "cut": 0, "cutAz": 226, "cutD": 0.235, "cutEl": 90, "cw": -0.599, "cx": -0.195, "cy": 0.163, "cz": 0.56, "detail": 0.55, "dist": 3.2798138496396994, "drift": 0.17, "flip": 0, "freq": 2.13, "glow": 0.055, "glowC": "#7e8086", "itMix": 0.15, "iter": 12, "jb": 1, "lAz": 33, "lEl": 55, "lb": 2.6667, "light": "#97d8d4", "lr": 28, "ls": 10, "lspeed": 0.35, "off": 0.1, "p0": "#0b2340", "p1": "#2f7fb8", "p2": "#e8f6ff", "p3": "#f2c879", "pitch": 0.6840480957031247, "pow": 2, "psize": 2.4, "res": 0.85, "rim": 0.25, "rx": -20, "ry": 30, "rz": 65, "shad": 0.75, "shell": "#000000", "shellMix": 0, "spec": 0.45, "spin": 0, "trail": 0.4, "w": -0.307, "yaw": 4.145775390625007}, "phase": {"head": 149999, "spinA": 0, "tDrift": 63.76105500000895}};

@@ -59,6 +59,7 @@ SKIN_CSS = """
     position: absolute; z-index: -5; inset: 0; pointer-events: none;
     background: linear-gradient(90deg, rgba(30, 29, 25, 0.92) 0%, rgba(30, 29, 25, 0.7) 63%, rgba(30, 29, 25, 0) 70%);   /* in the enterprise background colour */
   }
+  .hero .julia-stars { position: absolute; z-index: -4; inset: 0; width: 100%; height: 100%; pointer-events: none; }   /* stars: over the veil, under the ruled lines and the fractal */
   .hero h1::before { z-index: -4; }
   .hero .julia {
     position: absolute; z-index: -3; inset: 0; width: 100%; height: 100%; display: block;
