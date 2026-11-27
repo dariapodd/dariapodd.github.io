@@ -79,7 +79,7 @@ COPY = [
      "<p><strong>UX Lead.</strong> Mining tribe. Big hole, far away. Many rocks, many machines. Daria make magic map copy of whole hole, with AI helper for planning. Prototypes to show chiefs. Web app made.</p>"),
 
     # Buttons
-    (">learn more</a>", ">more hunt</a>"),
+    (">read case study</a>", ">read hunt story</a>"),
     (">case study coming soon</span>", ">story come later</span>"),
 
     # ---- Recommendations (quotes stay in the tribe's own words)
@@ -95,8 +95,8 @@ COPY = [
     ("<p>Physical Arduino prototype</p>", "<p>Real prototype you touch, Arduino brain</p>"),
     ("<p>Local search service, 2.6M monthly visitors</p>", "<p>Find-place service, 2.6M visitors each moon</p>"),
     ("<p>Software vendor portal, 450 pages</p>", "<p>Big software tribe portal, 450 pages</p>"),
-    (">view ↗</a>", ">look ↗</a>"),
-    (">view</a>", ">look</a>"),   # internal links: no arrow
+    (">view on Behance ↗</a>", ">look on Behance ↗</a>"),
+    (">see gallery</a>", ">see cave paintings</a>"),
 
     # ---- Style: reddish accent
     # Hero: the asteroid belt (lorenz.js, belt mode) instead of the fractal; the recommendations
